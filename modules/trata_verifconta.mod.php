@@ -18,3 +18,5 @@ if($codigo != $_SESSION['codigo']) {
 $sql = "UPDATE users SET ativo = 1 WHERE id = " . $_SESSION['id'];
 my_query($sql);
 header('Location: ' . $arrConfig['url_paginas'] . 'auth/login.php');
+
+

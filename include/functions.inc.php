@@ -1,4 +1,6 @@
 <?php
+include 'config.inc.php';
+include 'dados.inc.php';
 
 function pr($arr) {
     echo '<pre>';
@@ -34,3 +36,220 @@ function logs() {
     $result = my_query($sql);
 
 };
+
+function gerar_formulario($tipo, $modulo, $action = null, $pkey = null, $pkey_valor = null) {
+    global $arrConfig;
+
+    if(!$action) $action = $arrConfig['url_modules'] . 'trata_' . $tipo . '.mod.php?modulo=' . $modulo;
+
+    echo "<h1>$tipo $modulo</h1>";
+    echo '<div>';
+    $flagEditarInserir = false;
+    $arrCampos = array();    
+    $tipo == 'editar' ? $sql = "SELECT * FROM $modulo WHERE $pkey = " . $pkey_valor : '';
+    isset($sql) ? $arrResultado = my_query($sql) : '';
+    
+    def_arrCampos($modulo, $arrCampos);
+    echo '<form action="' . $action . '" method="post" enctype="multipart/form-data">';
+    
+    foreach($arrCampos as $kCampos => $vCampos) {
+        switch($tipo) {
+            case 'editar':                
+                campos_formulario($vCampos, $kCampos, $tipo, $flagEditarInserir, $arrResultado, $pkey);
+                break;
+            case 'criar':
+                $tipo = 'inserir';
+            case 'inserir':                
+                campos_formulario($vCampos, $kCampos, $tipo,$flagEditarInserir);
+                break;
+            
+        }
+        
+    };
+    echo $flagEditarInserir ? '<input type="submit" value="Enviar">' : '<h1>Não é possível editar ou inserir</h1>';
+    echo '</form>';
+    echo '<button><a href="' . $arrConfig['url_site'] . '/admin/paginas/' . $modulo . '.adm.php">Voltar</a></button>';
+    echo '</div>';
+}
+
+function campos_formulario($vCampos, $kCampos , $crud ,&$flagEditarInserir,$arrResultados = null, $chave = null ) {
+    global $arrConfig;    
+
+    if($vCampos['chave'] && $crud === "editar" && !$vCampos['editar']) echo '<input type="hidden" name="' . $chave . '" value="' . $arrResultados[0][$chave] . '">';
+    if($vCampos[$crud]) {
+        $flagEditarInserir = true;                
+        switch($vCampos['tipo']) {
+            case 'float': 
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label>    ';
+                echo '<input type="number" min=0 step="0.01" name="' . $kCampos . '" value="' . ($arrResultados ? $arrResultados[0][$kCampos] : '') . '" ' . ($vCampos['required'] ? 'required' : '') . '"><br>';
+                break;
+            case 'int':
+                
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label>    ';
+                echo $kCampos == 'ativo' ? '<input type="number" max=1 min=0 name="' . $kCampos . '" value="' . ($arrResultados ? $arrResultados[0][$kCampos] : '') . '" ' . ($vCampos['required'] ? 'required' : '') . '"><br>' : '<input type="number" name="' . $kCampos . '" value="' . ($arrResultados ? $arrResultados[0][$kCampos] : '') . '" ' . ($vCampos['required'] ? 'required' : '') . '><br>';;
+                break;
+            case 'varchar':
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label>    ';
+                echo '<input type="text" name="' . $kCampos . '" value="' . ($arrResultados ? $arrResultados[0][$kCampos] : '') . '" ' . ($vCampos['required'] ? 'required' : '') . '><br>';
+                /* echo '<input type="hidden" name="current_' . $kCampos . '" value="' . $arrResultados[0][$kCampos] . '">'; */
+                break;
+            case 'img':                 
+                if($crud == 'editar') {
+                    echo '<label for="atual">Imagem atual</label>';
+                    echo '<img name="atual" style="max-width:60px;" src="' . $arrConfig['url_img'] . $arrResultados[0][$kCampos] . '"><br>';
+                    echo '<input type="hidden" name="current_' . $kCampos . '" value="' . $arrResultados[0][$kCampos] . '">';
+                }
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label><br>    ';
+                echo '<input type="file" accept="' . $vCampos['formatos_aceites'] . '" name="' . $kCampos . '" ' . ($vCampos['required'] && $crud == 'editar' ? '' : ($vCampos['required'] && $crud == 'inserir' ? 'required' : '')) . '><br>';
+                break;
+            case 'checkbox':
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label>    ';
+                echo '<input type="checkbox" name="' . $kCampos . '" checked="' . ($arrResultados ? $arrResultados[0][$kCampos] ? 'true' : 'false' : '') . '" ' . ($vCampos['required'] ? 'required' : '') . '"><br>';
+                break;
+            case 'textarea':
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label>    ';
+                echo '<textarea name="' . $kCampos . '" ' . ($vCampos['required'] ? 'required' : '') . '>' . ($arrResultados ? $arrResultados[0][$kCampos] : '') . '</textarea><br>';
+                break;
+            case 'datetime':
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label>    ';
+                echo '<input type="datetime-local" name="' . $kCampos . '" value="' . ($arrResultados ? $arrResultados[0][$kCampos] : '') . '" ' . ($vCampos['required'] ? 'required' : '') . '><br>';
+                break;
+            case 'escondido':
+                echo '<input type="hidden" name="' . $kCampos . '" value="' . $vCampos['default'] . '">';
+                break;
+            case 'select':
+                echo '<label for="' . $kCampos . '">' . $vCampos['legenda'] . '</label>    ';
+                echo "<td>";
+                echo "<select name='$kCampos'>";
+                // carregar de OPÇÕES pré-definidas
+                if(isset($vCampos['opcoes'])) {
+                    foreach($vCampos['opcoes'] as $k => $v) {
+                    $selected = '';
+                    if(isset($vCampos['default'])) {
+                        if($vCampos['default'] == $k) {
+                        $selected = 'selected="selected"';
+                        }
+                    }
+                    echo "<option value='$k' $selected>$v</option>";
+                    }
+                // carregar de uma tabela da BD
+                } elseif(isset($vCampos['carrega_opcoes'])) {
+                    $where = '';
+                    if(isset($vCampos['carrega_opcoes']['ativo'])) {
+                    $ativo = $vCampos['carrega_opcoes']['ativo'];
+                    $where = " $ativo = '1'";
+                    }
+                    $tabela = $vCampos['carrega_opcoes']['tabela'];
+                    $query = "SELECT * FROM $tabela WHERE 1=1 AND $where";
+                    $arrResultados = my_query($query);
+                    if(isset($vCampos['carrega_opcoes']['null'])) {
+                    $null_legenda = isset($vCampos['carrega_opcoes']['null_legenda']) ? $vCampos['carrega_opcoes']['null_legenda'] : 'Seleccione uma opção';
+                    $null_valor = isset($vCampos['carrega_opcoes']['null_valor']) ? $vCampos['carrega_opcoes']['null_valor'] : '';
+                    echo "<option value='$null_valor'>$null_legenda</option>";
+                    }
+                    foreach($arrResultados as $k => $v) {
+                    $selected = '';
+                    if(isset($vCampos['default'])) {
+                        if($vCampos['default'] == $v[$vCampos['carrega_opcoes']['chave']]) {
+                        $selected = 'selected="selected"';
+                        }
+                    }
+                    $id = $v[$vCampos['carrega_opcoes']['chave']];
+                    $legenda = $v[$vCampos['carrega_opcoes']['legenda']];
+                    echo "<option value='$id' $selected>$legenda</option>";
+                    }
+                }
+                echo "</select>";
+                echo "</td><br>";
+                break;
+        }
+    }
+    
+};
+
+function definir_redirecionamento($modulo) {
+
+    $base = '/admin';
+    switch ($modulo) {
+        case 'turma': 
+            /* adicionar aqui uma validação para ver se o diretor de turma em questão tem autorização para criar turma naquele curso, se não tiver 
+            não posso deixar criar turma */
+            $sql = "SELECT * FROM turma ORDER BY id DESC LIMIT 1"; 
+            $res = my_query($sql);
+            $sql = "SELECT * FROM curso WHERE id = " . $res[0]['id_curso'];
+            $res2 = my_query($sql);
+            $id = $res[0]['id'];
+            if(!($res[0]['id_diretor_turma'] == $res2['id_diretor_curso'])) {
+                $sql = "INSERT INTO rel_user_turma (id_turma, id_user) VALUES ($id, " . $res2[0]['id_diretor_curso'] . ")";
+                my_query($sql);                
+            }
+            $redirect = $base . "/turma.php?id_turma=$id";
+            $sql = "INSERT INTO rel_turma_user (id_turma, id_user) VALUES ($id, " . $_SESSION['id'] . ")";
+
+            my_query($sql);
+            return $redirect;
+            break;
+        case 'curso':
+            $sql = "SELECT id FROM curso ORDER BY id DESC LIMIT 1"; 
+            $res = my_query($sql);
+            $id = $res[0]['id'];
+            $redirect = $base . "/curso.php?id_curso=$id";
+            $sql = "INSERT INTO rel_user_curso (id_curso, id_user) VALUES ($id, " . $_SESSION['id'] . ")";
+            return $redirect;
+            break;
+        
+    }
+
+}
+
+function buscar_cursos_diretor($id_diretor) {
+    $sql = "SELECT * FROM curso WHERE id_diretor_curso = ($id_diretor) ";
+    return my_query($sql);
+}
+
+function buscar_turmas_diretor($id_diretor, &$arr_turmas) {
+    
+    foreach($arr_turmas as &$item) {
+        if($item['id_diretor_turma'] == $id_diretor) {                
+            $item['nome_turma'] = $item['nome_turma'] . ' (diretor)';    
+        }
+    }    
+    return $arr_turmas;
+}
+
+function buscar_turmas_curso($id_curso) {
+    $sql = "SELECT * FROM turma WHERE id_curso = ($id_curso) ";
+    return my_query($sql);
+}
+
+function gerar_items_navbar($id) {
+    $turmas = array();
+    $flag_diretor_curso = false;
+    $curso = buscar_cursos_diretor($id); /* pego o curso, se for diretor de curso */ 
+    if(isset($curso) && count($curso) > 0) {
+        
+        $turmas = buscar_turmas_curso($curso[0]['id']); /* pego as turmas todas do curso, se for diretor de curso */
+        $flag_diretor_curso = true;
+    }             
+    if(!$flag_diretor_curso) {
+        
+        $sql = "SELECT * FROM rel_turma_user WHERE id_user = $id";
+        $res = my_query($sql);
+        
+        foreach($res as $k => $v){
+            $sql = "SELECT * FROM turma WHERE id = " . $v['id_turma'];
+            $res2 = my_query($sql);
+            $turmas = array_merge($turmas, $res2);
+        }
+        $turmas = buscar_turmas_diretor($id, $turmas);
+    } else {
+        $turmas = buscar_turmas_diretor($id, $turmas); /* pego as direções de turma */
+        $turmas = array_merge($curso, $turmas);
+        
+    }
+
+    return $turmas;
+    
+    
+
+}

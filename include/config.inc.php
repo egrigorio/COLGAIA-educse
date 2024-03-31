@@ -20,9 +20,12 @@ $arrConfig['dir_site'] = '/Applications/XAMPP/xamppfiles/htdocs/educse';
 $arrConfig['url_paginas'] = $arrConfig['url_site'] . '/pages/';
 $arrConfig['url_admin'] = $arrConfig['url_site'] . '/admin/';
 $arrConfig['url_modules'] = $arrConfig['url_site'] . '/modules/';
+$arrConfig['dir_modules'] = $arrConfig['dir_site'] . '/modules/';
+$arrConfig['url_admin'] = $arrConfig['url_site'] . '/admin/';
 
 $arrConfig['dir_include'] = $arrConfig['dir_site'] . '/include/';
 
+$arrConfig['url_pfp'] = $arrConfig['url_site'] . '/public/pfp/';
 $arrConfig['dir_uploads'] = $arrConfig['dir_site'] . '/uploads/';
 $arrConfig['url_uploads'] = $arrConfig['url_site'] . '/uploads/';
 $arrConfig['dir_img'] = $arrConfig['dir_site'] . '/images/';

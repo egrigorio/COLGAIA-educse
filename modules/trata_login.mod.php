@@ -27,6 +27,8 @@ if(count($arrResultado) == 0) {
     }
     my_query("UPDATE users SET ultimo_login = NOW() WHERE id = " . $arrResultado[0]['id']);
     $_SESSION['tipoLog'] = "Login do $user";
+    $_SESSION['cargo'] = $arrResultado[0]['cargo'];
+    $_SESSION['pfp'] = $arrResultado[0]['pfp'];
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');
     exit;
 } else {

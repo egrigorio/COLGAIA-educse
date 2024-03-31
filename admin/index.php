@@ -28,9 +28,9 @@ if(!isset($_SESSION['id'])){
                         <a class="btn btn-primary">Configurações</a>
                         <div class="divider divider-horizontal"></div>                    
                         <?php if($_SESSION['cargo'] == 'professor'){ ?>
-                            <a class="btn btn-primary">Turmas</a>
+                            <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-primary">Turmas</a>
                         <?php } else { ?>
-                            <a class="btn btn-primary">Turma</a>
+                            <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-primary">Turma</a>
                         <?php } ?>
                         <div class="divider divider-horizontal"></div>
                         <a class="btn btn-primary">Conta</a>
