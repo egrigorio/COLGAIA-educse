@@ -217,9 +217,65 @@ function buscar_turmas_diretor($id_diretor, &$arr_turmas) {
     return $arr_turmas;
 }
 
+function buscar_direcao_turma($id_diretor) {
+    $sql = "SELECT nome_turma FROM turma WHERE id_diretor_turma = ($id_diretor) ";
+    return my_query($sql);
+}
+
+function buscar_disciplinas_cargo($id_user, $cargo, $id_curso) {
+    $sql = "SELECT * FROM rel_disciplina_user WHERE id_user = ($id_user) AND cargo = '$cargo' AND id_curso = $id_curso";
+    return my_query($sql);
+
+}
+
+function buscar_disciplinas_curso($id_curso, $tipo) {
+    if($tipo == 1) {
+        $sql = "SELECT * FROM rel_disciplina_curso WHERE id_curso = ($id_curso) ";
+        return my_query($sql);
+    } else {
+        $sql = "SELECT * FROM rel_disciplina_curso WHERE id_curso = ($id_curso) ";
+        $res = my_query($sql);
+        $arr_disciplinas = array();
+        foreach($res as $k => $v) {
+            $sql = "SELECT * FROM disciplinas WHERE id = " . $v['id_disciplina'];
+            $res2 = my_query($sql);
+            $arr_disciplinas = array_merge($arr_disciplinas, $res2);
+        }
+        return $arr_disciplinas;
+
+    }
+
+}
+
 function buscar_turmas_curso($id_curso) {
     $sql = "SELECT * FROM turma WHERE id_curso = ($id_curso) ";
     return my_query($sql);
+}
+
+function buscar_nome_turmas_participa_curso($id_user, $id_curso) {
+    $sql = "SELECT * FROM rel_turma_user WHERE id_user = ($id_user) ";
+    $res = my_query($sql);
+    $arr_turmas = array();
+    foreach($res as $k => $v) {
+        $sql = "SELECT nome_turma FROM turma WHERE id = " . $v['id_turma'] . " AND id_curso = $id_curso";
+        $res2 = my_query($sql);
+        $arr_turmas = array_merge($arr_turmas, $res2);
+    }
+    
+    return $arr_turmas;
+}
+
+function buscar_turmas_participa_curso($id_user, $id_curso) {
+    $sql = "SELECT * FROM rel_turma_user WHERE id_user = ($id_user) ";
+    $res = my_query($sql);
+    $arr_turmas = array();
+    foreach($res as $k => $v) {
+        $sql = "SELECT * FROM turma WHERE id = " . $v['id_turma'] . " AND id_curso = $id_curso";
+        $res2 = my_query($sql);
+        $arr_turmas = array_merge($arr_turmas, $res2);
+    }
+    
+    return $arr_turmas;
 }
 
 function gerar_items_navbar($id) {
@@ -251,5 +307,133 @@ function gerar_items_navbar($id) {
     return $turmas;
     
     
+
+}
+
+function gerar_tabelas($modulo, &$chave,$filtro) {
+    global $arrConfig;
+    $sql = "SELECT * FROM $modulo WHERE $filtro";
+    $arrResultados = my_query($sql);
+    $arrCampos = array();
+    def_config_adm($modulo, $arrCampos);
+
+    $chave = '';
+
+    foreach($arrCampos as $kCampos => $vCampos) {
+        if(isset($vCampos['chave'])) {
+            if($vCampos['chave']) {
+                $chave = $kCampos;
+            }
+        }
+    }
+
+    echo "<h1>$modulo</h1>";
+
+    echo '
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <label>
+                        <input type="checkbox" class="checkbox" />
+                    </label>
+                </th>';
+    foreach($arrCampos as $kCampos => $vCampos) {
+        if($vCampos['listagem']) {
+            echo '<th>' . $vCampos['legenda'] . '</th>';
+        }
+    }
+    echo '
+                <th width="30">Editar</th>
+                <th width="30">Apagar</th>     
+    ';
+    echo '</tr></thead>
+    <tbody>
+        <! -- <th>
+            <label>
+                <input type="checkbox" class="checkbox" />
+            </label>
+        </th> -->
+        
+    ';
+
+    /* <!-- row 1 -->
+                        <tr>
+                        <th>
+                            <label>
+                            <input type="checkbox" class="checkbox" />
+                            </label>
+                        </th>
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <div class="avatar">
+                                    <div class="mask mask-squircle w-12 h-12">
+                                    <img src="/tailwind-css-component-profile-2@56w.png" alt="Avatar Tailwind CSS Component" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="font-bold">Hart Hagerty</div>
+                                    <div class="text-sm opacity-50">United States</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            Zemlak, Daniel and Leannon
+                            <br/>
+                            <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
+                        </td>
+                        <td>Purple</td>
+                        <th>
+                            <button class="btn btn-ghost btn-xs">details</button>
+                        </th>
+                        </tr> */
+
+    foreach($arrResultados as $linha) {
+        echo '<tr>
+                <th>
+                    <label>
+                    <input type="checkbox" class="checkbox" />
+                    </label>
+                </th>
+                
+
+        ';
+        foreach($arrCampos as $campo => $detalhes) {
+            echo '<td>';
+
+            $str_chave_aux = $linha[$chave];
+            if ($detalhes['listagem']) {
+                
+                $largura = '';
+                $largura = 'width="'.$detalhes['largura'].'"';
+                if(isset($detalhes['opcoes'])) {
+                    $conteudo = $detalhes['opcoes'][$linha[$campo]];
+                } else {
+                    $conteudo = $linha[$campo];
+                    if(strlen($conteudo) > 70){ 
+                        $conteudo = substr($conteudo, 0, 70) . '[...]';
+                    }
+                }
+
+                if($detalhes['tipo'] == 'img' && $campo == 'imagem' ) {
+
+                    echo "<td $largura><img style='max-width:60px;' src='" . $arrConfig['url_img'] . $linha['imagem'] . "'>";
+                } else if ($detalhes['tipo'] == 'img' && $campo == 'icone') {
+                    echo "<td $largura><img src='" . $arrConfig['url_img'] . $linha['icone'] . "'>";
+                }
+                else {
+                    echo "<td $largura'>{$conteudo}</td>"; // e na hora de escrever eu escrevo o valor do campo fazendo o $linha[campo]
+
+                }
+
+            }
+
+            echo '</td>';
+        }
+    }
+
+    
+    
+
 
 }

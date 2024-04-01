@@ -16,6 +16,7 @@ $items = gerar_items_navbar($_SESSION['id']);
     <title>Document</title>                
     <link rel="stylesheet" href="../public/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <header>
     <?php navbar($items); ?>
