@@ -8488,6 +8488,10 @@ html:has(.drawer-open.drawer-open) {
   margin-bottom: 1rem;
 }
 
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
 .mt-10 {
   margin-top: 2.5rem;
 }
@@ -8502,26 +8506,6 @@ html:has(.drawer-open.drawer-open) {
 
 .mt-3 {
   margin-top: 0.75rem;
-}
-
-.mt-7 {
-  margin-top: 1.75rem;
-}
-
-.mb-3 {
-  margin-bottom: 0.75rem;
-}
-
-.mb-5 {
-  margin-bottom: 1.25rem;
-}
-
-.mb-auto {
-  margin-bottom: auto;
-}
-
-.mt-auto {
-  margin-top: auto;
 }
 
 .box-border {
@@ -8623,6 +8607,10 @@ html:has(.drawer-open.drawer-open) {
   display: none;
 }
 
+.h-12 {
+  height: 3rem;
+}
+
 .h-4 {
   height: 1rem;
 }
@@ -8635,10 +8623,6 @@ html:has(.drawer-open.drawer-open) {
   height: 13rem;
 }
 
-.h-12 {
-  height: 3rem;
-}
-
 .h-screen {
   height: 100vh;
 }
@@ -8647,12 +8631,12 @@ html:has(.drawer-open.drawer-open) {
   min-height: 100vh;
 }
 
-.w-1\/2 {
-  width: 50%;
-}
-
 .w-10 {
   width: 2.5rem;
+}
+
+.w-12 {
+  width: 3rem;
 }
 
 .w-4 {
@@ -8667,6 +8651,10 @@ html:has(.drawer-open.drawer-open) {
   width: 13rem;
 }
 
+.w-8\/12 {
+  width: 66.666667%;
+}
+
 .w-\[this-is\\\\\] {
   width: this-is\\;
 }
@@ -8679,36 +8667,12 @@ html:has(.drawer-open.drawer-open) {
   width: weird-and-invalid;
 }
 
-.w-full {
-  width: 100%;
-}
-
 .w-auto {
   width: auto;
 }
 
-.w-12 {
-  width: 3rem;
-}
-
-.w-96 {
-  width: 24rem;
-}
-
-.w-10\/12 {
-  width: 83.333333%;
-}
-
-.w-9\/12 {
-  width: 75%;
-}
-
-.w-8\/12 {
-  width: 66.666667%;
-}
-
-.w-7\/12 {
-  width: 58.333333%;
+.w-full {
+  width: 100%;
 }
 
 .max-w-md {
@@ -8717,18 +8681,6 @@ html:has(.drawer-open.drawer-open) {
 
 .max-w-xs {
   max-width: 20rem;
-}
-
-.max-w-32 {
-  max-width: 8rem;
-}
-
-.max-w-14 {
-  max-width: 3.5rem;
-}
-
-.max-w-xl {
-  max-width: 36rem;
 }
 
 .flex-auto {
@@ -9261,24 +9213,16 @@ html:has(.drawer-open.drawer-open) {
   gap: 0.25rem;
 }
 
+.gap-14 {
+  gap: 3.5rem;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
 
 .gap-3 {
   gap: 0.75rem;
-}
-
-.gap-10 {
-  gap: 2.5rem;
-}
-
-.gap-8 {
-  gap: 2rem;
-}
-
-.gap-14 {
-  gap: 3.5rem;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -9759,16 +9703,6 @@ html:has(.drawer-open.drawer-open) {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
-.bg-green-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(187 247 208 / var(--tw-bg-opacity));
-}
-
-.bg-red-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
-}
-
 .bg-red-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
@@ -9777,16 +9711,6 @@ html:has(.drawer-open.drawer-open) {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-blue-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(96 165 250 / var(--tw-bg-opacity));
-}
-
-.bg-base-300 {
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity)));
 }
 
 .decoration-slice {
@@ -9905,6 +9829,10 @@ html:has(.drawer-open.drawer-open) {
 
 .p-6 {
   padding: 1.5rem;
+}
+
+.p-10 {
+  padding: 2.5rem;
 }
 
 .px-2 {
@@ -10026,14 +9954,14 @@ html:has(.drawer-open.drawer-open) {
   line-height: 1.25rem;
 }
 
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
-
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .font-bold {
@@ -10127,11 +10055,6 @@ html:has(.drawer-open.drawer-open) {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.text-red-200 {
-  --tw-text-opacity: 1;
-  color: rgb(254 202 202 / var(--tw-text-opacity));
-}
-
 .underline {
   text-decoration-line: underline;
 }
@@ -10178,12 +10101,12 @@ html:has(.drawer-open.drawer-open) {
   -moz-osx-font-smoothing: auto;
 }
 
-.opacity-70 {
-  opacity: 0.7;
-}
-
 .opacity-50 {
   opacity: 0.5;
+}
+
+.opacity-70 {
+  opacity: 0.7;
 }
 
 .bg-blend-normal {
@@ -10545,52 +10468,6 @@ html:has(.drawer-open.drawer-open) {
     .sm\:container {
       max-width: 1536px;
     }
-  }
-
-  .sm\:divider-horizontal {
-    flex-direction: column;
-  }
-
-  .sm\:divider-horizontal:before {
-    height: 100%;
-    width: 0.125rem;
-  }
-
-  .sm\:divider-horizontal:after {
-    height: 100%;
-    width: 0.125rem;
-  }
-
-  .sm\:divider-vertical {
-    flex-direction: row;
-  }
-
-  .sm\:divider-vertical:before {
-    height: 0.125rem;
-    width: 100%;
-  }
-
-  .sm\:divider-vertical:after {
-    height: 0.125rem;
-    width: 100%;
-  }
-
-  .sm\:divider-horizontal {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    height: auto;
-    width: 1rem;
-  }
-
-  .sm\:divider-vertical {
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    height: 1rem;
-    width: auto;
   }
 }
 

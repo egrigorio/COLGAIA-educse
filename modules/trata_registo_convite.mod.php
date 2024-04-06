@@ -1,12 +1,15 @@
 <?php
-include_once '../include/config.inc.php';
-global $arrConfig;
+include '../include/config.inc.php';
 
-$email = $_POST['email'];
+pr($_POST);
+pr($_SESSION);
+
+$email = $_SESSION['email'];
 $user = $_POST['user'];
 $pass = $_POST['pass'];
 $confirmar_pass = $_POST['confirmar_pass'];
-$cargo = $_POST['cargo'];
+$cargo = $_SESSION['cargo'];
+$id_curso = $_SESSION['id_curso'];
 $pfp = 'e.png';
 
 if($pass != $confirmar_pass) { /* validar pass e confirmar */
@@ -30,22 +33,31 @@ if(!filter_var($email, FILTER_VALIDATE_EMAIL)) { /* validar email */
 }
 
 $pass = password_hash($pass, PASSWORD_DEFAULT); /* encriptar pass */
+$sql = "INSERT INTO users (username, email, password, pfp, cargo, ativo) VALUES ('$user', '$email', '$pass', '$pfp', '$cargo', 0)";
+$id = my_query($sql);
 
-$_SESSION['tmp_acc'] = array(
-    'user' => $user,
-    'email' => $email,
-    'pass' => $pass,
-    'cargo' => $cargo,
-    'pfp' => $pfp
-);
+$sql = "SELECT * FROM rel_user_curso WHERE id_user = $id AND id_curso = $id_curso";
+$res = my_query($sql);
+if(count($res) == 0) {
+    $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id, $id_curso, '$cargo', '1')";
+    my_query($sql);
+} else {
+    // tratar exceção de o user já estar na turma
+}
 
 // -- enviar o email;
 $codigo = rand(10000, 99999);
 $_SESSION['codigo'] = $codigo;
+$_SESSION['id'] = $id;
+$_SESSION['cargo'] = $cargo;
+$_SESSION['pfp'] = $pfp;
+$_SESSION['user'] = $user;
+$_SESSION['ultimo_login'] = date('d/m/Y H:i');
 
-email_verificacao($email, $user, $codigo);
+my_query("UPDATE users SET ultimo_login = NOW() WHERE id = " . $id);
 
-header('Location: ' . $arrConfig['url_paginas'] . 'auth/verificar_email.php');
+
+header('Location: ' . $arrConfig['url_admin'] . 'index.php');
 
 
 

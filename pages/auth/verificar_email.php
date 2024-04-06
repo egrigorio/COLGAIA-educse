@@ -3,7 +3,7 @@ include_once '../../include/config.inc.php';
 if(isset($_SESSION['id'])){
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');
     exit;
-} else if(!isset($_SESSION['codigo']) || !isset($_SESSION['id'])){
+} else if(!isset($_SESSION['codigo'])){
     header('Location: ' . $arrConfig['url_paginas'] . 'auth/registar.php');
     exit;
 }

@@ -134,14 +134,14 @@ function def_config_adm($modulo, &$arr_config)
                 ),
                 'tab3' => array(
                     'label' => 'Alunos',
-                    'content' => 'Tab content 3',
-                    'checked' => 0,
+                    'content' => alunos_tabs_cursos(),
+                    'checked' => 1,
                     'name' => 'tabs_curso'
                 ),
                 'tab4' => array(
                     'label' => 'Professores',
                     'content' => professores_tabs_cursos(),
-                    'checked' => 1,
+                    'checked' => 0,
                     'name' => 'tabs_curso'
                 ),
             );

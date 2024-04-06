@@ -7,6 +7,26 @@ use PHPMailer\PHPMailer\Exception;
 /* include '../include/config.inc.php'; */
 require_once $arrConfig['dir_site'] . '/vendor/autoload.php';
 
+function enviar_convite_plataforma($to, $url, $cargo, $curso) {
+    $html = '<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>Convite para a plataforma</h1>
+        <p>Olá, você foi convidado para ser ' . $cargo . ' no curso ' . $curso . ' na educse. Para aceitar o convite, clique no link abaixo.</p>
+        <a href="' . $url . '">clique aqui para acessar a plataforma</a>
+    </body>
+    </html>';
+    $alt_body = 'Convite para a educse';
+    $assunto = 'Convite para a educse';
+    enviar_email($to, '', $assunto, $alt_body, $html );
+}
+
 function recuperar_senha($to, $nome, $url) {
     $html = '<!DOCTYPE html>
     <html lang="en">
