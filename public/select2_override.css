@@ -1,0 +1,29 @@
+/* Remove a borda do container do Select2 */
+.select2-container .select2-selection--single,
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    border: none; /* Define a borda como 'none' para remover */
+    outline: none; /* Remove o contorno para evitar estilos de foco padrão do navegador */
+}
+
+
+
+/* Remove a borda ao focar no elemento (em alguns temas) */
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--single {
+    border: none;
+    outline: none;
+}
+
+/* Caso existam estilos específicos para o estado de erro ou validação */
+.select2-container--default .select2-selection--single.select2-selection--invalid {
+    border-color: none;
+}
+.select2-container--default .select2-selection--single.select2-selection--valid {
+    border-color: none;
+}
+
+/* Para versões mais antigas do Select2 ou temas customizados, pode ser necessário adicionar !important para garantir que a regra seja aplicada */
+.select2-container .select2-selection--single {
+    border: none !important;
+} 

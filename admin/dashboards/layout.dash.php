@@ -66,7 +66,7 @@ function navbar($arr_items)
                         </a>
                         </li>
                         <li><a>Settings</a></li>
-                        <li><a>Logout</a></li>
+                        <li><a href="' . $arrConfig['url_modules'] . 'trata_logout.mod.php' . '">Logout</a></li>
                     </ul>
                     
                 </div>
@@ -84,14 +84,14 @@ function turma($arr_turma, &$flag_direcao_turma)
     }
     echo '
     
-    <div class="bg-blue-200 flex justify-center w-full h-52 text-center">
+    <div class="bg-primary flex justify-center w-full h-52 text-center">
         <b>
-            <h1 class="text-blue-950 bold mt-20 text-4xl">' . $arr_turma[0]['nome_turma'] . '</h1>';
+            <h1 class="bold mt-20 text-4xl">' . $arr_turma[0]['nome_turma'] . '</h1>';
     echo $flag_direcao_turma ? '<span class="flex items-center justify-center">diretor de turma</span>' : '';
     echo '
         </b>
     </div>
-    <div role="tablist" class="bg-blue-200 tabs tabs-lifted">
+    <div role="tablist" class="bg-primary tabs tabs-lifted">
 
     ';
     $tabs = $flag_direcao_turma ? 'tabs_direcao_turma' : 'tabs_turma';
@@ -115,16 +115,21 @@ function curso()
     $sql = "SELECT * FROM curso WHERE id_diretor_curso = " . $_SESSION['id'];
     $res = my_query($sql);
     $arr_config = array();
+    $_SESSION['id_curso']  = $res[0]['id'];
+    $sql = "SELECT id_instituicao FROM rel_instituicao_curso WHERE id_curso = " . $_SESSION['id_curso'];
+    $res2 = my_query($sql);
+    $id_instituicao = $res2[0]['id_instituicao'];
+    $_SESSION['id_instituicao'] = $id_instituicao;
 
     echo '
     
-    <div class="bg-blue-200 flex justify-center w-full h-52 ">
+    <div class="bg-primary flex justify-center w-full h-52 ">
         <b>
-            <h1 class="text-blue-950 bold mt-20 text-4xl">' . $res[0]['nome_curso'] . '</h1> 
+            <h1 class="bold mt-20 text-4xl">' . $res[0]['nome_curso'] . '</h1> 
             <span class="flex items-center justify-center">' . $res[0]['abreviatura'] . '</span>   
         </b>
     </div>
-    <div role="tablist" class="bg-blue-200 tabs tabs-lifted">
+    <div role="tablist" class="bg-primary tabs tabs-lifted">
     ';
     def_config_adm('tabs_curso', $arr_config);
     foreach ($arr_config as $kCampos => $vCampos) {
@@ -144,13 +149,14 @@ function curso()
 function professores_tabs_cursos()
 {
     global $arrConfig;    
+    $id_curso = $_SESSION['id_curso'];
 
     $html = '
     
     <div class="flex justify-around">
         <div class="w-auto text-center pt-5">
             <h2 class=" text-lg mb-4 ">Adicionar professores ao curso</h2>
-            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=professor&id_curso=' . $_SESSION['id_curso'] . '" id="emailForm">
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=professor&id_curso=' . $id_curso . '" id="emailForm">
                 <div class="flex mb-4 gap-2">
                     <label class="input input-bordered flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" /><path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" /></svg>
@@ -269,14 +275,15 @@ function professores_tabs_cursos()
 
 function alunos_tabs_cursos() {
 
-    global $arrConfig;    
+    global $arrConfig;
+    $id_curso = $_SESSION['id_curso'];  
 
     $html = '
     
     <div class="flex justify-around">
         <div class="w-auto text-center pt-5">
             <h2 class=" text-lg mb-4 ">Adicionar alunos ao curso</h2>
-            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=aluno&id_curso=' . $_SESSION['id_curso'] . '" id="emailForm_alunos">
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=aluno&id_curso=' . $id_curso . '" id="disciplinas_form">
                 <div class="flex mb-4 gap-2">
                     <label class="input input-bordered flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" /><path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" /></svg>
@@ -397,4 +404,155 @@ function alunos_tabs_cursos() {
 
 }
 
+function disciplinas_tabs_cursos() {
+
+    global $arrConfig;
+    $id_curso = $_SESSION['id_curso'];  
+
+    $sql = "SELECT rel_instituicao_disciplinas.id_disc, disciplinas.abreviatura, disciplinas.nome 
+    FROM rel_instituicao_disciplinas 
+    INNER JOIN disciplinas 
+    WHERE rel_instituicao_disciplinas.id_disc = disciplinas.id AND rel_instituicao_disciplinas.id_instituicao = " . $_SESSION['id_instituicao'] . " AND
+    rel_instituicao_disciplinas.id_disc NOT IN 
+    (SELECT id_disciplina FROM rel_disciplina_curso WHERE id_curso = " . $id_curso . ")";
+    $arr_disciplinas = my_query($sql);    
+
+    $html = '
+    
+    <div class="flex justify-around">
+        <div class="w-auto text-center pt-5">
+            <h2 class=" text-lg mb-4 ">Adicionar Disciplinas ao curso</h2>
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_disciplina_curso.mod.php?id_curso=' . $id_curso . '" id="disciplinas_form">
+                <div class="flex mb-4 gap-2">
+                    <label class="input input-bordered flex items-center gap-2">
+                        <i class="fa fa-book"></i>
+                        <select class="select select-bordered w-full max-w-xs" id="disciplinas-input">
+                            <option value="">Escolha a disciplina</option>
+                            ';
+                            
+    foreach($arr_disciplinas as $disciplina) {
+
+        $html .= '<option value="' . $disciplina['id_disc'] . '">' . $disciplina['abreviatura'] . ' - ' . $disciplina['nome'] . '</option>';
+    }
+
+    $html .= '
+                            <!-- Adicione mais opções conforme necessário -->
+                        </select>
+                        </label>                        
+                    <button type="button" id="add-disciplinas" class="btn btn-ghost text-xs py-1 px-2">
+                        Adicionar
+                    </button>
+                    <button type="submit" class="btn btn-ghost text-xs py-1 px-2">
+                        Submeter
+                    </button>
+                </div>
+                <div id="disciplinas-list" class="mb-4">
+                    <!-- Os itens de e-mail serão inseridos aqui -->
+                    
+                </div>
+            </form>
+        </div>
+        <div class="divider lg:divider-horizontal">
+        </div> 
+        <div class="">
+            <div class="overflow-x-auto">
+                <table class="table" id="tabela_disciplinas">                                                                
+                
+                </table>                        
+            </div>            
+        </div>
+    
+    </div>
+    <script>
+        
+        var insertedValues = [];
+        function generateTable() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "' . $arrConfig['url_admin'] . 'dashboards/gerar_tabelas_views_disciplinas.php?valor=disciplinas' . '", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("tabela_disciplinas").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+        generateTable();
+        
+
+        document.addEventListener(\'DOMContentLoaded\', function() {
+            
+            $(\'#disciplinas-input\').select2();
+                        
+           
+            document.getElementById("disciplinas-input").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault(); 
+                    document.getElementById("add-disciplinas").click();
+                }
+            });
+    
+            document.getElementById("add-disciplinas").onclick = function() {                
+                var disciplinaInput = document.getElementById("disciplinas-input");
+                var disciplinaList = document.getElementById("disciplinas-list");
+                var disciplinaId = disciplinaInput.value.trim();
+                var disciplinaText = disciplinaInput.options[disciplinaInput.selectedIndex].text;
+                
+                
+                
+    
+                if(disciplinaId) {    
+                    var flag = false;                
+                    insertedValues.forEach(function(value) {
+                        if(value == disciplinaId) {
+                            Swal.fire({
+                                title: "Disciplina já inserida",
+                                text: "A disciplina já foi inserida",
+                                icon: "error",
+                                timer: 2000,
+                                
+                            })
+                            flag = true;
+                            return;
+                        }
+                    });
+                    if(!flag) {
+
+                        var newDiv = document.createElement("div");
+                        newDiv.className = "flex items-center bg-base-100 px-3 py-1 rounded shadow mb-1 text-xs";
+                        
+                        var newInput = document.createElement("input");
+                        newInput.type = "hidden";
+                        newInput.name = "disciplinas[]";
+                        newInput.value = disciplinaId;
+                        
+                        newDiv.innerHTML = `<span class="flex-auto">${disciplinaText}</span>
+                                    <button type="button"
+                                            onclick="removedisciplina(this)"
+                                            class="flex-none text-xs bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                                        Remover
+                                    </button>`;
+                        newDiv.appendChild(newInput);                        
+                        disciplinaList.appendChild(newDiv);                        
+                        disciplinaInput.value = "";
+                        insertedValues.push(disciplinaId);
+                    }
+                }
+            };
+            
+        })
+        function removedisciplina(button) {        
+            button.parentElement.remove();
+            var index = insertedValues.indexOf(button.parentElement.querySelector("input").value);
+                if (index > -1) {
+                    insertedValues.splice(index, 1);
+                }
+            
+        }
+    </script>
+
+    ';
+
+    return $html;
+
+}
 

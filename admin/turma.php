@@ -9,7 +9,7 @@ if(!isset($_SESSION['id'])){
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'default'; ?>" class="bg-primary" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

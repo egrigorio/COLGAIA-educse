@@ -27,7 +27,12 @@ if(count($res) !== 0) { /* garantir que o user que esotu alterando informações
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
         <link rel="stylesheet" href="../../public/styles.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <link rel="stylesheet" href="<?php echo $arrConfig['url_site'] . '/public/select2_override.css' ?>">
     </head>
     <body class="h-screen">
         
@@ -144,6 +149,10 @@ function gerar_input_dinamico($campo, $nome, $chave, $arrDados, $tipo_input, $ar
     
 
         <script>
+            document.addEventListener(\'DOMContentLoaded\', function() {
+                $(\'#' . $campo . '-input\').select2();
+
+            });
             var insertedValues' . $campo . ' = ["' . implode('","', array_map('addslashes', $valores_ja_inseridos)) . '"];
             console.log(insertedValues' . $campo . ');
             document.getElementById("' . $campo . '-input").addEventListener("keypress", function(event) {

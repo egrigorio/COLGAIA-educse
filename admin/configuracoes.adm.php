@@ -127,15 +127,15 @@ function def_config_adm($modulo, &$arr_config)
                     'name' => 'tabs_curso'
                 ),
                 'tab2' => array(
-                    'label' => 'Configurações',
-                    'content' => 'Tab content 2',
-                    'checked' => 0,
+                    'label' => 'Disciplinas',
+                    'content' => disciplinas_tabs_cursos(),
+                    'checked' => 1,
                     'name' => 'tabs_curso'
                 ),
                 'tab3' => array(
                     'label' => 'Alunos',
                     'content' => alunos_tabs_cursos(),
-                    'checked' => 1,
+                    'checked' => 0,
                     'name' => 'tabs_curso'
                 ),
                 'tab4' => array(
