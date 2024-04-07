@@ -67,7 +67,7 @@ foreach ($res as $disciplina) {
                                 
                         Swal.fire({
                             title: \'Tem certeza que deseja remover a disciplina?\',
-                            text: \'Essa ação não pode ser revertida!\',
+                            text: \'Ao remover essa disciplina, todos os users que estiverem relacionados a ela, perderão essa relação, deseja prosseguir?\',
                             icon: \'warning\',
                             showCancelButton: true,
                             confirmButtonColor: \'#3085d6\',

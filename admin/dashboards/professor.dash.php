@@ -18,5 +18,5 @@ if(isset($_GET['id_turma']) && $_GET['id_turma'] != '') {
 
 
 
-echo $flag_turma_selecionada ? '<div class="flex justify-center items-center">' . turma($res, $flag_direcao_turma) . '</div>' : '<div class="flex justify-center items-center"><h1 class="mt-10">nenhuma turma selecionada</h1></div>';
+echo $flag_turma_selecionada ? '<div class="flex justify-center items-center">' . turma($res, $flag_direcao_turma) . '</div>' : '<div class="flex justify-center items-center"><h1 class="mt-10">Nenhuma turma selecionada</h1></div>';
 

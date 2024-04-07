@@ -188,6 +188,18 @@ function def_config_adm($modulo, &$arr_config)
                             'checked' => 0,
                             'name' => 'tabs_dt'
                         ),
+                        'tab4' => array(
+                            'label' => 'Criar Atividade',
+                            'content' => 'Tab content 3',
+                            'checked' => 0,
+                            'name' => 'tabs_dt'
+                        ),
+                        'tab5' => array(
+                            'label' => 'Agenda',
+                            'content' => 'Tab content 3',
+                            'checked' => 0,
+                            'name' => 'tabs_dt'
+                        ),
                     );
                     break;
     }

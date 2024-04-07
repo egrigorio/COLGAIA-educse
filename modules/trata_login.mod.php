@@ -12,6 +12,7 @@ $arrResultado = my_query($sql);
 
 if(count($arrResultado) == 0) {
     $_SESSION['erro'] = 'Utilizador não encontrado';
+    header('Location: ' . $arrConfig['url_site'] . '/pages/auth/login.php');
     exit;
 } else if(password_verify($_POST['password'], $arrResultado[0]['password'])) {
     if($arrResultado[0]['ativo'] == 0) {
@@ -33,7 +34,9 @@ if(count($arrResultado) == 0) {
     exit;
 } else {
 
-$_SESSION['erro'] = 'Credenciais incorretas';        
+$_SESSION['erro'] = 'Credenciais incorretas'; 
+header('Location: ' . $arrConfig['url_site'] . '/pages/auth/login.php');
 exit;
+
 
 }

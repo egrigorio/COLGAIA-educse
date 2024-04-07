@@ -21,7 +21,7 @@ if(count($res) !== 0) { /* garantir que o user que esotu alterando informações
     ?>
 
     <!DOCTYPE html>
-    <html class="bg-base-200" lang="en">
+    <html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'default'; ?>" class="bg-base-200" lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +39,7 @@ if(count($res) !== 0) { /* garantir que o user que esotu alterando informações
         <form method="post" class="mt-10" action="<?php echo $arrConfig['url_modules'] . 'trata_editar_user_curso.mod.php' ?>">
             <input type="hidden" name="id_user" value="<?php echo $id_user ?>">
             <div class="flex justify-around">
-                <div class="card w-8/12 bg-base-100 shadow-xl">
+                <div class="card w-8/12 bg-primary shadow-xl">
                     <div class="card-body items-center text-center">
                         <h1 class="flex text-xl font-bold mb-5">Edição do user no curso</h1>
                         <div class="flex gap-14">
