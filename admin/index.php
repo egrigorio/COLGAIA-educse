@@ -43,11 +43,12 @@ if(!isset($_SESSION['id'])){
                         </p>
                     </div>
                     <div class="">
-                        <input type="radio" id="theme-default" name="theme-radios" class="radio theme-controller" value="default"/>
-                        <input type="radio" id="theme-cyberpunk" name="theme-radios" class="radio theme-controller" value="cyberpunk"/>
+                        <input type="radio" id="theme-black" name="theme-radios" class="radio bg-black theme-controller" value="black"/>
+                        <input type="radio" id="theme-nord" name="theme-radios" class="radio bg-slate-300 theme-controller" value="nord"/>
+                        <input type="radio" id="theme-cyberpunk" name="theme-radios" class="radio bg-yellow-300 theme-controller" value="cyberpunk"/>
                         <input type="radio" id="theme-cmyk" name="theme-radios" class="radio theme-controller" value="cmyk"/>
-                        <input type="radio" id="theme-mytheme" name="theme-radios" class="radio theme-controller" value="mytheme"/>                  
-                        <input type="radio" id="theme-nocas" name="theme-radios" class="radio theme-controller" value="nocas"/>
+                        <input type="radio" id="theme-mytheme" name="theme-radios" class="radio bg-blue-400 theme-controller" value="mytheme"/>                  
+                        <input type="radio" id="theme-nocas" name="theme-radios" class="radio bg-purple-400 theme-controller" value="nocas"/>
                     </div>
                     
                 </div>

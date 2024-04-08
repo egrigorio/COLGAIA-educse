@@ -125,7 +125,7 @@ function def_config_adm($modulo, &$arr_config)
                     'content' => 'Tab content 1',
                     'checked' => 0,
                     'name' => 'tabs_curso'
-                ),
+                ),                
                 'tab2' => array(
                     'label' => 'Disciplinas',
                     'content' => disciplinas_tabs_cursos(),
@@ -144,6 +144,12 @@ function def_config_adm($modulo, &$arr_config)
                     'checked' => 0,
                     'name' => 'tabs_curso'
                 ),
+                'tab5' => array(
+                    'label' => 'Gestão das Turmas',
+                    'content' => 'teste',
+                    'checked' => 0,
+                    'name' => 'tabs_curso'
+                ),
             );
             break;
             case 'tabs_direcao_turma': 
@@ -151,7 +157,7 @@ function def_config_adm($modulo, &$arr_config)
                     'tab1' => array(
                         'label' => 'Customização',
                         'content' => 'Tab content 1',
-                        'checked' => 1,
+                        'checked' => 0,
                         'name' => 'tabs_dt'
                     ),
                     'tab2' => array(
@@ -164,6 +170,12 @@ function def_config_adm($modulo, &$arr_config)
                         'label' => 'Alunos',
                         'content' => 'Tab content 3',
                         'checked' => 0,
+                        'name' => 'tabs_dt'
+                    ),
+                    'tab4' => array(
+                        'label' => 'Esforço',
+                        'content' => esforco_direcao_turma(),
+                        'checked' => 1,
                         'name' => 'tabs_dt'
                     ),
                 );

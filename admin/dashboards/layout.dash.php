@@ -1,8 +1,7 @@
 <?php
 include '../include/config.inc.php';
 include_once 'configuracoes.adm.php';
-function navbar($arr_items)
-{
+function navbar($arr_items) {
     global $arrConfig;
     $teste = parse_url($_SERVER['REQUEST_URI']);
     $query = isset($teste['query']) ? $teste['query'] : '';
@@ -76,8 +75,7 @@ function navbar($arr_items)
     ';
 }
 
-function turma($arr_turma, &$flag_direcao_turma)
-{
+function turma($arr_turma, &$flag_direcao_turma) {
 
     if ($arr_turma[0]['id_diretor_turma'] == $_SESSION['id']) {
         $flag_direcao_turma = true;
@@ -110,8 +108,7 @@ function turma($arr_turma, &$flag_direcao_turma)
 
 }
 
-function curso()
-{
+function curso() {
     $sql = "SELECT * FROM curso WHERE id_diretor_curso = " . $_SESSION['id'];
     $res = my_query($sql);
     $arr_config = array();
@@ -146,8 +143,7 @@ function curso()
 
 }
 
-function professores_tabs_cursos()
-{
+function professores_tabs_cursos() {
     global $arrConfig;    
     $id_curso = $_SESSION['id_curso'];
 
@@ -554,5 +550,130 @@ function disciplinas_tabs_cursos() {
 
     return $html;
 
+}
+
+function esforco_direcao_turma() {
+    global $arrConfig;
+    $id_curso = $_SESSION['id_curso'];
+    $id_turma = $_GET['id_turma'];
+
+    $sql = "SELECT esforco.* 
+    FROM turma 
+    INNER JOIN esforco 
+    WHERE turma.id_esforco = esforco.id AND turma.id = " . $id_turma;
+    $res = my_query($sql);
+    /* pr($res); */
+
+    $html = '<form method="post" action="' . $arrConfig['url_modules'] . 'trata_esforco_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">';
+
+    $html .= '
+    <div class="overflow-x-auto">
+        
+        <table class="table">
+            <!-- head -->
+            <thead>
+                <tr>                    
+                    <th>Esforço</th>
+                    <th>Barreira</th>
+                    <th>Segunda-Feira</th>
+                    <th>Terça-Feira</th>
+                    <th>Quarta-Feira</th>
+                    <th>Quinta-Feira</th>
+                    <th>Sexta-Feira</th>
+                    <th>Sábado</th>
+                    <th>Domingo</th>
+                    
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- row 1 -->
+                <tr class="">
+                ';
+                
+
+    $res = array_shift($res);
+    
+    
+    if(isset($_GET['editar'])) {
+
+        $html .= '
+        <input type="hidden" name="id_esforco" value="' . $res['id'] . '">
+        <td>
+            <label class="form-control w-full max-w-xs">                        
+                <input type="number" placeholder="0" name="limite" value="' . $res['limite'] . '" class="input w-14 max-w-xs" />
+            </label>
+        </td>
+        <td>
+            <label class="form-control w-full max-w-xs">                            
+                <input type="number" placeholder="0" name="barreira" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" />
+            </label>
+        </td>
+        ';
+    } else {
+        $html .= '                    
+        <td>
+            <label class="form-control w-full max-w-xs">                        
+                <input type="number" placeholder="0" value="' . $res['limite'] . '" class="input w-14 max-w-xs" disabled />
+            </label>
+        </td>
+        <td>
+            <label class="form-control w-full max-w-xs">                            
+                <input type="number" placeholder="0" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" disabled />
+            </label>
+        </td>
+        ';
+    }
+
+    foreach($res as $k => $v) {
+        if($k == 'id' || $k == 'limite' || $k == 'barreira' || $k == 'ativo') {
+            continue;
+        }
+        if(isset($_GET['editar'])) {                                                
+            $html .= '
+            <td>
+                <label class="form-control w-full max-w-xs">                            
+                    <input type="checkbox" name="' . $k . '" class="toggle" ';  $html .= $v ? 'checked' : ''; $html .=  ' />
+                </label>
+            </td>
+            ';            
+        } else {
+            $html .= '
+            <td>
+                <label class="form-control w-full max-w-xs">                            
+                    <input type="checkbox" class="toggle" ';  $html .= $v ? 'checked' : ''; $html .=  ' disabled />
+                </label>
+            </td>
+            ';
+        }
+    }
+    
+    if(isset($_GET['editar'])) {
+        $html .= '
+        <td>
+            <input type="submit" class="btn btn-ghost btn-xs" value="Confirmar">            
+        </td>
+        ';
+    } else {
+        $html .= '
+    
+                <td>
+                    <a href="?id_turma=' . $_GET['id_turma'] . '&editar=true" class="btn btn-ghost btn-xs">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+    
+    ';
+    }
+
+    $html .= '                                             
+            </tbody>
+        </table>
+    </div>
+    
+    ';
+    $html .= '</form>';
+
+    return $html;
 }
 
