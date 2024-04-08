@@ -80,19 +80,19 @@ function calcular_esforco_turma() {
         $esforco += $esforco_dia;
         $eventos_esforco[$data] = $esforco_dia;
     }
-    /* pr($eventos_esforco); */
+    
 
     $arr_eventos = array();
 
     foreach($eventos_esforco as $k => $evento) {
-        if($evento > $esforco_turma['limite']) {
+        if($evento >= $esforco_turma['limite']) {
             $arr_eventos[] = array(
                 'title' => '>= ' . $esforco_turma['limite'] . ' horas',
                 'start' => $k,
                 'end' => $k,
                 'backgroundColor' => '#1E3A8A'
             );
-        } else if($evento > $esforco_turma['barreira'] && $evento < $esforco_turma['limite']) {
+        } else if($evento >= $esforco_turma['barreira'] && $evento < $esforco_turma['limite']) {
             $arr_eventos[] = array(
                 'title' => '>= ' . $esforco_turma['barreira'] . ' horas',
                 'start' => $k,
@@ -123,7 +123,7 @@ function gerar_calendario() {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
     $eventos = calcular_esforco_turma();    
-    
+    /* pr($eventos); */
 
     $html = ' 
     

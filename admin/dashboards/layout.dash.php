@@ -681,6 +681,7 @@ function esforco_direcao_turma() {
 function criar_atividade_turma() {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
+    $id_curso = $_SESSION['id_curso'];
     
     $html = '
     <div class="flex flex-row max-w-full">
@@ -691,49 +692,63 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Nome da atividade*</span>
                         </div>
-                        <input name="titulo" type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input name="titulo" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Breve descrição*</span>
                         </div>
-                        <input type="text" name="descricao" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" required name="descricao" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                 </div>
                 <div class="flex flex-row gap-8">
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text">Data de inicio</span>
+                            <span class="label-text">Data de inicio*</span>
                         </div>
-                        <input type="text" name="comeco" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="date" required name="comeco" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text">Data de conclusão</span>
+                            <span class="label-text">Data de conclusão*</span>
                         </div>
-                        <input type="text" name="fim" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="date" required name="fim" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                 </div>
                 <div class="flex flex-row gap-8">
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text">Tipo da atividade*</span>
+                            <span class="label-text">Tipo da atividade</span>
                         </div>
                         <input type="text" name="tipo" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text">Disciplina*</span>
+                            <span class="label-text">Disciplina*</span>                            
                         </div>
-                        <input type="text" name="disciplina" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <select name="disciplina" class="select select-bordered">
+                            <option disabled selected>Escolha uma.</option>
+                            ';
+
+    $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $id_curso);
+    foreach($arr_disciplinas as $disciplina) {
+        $sql = "SELECT * FROM disciplinas WHERE id = " . $disciplina['id_disciplina'];
+        $res = my_query($sql);
+        $html .= '<option value="' . $res[0]['id'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
+    }            
+
+    $html .= '                                                        
+                        </select>                        
                     </label>
                 </div>
+                <input type="hidden" name="id_turma" value="' . $id_turma . '">
+                <input type="hidden" name="id_professor" value="' . $_SESSION['id'] . '">
                 <div class="flex flex-row gap-8">
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text">Tempo sugerido em horas</span>
+                            <span class="label-text">Tempo sugerido em horas*</span>
                         </div>
-                        <input type="text" name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="number" required name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control mt-auto w-full max-w-xs">
         
