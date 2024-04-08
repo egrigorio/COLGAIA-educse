@@ -691,13 +691,13 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Nome da atividade*</span>
                         </div>
-                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input name="titulo" type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Breve descrição*</span>
                         </div>
-                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" name="descricao" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                 </div>
                 <div class="flex flex-row gap-8">
@@ -705,13 +705,13 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Data de inicio</span>
                         </div>
-                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" name="comeco" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Data de conclusão</span>
                         </div>
-                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" name="fim" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                 </div>
                 <div class="flex flex-row gap-8">
@@ -719,13 +719,13 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Tipo da atividade*</span>
                         </div>
-                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" name="tipo" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Disciplina*</span>
                         </div>
-                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" name="disciplina" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                 </div>
                 <div class="flex flex-row gap-8">
@@ -733,7 +733,7 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Tempo sugerido em horas</span>
                         </div>
-                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
                     </label>
                     <label class="form-control mt-auto w-full max-w-xs">
         
