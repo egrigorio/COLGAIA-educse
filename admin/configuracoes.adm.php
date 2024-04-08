@@ -185,32 +185,32 @@ function def_config_adm($modulo, &$arr_config)
                         'tab1' => array(
                             'label' => 'Customização',
                             'content' => 'Tab content 1',
-                            'checked' => 1,
-                            'name' => 'tabs_dt'
+                            'checked' => 0,
+                            'name' => 'tabs_turma'
                         ),
                         'tab2' => array(
                             'label' => 'Configurações',
                             'content' => 'Tab content 2',
                             'checked' => 0,
-                            'name' => 'tabs_dt'
+                            'name' => 'tabs_turma'
                         ),
                         'tab3' => array(
                             'label' => 'Alunos',
                             'content' => 'Tab content 3',
                             'checked' => 0,
-                            'name' => 'tabs_dt'
+                            'name' => 'tabs_turma'
                         ),
                         'tab4' => array(
                             'label' => 'Criar Atividade',
-                            'content' => 'Tab content 3',
-                            'checked' => 0,
-                            'name' => 'tabs_dt'
+                            'content' => criar_atividade_turma(),
+                            'checked' => 1,
+                            'name' => 'tabs_turma'
                         ),
                         'tab5' => array(
                             'label' => 'Agenda',
                             'content' => 'Tab content 3',
                             'checked' => 0,
-                            'name' => 'tabs_dt'
+                            'name' => 'tabs_turma'
                         ),
                     );
                     break;

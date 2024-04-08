@@ -1,6 +1,7 @@
 <?php
 include '../include/config.inc.php';
 include_once 'configuracoes.adm.php';
+include_once 'gerar_calendario_atividades.php';
 function navbar($arr_items) {
     global $arrConfig;
     $teste = parse_url($_SERVER['REQUEST_URI']);
@@ -677,3 +678,80 @@ function esforco_direcao_turma() {
     return $html;
 }
 
+function criar_atividade_turma() {
+    global $arrConfig;
+    $id_turma = $_GET['id_turma'];
+    
+    $html = '
+    <div class="flex flex-row max-w-full">
+        <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_criar_atividade_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">
+            <div class="flex flex-col gap-6 ml-8">
+                <div class="flex flex-row gap-8">
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Nome da atividade*</span>
+                        </div>
+                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Breve descrição*</span>
+                        </div>
+                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                    </label>
+                </div>
+                <div class="flex flex-row gap-8">
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Data de inicio</span>
+                        </div>
+                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Data de conclusão</span>
+                        </div>
+                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                    </label>
+                </div>
+                <div class="flex flex-row gap-8">
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Tipo da atividade*</span>
+                        </div>
+                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Disciplina*</span>
+                        </div>
+                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                    </label>
+                </div>
+                <div class="flex flex-row gap-8">
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Tempo sugerido em horas</span>
+                        </div>
+                        <input type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                    </label>
+                    <label class="form-control mt-auto w-full max-w-xs">
+        
+                        <button class="btn w-full">Criar</button>
+                    </label>
+                </div>
+        
+            </div>
+        
+        </form>
+        <div class="divider lg:divider-horizontal"></div>
+        <div class="max-w-full flex-grow ">
+            ';
+            $html .= gerar_calendario();
+        $html .= '
+        </div>
+    </div>
+    ';
+
+    return $html;
+}

@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;500;600;700;800;900&display=swap");
+
+
+
+.ec{
+  font-family: "Poppins", sans-serif;
+  height: 90%;
+  width: 100%;
+}
+
+.ec-day {
+  border-style: none none none solid;
+}
+
+.ec-day.ec-today {
+  background-color: #f3f3f3;
+}
+
+.ec-title {
+  font-weight: 600;
+  font-size: 120%;
+}
+
+.ec-body {
+  height: 400px;
+}
+
+.ec-days {
+  font-size: 15px;
+  margin: 1px;
+}
