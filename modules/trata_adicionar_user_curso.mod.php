@@ -29,6 +29,10 @@ foreach($emails as $email) {
         if(count($res) == 0) {
             $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id_user, $id_curso, '$cargo', 'Convite enviado')";
             my_query($sql);
+            $sql = "INSERT INTO conf_convite (email, id_curso, cargo) VALUES ('$email', $id_curso, '$cargo')";
+            $id_inserido = my_query($sql);            
+            $url = $arrConfig['url_modules'] . 'trata_convite_user_curso.mod.php?convite=' . $id_inserido;
+            enviar_convite_curso($email, $url, $cargo, $nome_curso);
         } else {
             // tratar exceção de o user já estar na turma
         }

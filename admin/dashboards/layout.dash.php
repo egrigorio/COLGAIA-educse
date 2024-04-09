@@ -681,6 +681,13 @@ function esforco_direcao_turma() {
 function criar_atividade_turma() {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
+
+    $sql = "SELECT curso.id FROM curso 
+    INNER JOIN turma ON curso.id = turma.id_curso
+    WHERE turma.id = " . $id_turma;
+    $res = my_query($sql);
+    $_SESSION['id_curso'] = $res[0]['id'];
+
     $id_curso = $_SESSION['id_curso'];
     
     $html = '
@@ -762,11 +769,65 @@ function criar_atividade_turma() {
         <div class="divider lg:divider-horizontal"></div>
         <div class="max-w-full flex-grow ">
             ';
-            $html .= gerar_calendario();
+            $html .= gerar_calendario_atividades();
         $html .= '
         </div>
     </div>
     ';
+
+    return $html;
+}
+
+function agenda_turma() {
+    global $arrConfig;
+    $id_turma = $_GET['id_turma'];
+
+    $sql = "SELECT eventos.*, atividades.* FROM atividades 
+    INNER JOIN rel_atividades_turma ON rel_atividades_turma.id_atividade = atividades.id 
+    INNER JOIN eventos ON eventos.id = atividades.id_evento
+    WHERE rel_atividades_turma.id_turma = " . $id_turma;        
+    $res = my_query($sql);
+                
+    $eventos_modelo = [];
+    
+    foreach($res as $vEvento) {
+        $novo_evento = [];
+        
+        foreach($vEvento as $kProp => $vProp) {
+            switch($kProp) {
+                case 'titulo':
+                    $novo_evento['title'] = $vProp;
+                    break;                
+                case 'fim':
+                    $date = new DateTime($vProp);
+                    $date->modify('-1 day');                    
+                    $novo_evento['start'] = $date->format('Y-m-d H:i:s');
+
+                    $date->modify('+1 day');
+                    $novo_evento['end'] = $date->format('Y-m-d H:i:s');
+                    break;
+                case 'id_disciplina': 
+                    $sql = "SELECT nome FROM disciplinas WHERE id = " . $vProp;
+                    $res = my_query($sql);
+                    $novo_evento['extendedProps']['disciplina'] = $res[0]['nome'];
+                    break;
+
+                
+                default:
+                    $novo_evento['extendedProps'][$kProp] = $vProp;            
+            }
+        }
+        
+        $eventos_modelo[] = $novo_evento;
+        
+    }
+    
+    
+
+    
+    $html = gerar_calendario($eventos_modelo, 'listMonth');    
+
+    
 
     return $html;
 }

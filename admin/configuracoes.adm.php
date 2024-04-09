@@ -203,13 +203,13 @@ function def_config_adm($modulo, &$arr_config)
                         'tab4' => array(
                             'label' => 'Criar Atividade',
                             'content' => criar_atividade_turma(),
-                            'checked' => 1,
+                            'checked' => 0,
                             'name' => 'tabs_turma'
                         ),
                         'tab5' => array(
                             'label' => 'Agenda',
-                            'content' => 'Tab content 3',
-                            'checked' => 0,
+                            'content' => agenda_turma(),
+                            'checked' => 1,
                             'name' => 'tabs_turma'
                         ),
                     );
