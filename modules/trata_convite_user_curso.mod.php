@@ -1,11 +1,16 @@
 <?php
 include '../include/config.inc.php';
 
+
+
 $sql = "SELECT users.id, conf_convite.id_curso, conf_convite.cargo FROM users 
 INNER JOIN conf_convite ON users.email = conf_convite.email 
 WHERE conf_convite.id = " . $_GET['convite'];
 
+
+
 $res = my_query($sql);
+pr($res);
 $id_user = $res[0]['id'];
 $id_curso = $res[0]['id_curso'];
 $cargo = $res[0]['cargo'];

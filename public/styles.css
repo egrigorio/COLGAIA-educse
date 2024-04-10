@@ -10659,6 +10659,14 @@ html:has(.drawer-open.drawer-open){
   margin-top: auto;
 }
 
+.mb-0{
+  margin-bottom: 0px;
+}
+
+.mb-10{
+  margin-bottom: 2.5rem;
+}
+
 .box-border{
   box-sizing: border-box;
 }
@@ -10844,6 +10852,11 @@ html:has(.drawer-open.drawer-open){
 
 .w-4\/12{
   width: 33.333333%;
+}
+
+.min-w-max{
+  min-width: -moz-max-content;
+  min-width: max-content;
 }
 
 .max-w-md{
@@ -11410,6 +11423,18 @@ html:has(.drawer-open.drawer-open){
 
 .gap-8{
   gap: 2rem;
+}
+
+.gap-9{
+  gap: 2.25rem;
+}
+
+.gap-5{
+  gap: 1.25rem;
+}
+
+.gap-4{
+  gap: 1rem;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]){
@@ -12121,6 +12146,11 @@ html:has(.drawer-open.drawer-open){
   padding-bottom: 0.75rem;
 }
 
+.py-4{
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 .pt-10{
   padding-top: 2.5rem;
 }
@@ -12760,6 +12790,23 @@ html:has(.drawer-open.drawer-open){
     .sm\:container{
       max-width: 1536px;
     }
+  }
+
+  .sm\:modal-middle{
+    place-items: center;
+  }
+
+  .sm\:modal-middle :where(.modal-box){
+    width: 91.666667%;
+    max-width: 32rem;
+    --tw-translate-y: 0px;
+    --tw-scale-x: .9;
+    --tw-scale-y: .9;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+    border-top-left-radius: var(--rounded-box, 1rem);
+    border-top-right-radius: var(--rounded-box, 1rem);
+    border-bottom-right-radius: var(--rounded-box, 1rem);
+    border-bottom-left-radius: var(--rounded-box, 1rem);
   }
 }
 

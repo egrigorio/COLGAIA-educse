@@ -826,8 +826,7 @@ function agenda_turma() {
 
     
     $html = gerar_calendario($eventos_modelo, 'listMonth');    
-
-    
+            
 
     return $html;
 }

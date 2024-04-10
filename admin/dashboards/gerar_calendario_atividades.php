@@ -180,9 +180,9 @@ function gerar_calendario_atividades() {
 
 function gerar_calendario($eventos, $view) {
     global $arrConfig;
-    $id_turma = $_GET['id_turma'];
-    
-    
+    $id_turma = $_GET['id_turma'];      
+    $id_user = $_SESSION['id'];
+    $url_modules = $arrConfig['url_modules'];  
     $html = ' 
     
     <div id="ec' . $view . '"></div>
@@ -194,29 +194,53 @@ function gerar_calendario($eventos, $view) {
         let ec' . $view . ' = new EventCalendar(document.getElementById(\'ec' . $view . '\'), {
             view: \'' . $view . '\',
             allDaySlot: false,
+            eventStartEditable: false,
             views: {
-                listMonth: {
+                listMonth: {                    
                     eventContent: function (arg) {
-                    
                     let arrayOfDomNodes = [];
                     let title = document.createElement("t");
                     title.innerHTML =
                         arg.event.title +
-                        " - " +
-                        arg.event.extendedProps.tipo +
-                        \'<br><span style="font-size: 12px; color: #999">Disciplina: \' +
+                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'editar/atividade_turma.php?id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)" : "(<a>detalhes</a>)") +                        
+                        "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
                         arg.event.extendedProps.disciplina +
-                        "</span>";
+                        " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
     
                     arrayOfDomNodes.push(title);
                     return { domNodes: arrayOfDomNodes };
                     },
                 },
+                dayGridMonth: {
+                    eventContent: function (arg) {
+                      let arrayOfDomNodes = [];
+                      let title = document.createElement("t");
+                      title.innerHTML = arg.event.title;
+      
+                      arrayOfDomNodes.push(title);
+                      return { domNodes: arrayOfDomNodes };
+                    },
+                  },
             },
 
             
             events: eventos' . $view . ',
         });
+
+        function clique_editar_evento(id_atv) {
+            let url = window.location.href;
+            if (url.indexOf(\'?\') > -1){
+               url += \'&id_atividade=\' + id_atv;
+            
+
+            } else {
+               url += \'?id_atividade=\' + id_atv;
+            }
+            document.getElementById(\'my_modal_5\').dataset.idAtv = id_atv;
+            my_modal_5.showModal();
+            
+        }
+
 
     </script>
     

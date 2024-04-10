@@ -33,7 +33,7 @@ if(!filter_var($email, FILTER_VALIDATE_EMAIL)) { /* validar email */
 }
 
 $pass = password_hash($pass, PASSWORD_DEFAULT); /* encriptar pass */
-$sql = "INSERT INTO users (username, email, password, pfp, cargo, ativo) VALUES ('$user', '$email', '$pass', '$pfp', '$cargo', 0)";
+$sql = "INSERT INTO users (username, email, password, pfp, cargo, ativo) VALUES ('$user', '$email', '$pass', '$pfp', '$cargo', 1)";
 $id = my_query($sql);
 
 $sql = "SELECT * FROM rel_user_curso WHERE id_user = $id AND id_curso = $id_curso";

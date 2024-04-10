@@ -1,3 +1,5 @@
 quando for criar uma turma, criar automaticamente um registo de esforço para a turma também, e atribuir o id do esforço a turma, pq assim
 já evitam erros. Eu já deixei pronto na tabela valores defaults para os registos, de tal modo que seja só criar e tudo recebe 0 por defeito e já
 funcionará normalmente.
+
+*todo*
