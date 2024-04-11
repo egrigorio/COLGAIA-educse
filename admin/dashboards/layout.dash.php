@@ -1,7 +1,7 @@
 <?php
-include '../include/config.inc.php';
-include_once 'configuracoes.adm.php';
-include_once 'gerar_calendario_atividades.php';
+/* include '../../include/config.inc.php'; */
+include_once $arrConfig['dir_admin'] . 'configuracoes.adm.php';
+include_once $arrConfig['dir_admin'] . 'dashboards/gerar_calendario_atividades.php';
 function navbar($arr_items) {
     global $arrConfig;
     $teste = parse_url($_SERVER['REQUEST_URI']);
@@ -678,34 +678,59 @@ function esforco_direcao_turma() {
     return $html;
 }
 
-function criar_atividade_turma() {
+function criar_atividade_turma($editar = false, $id_evento = null) {
+
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
-
-    $sql = "SELECT curso.id FROM curso 
-    INNER JOIN turma ON curso.id = turma.id_curso
-    WHERE turma.id = " . $id_turma;
-    $res = my_query($sql);
-    $_SESSION['id_curso'] = $res[0]['id'];
-
     $id_curso = $_SESSION['id_curso'];
+    if($editar) {
+
+        $sql = "SELECT atividades.*, eventos.* FROM atividades 
+        INNER JOIN eventos ON eventos.id = atividades.id_evento
+        WHERE atividades.id = " . $id_evento . " AND atividades.id_professor = " . $_SESSION['id'];
+        $res = my_query($sql);
+        $res = array_shift($res);
+        if(!$res) {
+            header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma);
+        } 
+        $rand = rand(8999, 8990);
+        $html = gerar_formulario_edicao($id_turma, $id_curso, $rand, $res);
+        return $html;                    
+    } else {
+
+        $sql = "SELECT curso.id FROM curso 
+        INNER JOIN turma ON curso.id = turma.id_curso
+        WHERE turma.id = " . $id_turma;
+        $res = my_query($sql);
+        $_SESSION['id_curso'] = $res[0]['id'];
+
+        $rand = rand(9999, 9990);
+        $html = gerar_formulario_edicao($id_turma, $id_curso, $rand);
+        return $html;
+    }
     
+}
+
+function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseridos = null) {
+    global $arrConfig;
     $html = '
+    ' . ($valores_ja_inseridos ? '<h1 class="text-center text-xl font-bold">Editando evento</h1>' : '') . '
     <div class="flex flex-row max-w-full">
-        <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_criar_atividade_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">
+        <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_' . ($valores_ja_inseridos ? 'editar' : 'criar') . '_atividade_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">
             <div class="flex flex-col gap-6 ml-8">
+                ' . ($valores_ja_inseridos ? '<input type="hidden" name="id_evento" value=' . $valores_ja_inseridos['id_evento'] . '>' : '') . '
                 <div class="flex flex-row gap-8">
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Nome da atividade*</span>
                         </div>
-                        <input name="titulo" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input name="titulo" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['titulo'] : '') . ' />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Breve descrição*</span>
                         </div>
-                        <input type="text" required name="descricao" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" required name="descricao" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['descricao'] : '') . ' />
                     </label>
                 </div>
                 <div class="flex flex-row gap-8">
@@ -713,13 +738,13 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Data de inicio*</span>
                         </div>
-                        <input type="date" required name="comeco" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="date" required name="comeco" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['comeco'] : '') . ' />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Data de conclusão*</span>
                         </div>
-                        <input type="date" required name="fim" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="date" required name="fim" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['fim'] : "") . ' />
                     </label>
                 </div>
                 <div class="flex flex-row gap-8">
@@ -727,14 +752,14 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Tipo da atividade</span>
                         </div>
-                        <input type="text" name="tipo" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="text" required name="tipo" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['tipo'] : "") . ' />
                     </label>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
                             <span class="label-text">Disciplina*</span>                            
                         </div>
-                        <select name="disciplina" class="select select-bordered">
-                            <option disabled selected>Escolha uma.</option>
+                        <select name="disciplina" class="select select-bordered" required>
+                            
                             ';
 
     $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $id_curso);
@@ -755,11 +780,11 @@ function criar_atividade_turma() {
                         <div class="label">
                             <span class="label-text">Tempo sugerido em horas*</span>
                         </div>
-                        <input type="number" required name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" />
+                        <input type="number" required name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['tempo_sugerido'] : '') . ' />
                     </label>
                     <label class="form-control mt-auto w-full max-w-xs">
         
-                        <button class="btn w-full">Criar</button>
+                        <button class="btn w-full">' . ($valores_ja_inseridos ? 'Editar' : 'Criar') . '</button>
                     </label>
                 </div>
         
@@ -769,7 +794,7 @@ function criar_atividade_turma() {
         <div class="divider lg:divider-horizontal"></div>
         <div class="max-w-full flex-grow ">
             ';
-            $html .= gerar_calendario_atividades();
+            $html .= gerar_calendario_atividades($rand);
         $html .= '
         </div>
     </div>
@@ -777,6 +802,7 @@ function criar_atividade_turma() {
 
     return $html;
 }
+
 
 function agenda_turma() {
     global $arrConfig;
@@ -825,7 +851,13 @@ function agenda_turma() {
     
 
     
-    $html = gerar_calendario($eventos_modelo, 'listMonth');    
+    if(isset($_GET['id_evento'])) {
+        $html = criar_atividade_turma(true, $_GET['id_evento']);
+    } else {
+        $rand = rand(100, 200);
+        $html = gerar_calendario($eventos_modelo, 'listMonth', $rand);
+
+    }
             
 
     return $html;

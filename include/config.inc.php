@@ -18,10 +18,10 @@ $arrConfig['isLoginKey'] = 'aajbajkh%/rcKI!ª~uaca76';
 $arrConfig['url_site'] = 'http://' . $_SERVER["HTTP_HOST"] . '/educse';
 $arrConfig['dir_site'] = '/Applications/XAMPP/xamppfiles/htdocs/educse'; 
 $arrConfig['url_paginas'] = $arrConfig['url_site'] . '/pages/';
-$arrConfig['url_admin'] = $arrConfig['url_site'] . '/admin/';
 $arrConfig['url_modules'] = $arrConfig['url_site'] . '/modules/';
 $arrConfig['dir_modules'] = $arrConfig['dir_site'] . '/modules/';
 $arrConfig['url_admin'] = $arrConfig['url_site'] . '/admin/';
+$arrConfig['dir_admin'] = $arrConfig['dir_site'] . '/admin/';
 
 $arrConfig['dir_include'] = $arrConfig['dir_site'] . '/include/';
 
@@ -39,7 +39,7 @@ $arrConfig['auth_imgType'] = ['image/jpeg', 'image/png', 'image/gif'];
 include_once $arrConfig['dir_include'] . 'functions.inc.php';
 include_once $arrConfig['dir_include'] . 'db.inc.php';
 include_once $arrConfig['dir_site'] . '/metodos/mail.met.php';
-
+include_once $arrConfig['dir_admin'] . 'dashboards/layout.dash.php';
 
 
 logs();

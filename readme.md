@@ -1,5 +1,5 @@
 *todo*
-- [ ] permitir edição de eventos/atividades;
+- [X] permitir edição de eventos/atividades;
 - [ ] permitir visualização de mais detalhes dos eventos/atividades;
 - [ ] na tabela de alunos, adicionar o turno a que pertencem com uma badge abaixo do nome da turma;
 - [ ] criar painel de gestão de turmas para o diretor de curso (uma tabela pra poder fazer a gestão das turmas [remover diretor de curso, mudar regras da turma...]);

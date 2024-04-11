@@ -1,35 +1,10 @@
-<?php
-include_once '../include/config.inc.php';
-?>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.js"></script>
 <link rel="stylesheet" href="<?php echo $arrConfig['url_site'] . '/public/calendario.css' ?>">
 <link rel="stylesheet" href="<?php echo $arrConfig['url_site'] . '/public/styles.css' ?>">
 
 <?php
-
-/* function calcular_esforco_dia($data, $data_certa, $res, $esforco_turma) {
-    $esforco_dia = 0;
-    for($i = 0; $i < count($res); $i++) {
-        $comeco = new DateTime($res[$i]['comeco']);
-        $fim = new DateTime($res[$i]['fim']);
-        if($data >= $comeco->format('Y-m-d') && $data <= $fim->format('Y-m-d')) {
-            for($j = 0; $j < count($res); $j++) {
-                if($res[$j] !== 'limite' || $res[$j] !== 'barreira' || $res[$j] !== 'id' || $res[$j] !== 'ativo') { 
-                    $dia_semana = $data_certa->format('N');
-                    if($esforco_turma['dia_' . ($dia_semana - 1)] == 1) {                                
-                        $esforco_dia += $res[$j]['tempo_medio_diario'];
-                    } else {
-                        $esforco_dia += 0;
-                    }
-                }
-            }
-        }
-    }
-
-    return $esforco_dia;
-
-} */
 
 function calcular_esforco_dia($data, $data_certa, $res, $esforco_turma) {
     $esforco_dia = 0;
@@ -136,21 +111,21 @@ function calcular_esforco_turma() {
         foreach($eventos_esforco as $k => $evento) {
             if($evento >= $esforco_turma['limite']) {
                 $arr_eventos[] = array(
-                    'title' => '>= ' . $esforco_turma['limite'] . ' horas (' . round($evento) . 'h)',
+                    'title' => '>= ' . $esforco_turma['limite'] . ' horas (' . number_format($evento, 1) . 'h)',
                     'start' => $k,
                     'end' => $k,
                     'backgroundColor' => '#1E3A8A'
                 );
             } else if($evento >= $esforco_turma['barreira'] && $evento < $esforco_turma['limite']) {
                 $arr_eventos[] = array(
-                    'title' => '>= ' . $esforco_turma['barreira'] . ' horas (' . round($evento) . 'h)',
+                    'title' => '>= ' . $esforco_turma['barreira'] . ' horas (' . number_format($evento, 1) . 'h)',
                     'start' => $k,
                     'end' => $k,
                     'backgroundColor' => '#3B82F6'
                 );
             } else if($evento < $esforco_turma['barreira'] && $evento > 0) {
                 $arr_eventos[] = array(
-                    'title' => '< ' . $esforco_turma['barreira'] . ' horas (' . round($evento) . 'h',
+                    'title' => '< ' . $esforco_turma['barreira'] . ' horas (' . number_format($evento, 1) . 'h)',
                     'start' => $k,
                     'end' => $k,
                     'backgroundColor' => '#BFDBFF'
@@ -172,26 +147,27 @@ function calcular_esforco_turma() {
         
     
 }
-function gerar_calendario_atividades() {        
-    $eventos = calcular_esforco_turma();    
-    $html = gerar_calendario($eventos, 'dayGridMonth');    
+function gerar_calendario_atividades($rand) {        
+    $eventos = calcular_esforco_turma();   
+    
+    $html = gerar_calendario($eventos, 'dayGridMonth', $rand);    
     return $html;
 }
 
-function gerar_calendario($eventos, $view) {
+function gerar_calendario($eventos, $view, $rand) {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];      
     $id_user = $_SESSION['id'];
     $url_modules = $arrConfig['url_modules'];  
     $html = ' 
     
-    <div id="ec' . $view . '"></div>
+    <div id="ec' . $rand . '"></div>
     
 
     <script>
-        let eventos' . $view . ' = ' . json_encode($eventos) . ';
-        console.log(eventos' . $view . ');
-        let ec' . $view . ' = new EventCalendar(document.getElementById(\'ec' . $view . '\'), {
+        let eventos' . $rand . ' = ' . json_encode($eventos) . ';
+        console.log(eventos' . $rand . ');
+        let ec' . $rand . ' = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), {
             view: \'' . $view . '\',
             allDaySlot: false,
             eventStartEditable: false,
@@ -202,7 +178,7 @@ function gerar_calendario($eventos, $view) {
                     let title = document.createElement("t");
                     title.innerHTML =
                         arg.event.title +
-                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'editar/atividade_turma.php?id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)" : "(<a>detalhes</a>)") +                        
+                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)" : "(<a>detalhes</a>)") +                        
                         "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
                         arg.event.extendedProps.disciplina +
                         " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
@@ -224,7 +200,7 @@ function gerar_calendario($eventos, $view) {
             },
 
             
-            events: eventos' . $view . ',
+            events: eventos' . $rand . ',
         });
 
         function clique_editar_evento(id_atv) {

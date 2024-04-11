@@ -1,7 +1,7 @@
 <?php 
 
 include '../include/config.inc.php';
-include 'dashboards/layout.dash.php';
+/* include 'dashboards/layout.dash.php'; */
 if(!isset($_SESSION['id'])){
     header('Location: ../index.php');
     exit;

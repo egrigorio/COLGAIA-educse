@@ -1,5 +1,5 @@
 <?php
-include '../include/config.inc.php';
+/* include '../include/config.inc.php'; */
 include_once $arrConfig['dir_include'] . 'auth.inc.php';
 include_once $arrConfig['dir_include'] . 'functions.inc.php';
 
