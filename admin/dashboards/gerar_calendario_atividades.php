@@ -178,7 +178,7 @@ function gerar_calendario($eventos, $view, $rand) {
                     let title = document.createElement("t");
                     title.innerHTML =
                         arg.event.title +
-                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)" : "(<a>detalhes</a>)") +                        
+                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
                         "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
                         arg.event.extendedProps.disciplina +
                         " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";

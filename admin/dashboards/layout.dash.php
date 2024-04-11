@@ -851,8 +851,12 @@ function agenda_turma() {
     
 
     
-    if(isset($_GET['id_evento'])) {
-        $html = criar_atividade_turma(true, $_GET['id_evento']);
+    if(isset($_GET['id_evento']) && isset($_GET['tipo'])){
+        if($_GET['tipo'] == 'edicao') {
+            $html = criar_atividade_turma(true, $_GET['id_evento']);
+        } else {
+            $html = gerar_detalhes_evento($_GET['id_evento']);
+        }
     } else {
         $rand = rand(100, 200);
         $html = gerar_calendario($eventos_modelo, 'listMonth', $rand);
@@ -861,4 +865,59 @@ function agenda_turma() {
             
 
     return $html;
+}
+
+function gerar_detalhes_evento($id_evento) {
+    global $arrConfig;
+    $id_evento = $_GET['id_evento'];
+    $sql = "SELECT eventos.*, atividades.* FROM atividades 
+    INNER JOIN eventos ON eventos.id = atividades.id_evento
+    WHERE eventos.id = " . $id_evento;
+    $res = my_query($sql);
+    
+    /* pr($res); */
+    $html = '
+    
+    <div class="flex w-full flex-col h-full">
+
+        <h1 class="text-center">' . $res[0]['titulo'] . '.</h1>
+        <div class="flex flex-row gap-5">
+            <div>
+                <p>Descrição da atividade:</p>
+                <p>' . $res[0]['descricao'] . '</p>
+            </div>
+            <div>
+                <p>Começo da atividade:</p>
+                <p>' . $res[0]['comeco'] . '</p>
+            </div>
+            <div>
+                <p>Fim da atividade:</p>
+                <p>' . $res[0]['fim'] . '</p>
+            </div>
+            <div>
+                <p>Criado em:</p>
+                <p>' . $res[0]['criado_em'] . '</p>
+            </div>
+            <div>
+                <p>Ultima vez editado em:</p>
+                <p>' . $res[0]['editado_em'] . '</p>
+            </div>
+            <div>
+                <p>Tipo da atividade:</p>
+                <p>' . $res[0]['tipo'] . '</p>
+            </div>
+            <div>
+                <p>Tempo sugerido:</p>
+                <p>' . $res[0]['tempo_sugerido'] . '</p>
+            </div>
+
+        </div>
+        <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '" class="btn btn-ghost">Voltar</a>
+
+
+    </div>
+    
+    ';
+    return $html;                            
+
 }
