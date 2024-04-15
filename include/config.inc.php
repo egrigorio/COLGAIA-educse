@@ -1,4 +1,5 @@
 <?php 
+
 @session_start();
 global $arrConfig;
 
@@ -35,11 +36,9 @@ $arrConfig['url_uploads'] = $arrConfig['url_site'] . '/uploads/';
 $arrConfig['dir_img'] = $arrConfig['dir_site'] . '/images/';
 $arrConfig['url_img'] = $arrConfig['url_site'] . '/images/';
 $arrConfig['auth_imgType'] = ['image/jpeg', 'image/png', 'image/gif'];
-
 include_once $arrConfig['dir_include'] . 'functions.inc.php';
 include_once $arrConfig['dir_include'] . 'db.inc.php';
 include_once $arrConfig['dir_site'] . '/metodos/mail.met.php';
 include_once $arrConfig['dir_admin'] . 'dashboards/layout.dash.php';
-
 
 logs();

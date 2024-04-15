@@ -1,7 +1,6 @@
 <?php
 include '../../include/config.inc.php';
 $valor = $_GET['valor'];
-
 $sql = "SELECT users.*, estado FROM users
         JOIN rel_user_curso ON users.id = rel_user_curso.id_user
         JOIN curso ON rel_user_curso.id_curso = curso.id

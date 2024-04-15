@@ -1,7 +1,9 @@
 <?php
 /* include '../../include/config.inc.php'; */
-include_once $arrConfig['dir_admin'] . 'configuracoes.adm.php';
 include_once $arrConfig['dir_admin'] . 'dashboards/gerar_calendario_atividades.php';
+include_once $arrConfig['dir_admin'] . 'configuracoes.adm.php';
+
+
 function navbar($arr_items) {
     global $arrConfig;
     $teste = parse_url($_SERVER['REQUEST_URI']);

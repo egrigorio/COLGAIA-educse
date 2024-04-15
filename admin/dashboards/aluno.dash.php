@@ -1,11 +1,8 @@
 <?php
 include '../include/config.inc.php';
-
-
 $sql = "SELECT * FROM rel_turma_user WHERE id_user = " . $_SESSION['id'];
 $res = my_query($sql);
 $_SESSION['cargo'] = 'professor';
-
 ?>
 <ul>
     <?php
@@ -17,7 +14,6 @@ $_SESSION['cargo'] = 'professor';
         }
     }
     ?>
-
 </ul>
 
 

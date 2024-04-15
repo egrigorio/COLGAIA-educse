@@ -1,22 +1,13 @@
 <?php
-include_once '../include/config.inc.php';
 
+include '../include/config.inc.php';
 if(!isset($_SESSION['id'])){
     header('Location: ../index.php');
     exit;
 }
 
 ?>
-
-<!DOCTYPE html>
-<html  class="bg-base-100" lang="en" data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'default'; ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../public/styles.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
+<?php include '../header.php'; ?>
 <body>
     <div class="hero min-h-screen bg-base-200">
         <div class="hero-content text-center">

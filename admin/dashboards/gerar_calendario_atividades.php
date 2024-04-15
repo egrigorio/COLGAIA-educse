@@ -1,11 +1,5 @@
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.js"></script>
-<link rel="stylesheet" href="<?php echo $arrConfig['url_site'] . '/public/calendario.css' ?>">
-<link rel="stylesheet" href="<?php echo $arrConfig['url_site'] . '/public/styles.css' ?>">
-
 <?php
-
 function calcular_esforco_dia($data, $data_certa, $res, $esforco_turma) {
     $esforco_dia = 0;
     for($i = 0; $i < count($res); $i++) {
@@ -163,7 +157,7 @@ function gerar_calendario($eventos, $view, $rand) {
     
     <div id="ec' . $rand . '"></div>
     
-
+    
     <script>
         let eventos' . $rand . ' = ' . json_encode($eventos) . ';
         console.log(eventos' . $rand . ');
@@ -223,22 +217,6 @@ function gerar_calendario($eventos, $view, $rand) {
     ';
     return $html;
 }
-
-
 ?>
-
-
-<!-- <script>
-
-let ec = new EventCalendar(document.getElementById('ec'), {
-    view: 'dayGridMonth',
-    allDaySlot: false,         
-      
-    events: [
-        // your list of events
-    ]
-});
-
-</script> -->
 
 
