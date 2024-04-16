@@ -943,6 +943,22 @@ function tabela_alunos_diretor_turma() {
     $html = '
     
         <div class="overflow-x-auto">
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Filtre pelo turno</span>                    
+                </div>             
+                <select onchange="trata_onchange_select_turno()" class="select select-bordered mb-5" id="select_tabelas_alunos">                    
+                    <option selected value="all">Todos</option>
+                    ';
+    $sql = "SELECT * FROM turno WHERE id_turma = " . $id_turma;
+    $res = my_query($sql);
+    foreach($res as $turno) {
+                 $html .= '<option value="' . $turno['numero'] . '">Turno ' . $turno['numero'] . '</option>';
+    }            
+    $html .= '                
+                </select>
+            </label>
+            <hr>
             <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php' . '">
                 <table class="table" id="tabela_alunos_diretor_turma">
 
@@ -950,18 +966,25 @@ function tabela_alunos_diretor_turma() {
             </form>
         </div>
         <script>
-            
-            var tabeladt = document.getElementById(\'tabela_alunos_diretor_turma\');
-            tabeladt.innerHTML = "";
-            var xhr = new XMLHttpRequest();
-            xhr.open(\'GET\', \'' . $arrConfig['url_admin'] . 'dashboards/gerar_tabela_view_alunos_dt.php?id_turma=' . $id_turma .'' . ($editar ? '&editar=true' : '') . '\', true);
-            xhr.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-            
-                    tabeladt.innerHTML = this.responseText;
-                }
-            };
-            xhr.send();
+            function trata_onchange_select_turno() {
+                var valorSelecionado = document.getElementById(\'select_tabelas_alunos\').value;                
+                console.log(valorSelecionado);
+                var tabeladt = document.getElementById(\'tabela_alunos_diretor_turma\');
+                tabeladt.innerHTML = "";
+                var xhr = new XMLHttpRequest();
+                xhr.open(\'GET\', \'' . $arrConfig['url_admin'] . 'dashboards/gerar_tabela_view_alunos_dt.php?turno_numero=\' + valorSelecionado + \'' .  '&id_turma=' . $id_turma .'' . ($editar ? '&editar=true' : '') . '\', true);
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                
+                        tabeladt.innerHTML = this.responseText;
+                    }
+                };
+                xhr.send();
+            }
+            var event = new Event(\'change\');
+            var select = document.getElementById(\'select_tabelas_alunos\');
+            select.dispatchEvent(event);
+
         </script>
 
     ';

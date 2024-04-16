@@ -2,15 +2,11 @@
 include '../../include/config.inc.php'; 
 
 $id_turma = $_GET['id_turma'];
-/* $sql = "SELECT users.*, turno.numero AS turno FROM rel_turma_user 
-INNER JOIN users ON users.id = rel_turma_user.id_user 
-INNER JOIN turno ON turno.id_turma = rel_turma_user.id_turma
-WHERE rel_turma_user.id_turma = $id_turma AND users.cargo = 'aluno'"; */
 $sql = "SELECT users.*, turno.numero AS turno 
 FROM rel_turno_user 
 INNER JOIN users ON users.id = rel_turno_user.id_user 
 INNER JOIN turno ON turno.id = rel_turno_user.id_turno 
-WHERE rel_turno_user.id_turma = $id_turma AND users.cargo = 'aluno'";
+WHERE rel_turno_user.id_turma = $id_turma AND users.cargo = 'aluno' " . ((isset($_GET['turno_numero']) && $_GET['turno_numero'] != 'all') ? "AND turno.numero = " . $_GET['turno_numero'] : "");
 
 $res = my_query($sql);
 

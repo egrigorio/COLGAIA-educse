@@ -162,13 +162,13 @@ function def_config_adm($modulo, &$arr_config)
                     'tab2' => array(
                         'label' => 'Turno',
                         'content' => tabela_turnos_diretor_turma(),
-                        'checked' => 1,
+                        'checked' => 0,
                         'name' => 'tabs_dt'
                     ),
                     'tab3' => array(
                         'label' => 'Alunos',
                         'content' => tabela_alunos_diretor_turma(),
-                        'checked' => 0,
+                        'checked' => 1,
                         'name' => 'tabs_dt'
                     ),
                     'tab4' => array(
