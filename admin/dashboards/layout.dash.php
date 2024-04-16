@@ -101,8 +101,8 @@ function turma($arr_turma, &$flag_direcao_turma) {
     def_config_adm($tabs, $arr_config);
 
     foreach ($arr_config as $kCampos => $vCampos) {
-        if($flag_tab_get) {
-            if(strtolower($vCampos['label']) == $_GET['tab']) {
+        if($flag_tab_get) {            
+            if(strtolower($vCampos['label']) == $_GET['tab']) {                                
                 $vCampos['checked'] = 1;
                 $flag_tabs = true;
             } else {                
@@ -123,6 +123,7 @@ function turma($arr_turma, &$flag_direcao_turma) {
 }
 
 function curso() {
+    $flag_tab_get = isset($_GET['tab']) ? true : false;
     $sql = "SELECT * FROM curso WHERE id_diretor_curso = " . $_SESSION['id'];
     $res = my_query($sql);
     $arr_config = array();
@@ -144,6 +145,16 @@ function curso() {
     ';
     def_config_adm('tabs_curso', $arr_config);
     foreach ($arr_config as $kCampos => $vCampos) {
+        if($flag_tab_get) {
+            if(strtolower($vCampos['label']) == $_GET['tab']) {                
+                $vCampos['checked'] = 1;
+                $flag_tabs = true;
+            } else {                
+                $vCampos['checked'] = 0;
+                $flag_tabs = false;
+            }
+        }       
+        
         echo '
         <input type="radio" name="' . $vCampos['name'] . '" role="tab" class="tab" aria-label="' . $vCampos['label'] . '" ' . ($vCampos['checked'] == 1 ? 'checked' : '') . ' />
         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
@@ -1032,7 +1043,7 @@ function tabela_turnos_diretor_turma() {
     $res = my_query($sql);
 
     $html = '
-    <div class="flex flex-row justify-around bg-red-400">
+    <div class="flex flex-row justify-around ">
         <div class="flex flex-col w-2/12">            
             <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_turno_turma.mod.php' . '">
                 <div class="flex flex-row">
@@ -1085,5 +1096,132 @@ function tabela_turnos_diretor_turma() {
     
 
     ';
+    return $html;
+}
+
+function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo, turma que tem mais atividades, turmas por ano letivo */
+    global $arrConfig;
+    $sql = "SELECT * FROM turma WHERE id_curso = " . $_SESSION['id_curso'];
+    $res = my_query($sql);
+    $html = '
+    <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turma_diretor_curso.mod.php' . '">
+    <div class="overflow-x-auto">
+        <table class="table">
+            <!-- head -->
+            <thead>
+            <tr>
+                <th>ID</th>            
+                <th>Nome da Turma</th>
+                <th>Ano Letivo</th>
+                <th>Diretor de Turma</th>
+                <th>Turnos</th>
+                <th>Editar</th>
+                <th>Ver +</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            '; 
+            
+            foreach($res as $turma) {
+                $sql = "SELECT * FROM turno WHERE id_turma = " . $turma['id'];
+                $res_turno = my_query($sql);
+                $sql = "SELECT username FROM users WHERE id = " . $turma['id_diretor_turma'];
+                $res_dt = my_query($sql);
+                $res_dt = array_shift($res_dt);
+                $editar = isset($_GET['editar']) ? $_GET['editar'] : '';
+                $sql = "SELECT * FROM rel_turma_user 
+                INNER JOIN users ON users.id = rel_turma_user.id_user
+                WHERE rel_turma_user.id_turma = " . $turma['id'] . " AND users.cargo = 'professor' AND users.id NOT IN (
+                    SELECT id_diretor_turma FROM turma
+                )";
+                
+                $res_professores = my_query($sql);
+                // remover o diretor de turma da lista de professores
+                foreach($res_professores as $k => $professor) {
+                    if($professor['id'] == $turma['id_diretor_turma']) {
+                        unset($res_professores[$k]);
+                    }
+                }
+                $user_dt = $res_dt ? $res_dt['username'] : '';
+                $html .= '        
+                
+                <tr class="hover">            
+                    <td>' . $turma['id'] . '</td>
+                    <td>' . $turma['nome_turma'] . '</td>
+                    <td>' . $turma['ano_letivo'] . '</td>
+                    ';
+                    if(isset($_GET['editar'])) {                                                
+                        $html .= '
+                        <td>
+                            
+                                <select name="diretor_turma_' . $turma['id'] . '" class="select select-bordered">
+                                    
+                                    <option value="' . $turma['id_diretor_turma'] . '">' . ($user_dt ? $user_dt : 'Sem diretor de turma') . '</option>
+                                ';
+                        
+                                foreach($res_professores as $professor) {
+                                    $html .= '<option value="' . $professor['id'] . '">' . $professor['username'] . '</option>';
+                                }
+                                $html .= '
+                                    ' . ($user_dt ? '<option value="-1">Sem diretor de turma</option>' : '') . '
+                                </select>
+                            
+                        </td>
+                            ';
+                                
+                    } else {
+                        $html .= '
+                        <td>
+                            <label class="form-control w-full max-w-xs">                            
+                                <input type="text" value="' . ($res_dt ? $res_dt['username'] : 'Sem Diretor de Turma') . '" class="input w-full max-w-xs" disabled />
+                            </label>
+                        </td>
+                        ';
+                    }
+                    $html .= '<td>';
+                    foreach($res_turno as $turno) {
+                        $html .= 'Turno ' . $turno['numero'] . '<br>';
+                    }
+                    $html .= '</td>';
+
+                    if(isset($_GET['editar'])) {
+                        $html .= '
+                        <td>
+                            <input type="submit" class="btn btn-ghost btn-xs" value="Confirmar">            
+                        </td>
+                        ';
+                    } else {
+                        $html .= '
+                    
+                                <td>
+                                    <a href="?editar=true" class="btn btn-ghost btn-xs">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                    
+                    ';
+                    }
+
+                    $html .= '
+                    
+                    <td>
+                        <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $turma['id'] . '" class="btn btn-ghost btn-xs">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                
+                ';
+            }
+
+            $html .= '            
+            </tbody>
+        </table>
+    </div>
+    </form>
+    ';
+
+
     return $html;
 }
