@@ -20,17 +20,17 @@ function calcular_esforco_dia($data, $data_certa, $res, $esforco_turma) {
     return $esforco_dia;
 }
 
-function calcular_esforco_turma() {
+function calcular_esforco_turma($turno) {
+    
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
     $sql = "SELECT eventos.*, atividades.tempo_sugerido FROM atividades 
     INNER JOIN rel_atividades_turma ON atividades.id = rel_atividades_turma.id_atividade 
     INNER JOIN eventos ON eventos.id = atividades.id_evento
-    WHERE rel_atividades_turma.id_turma = $id_turma";
+    WHERE rel_atividades_turma.id_turma = $id_turma AND atividades.id_turno = $turno";            
         
-    $res = my_query($sql);
+    $res = my_query($sql);    
     
-
     $sql = "SELECT esforco.* FROM esforco 
     INNER JOIN turma ON turma.id_esforco = esforco.id 
     WHERE turma.id = $id_turma";
@@ -141,9 +141,8 @@ function calcular_esforco_turma() {
         
     
 }
-function gerar_calendario_atividades($rand) {        
-    $eventos = calcular_esforco_turma();   
-    
+function gerar_calendario_atividades($rand, $turno) {        
+    $eventos = calcular_esforco_turma($turno);       
     $html = gerar_calendario($eventos, 'dayGridMonth', $rand);    
     return $html;
 }

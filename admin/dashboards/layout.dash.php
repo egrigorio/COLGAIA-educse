@@ -795,22 +795,54 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                         </div>
                         <input type="number" required name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['tempo_sugerido'] : '') . ' />
                     </label>
-                    <label class="form-control mt-auto w-full max-w-xs">
-        
+                    <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Filtre pelo turno</span>                    
+                </div>             
+                <select name="turno" onchange="trata_onchange_select_turno_criar_atv()" class="select select-bordered mb-5" id="select_turno_criar_atv">                    
+                    <option selected value="-1">Todos</option>
+                    ';
+    $sql = "SELECT * FROM turno WHERE id_turma = " . $id_turma;
+    $res = my_query($sql);
+    foreach($res as $turno) {
+                 $html .= '<option value="' . $turno['id'] . '">Turno ' . $turno['numero'] . '</option>';
+    }            
+    $html .= '                
+                </select>
+            </label>
+                    </div>
+                    <label class="form-control mt-auto w-full">        
                         <button class="btn w-full">' . ($valores_ja_inseridos ? 'Editar' : 'Criar') . '</button>
                     </label>
-                </div>
         
             </div>
         
         </form>
         <div class="divider lg:divider-horizontal"></div>
-        <div class="max-w-full flex-grow ">
-            ';
-            $html .= gerar_calendario_atividades($rand);
-        $html .= '
+        <div id="render-calendar-here" class="max-w-full flex-grow ">            
+            '; 
+            /* $html .= gerar_calendario_atividades($rand, -1); */
+            $html .= '
         </div>
     </div>
+    <script>
+        function trata_onchange_select_turno_criar_atv() {
+            var turno = document.getElementById("select_turno_criar_atv").value;
+            console.log(turno);
+            var xhr = new XMLHttpRequest();            
+            xhr.open("GET", "' . $arrConfig['url_admin'] . 'dashboards/call_func_calendar.php?id_turma=' . $id_turma . '&id_curso=' . $id_curso . '&rand=' . $rand . '&turno=4", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText)
+                    document.getElementById("render-calendar-here").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+        var event = new Event(\'change\');
+        var select = document.getElementById(\'select_turno_criar_atv\');
+        select.dispatchEvent(event);
+    </script>
     ';
 
     return $html;

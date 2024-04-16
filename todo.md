@@ -5,7 +5,7 @@
 - [ ] criar painel de gestão de turmas para o diretor de curso (uma tabela pra poder fazer a gestão das turmas [remover diretor de curso, mudar regras da turma...]);
 - [ ] permitir alteração de diretor de turma de uma turma;
 - [ ] transformar a turma num 'objeto?' continuo, em que ao mudar o ano letivo, os alunos avançam entre elas, e depois eu posso alterar configurações da turma para poder adaptar aos novos alunos. Quando fizer isso, guardar as informações da turma no ano anterior para manter o histórico da turma consoante o ano letivo;
-- [ ] na tabela de alunos, adicionar o turno a que pertencem com uma badge abaixo do nome da turma;
+- [X] na tabela de alunos, adicionar o turno a que pertencem com uma badge abaixo do nome da turma;
 - [ ] no painel do diretor de turma, criar uma visualização em gráficos de como a turma dele está sobrecarregada, as semanas com mais atividades, disciplinas com mais atividades...;
 - [ ] adicionar painel de visualização da turma tal como um professor comum ao diretor de turma;
 - [ ] adicionar painel para permitir a gestão de turnos em uma turma, e alterar o funcionamento das atividades para funcionar de acordo com os turnos a que os alunos pertencem;
