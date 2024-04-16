@@ -969,3 +969,66 @@ function tabela_alunos_diretor_turma() {
     return $html;
 
 }
+
+function tabela_turnos_diretor_turma() {
+    global $arrConfig;
+    $id_turma = $_GET['id_turma'];
+    $sql = "SELECT * FROM turno WHERE id_turma = " . $id_turma . " ORDER BY numero ASC";
+    $res = my_query($sql);
+
+    $html = '
+    <div class="flex flex-row justify-around bg-red-400">
+        <div class="flex flex-col w-2/12">            
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_turno_turma.mod.php' . '">
+                <div class="flex flex-row">
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Adicionar novo turno?</span>
+                            
+                        </div>
+                        <div class="flex">
+                            <input name="id_turma" type="hidden" value="' . $id_turma . '">
+                            <input name="novo_turno" type="number" min=' . ($res[count($res) - 1]['numero'] + 1) . ' max="' . ($res[count($res) - 1]['numero'] + 1) . '" placeholder="Número do novo turno" class="input input-bordered w-full max-w-xs" />
+                            <button class="btn btn-ghost">Adicionar</button>
+                        </div>
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="divider lg:divider-horizontal"></div> 
+        <div class="flex w-9/12">
+            <table class="table">
+                <!-- head -->
+                <thead>
+                    <tr>    
+                        <th>Número</th>
+                        <th>Remover</th>          
+                    </tr>
+                </thead>
+                <tbody>
+            '; 
+            
+            foreach($res as $turno) {
+                $html .= '        
+                <tr>            
+                    <td>' . $turno['numero'] . '</td>
+                    <td>
+                    <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_remover_turno_turma.mod.php' . '">
+                        <input type="hidden" name="id_turno" value="' . $turno['id'] . '" ></input>
+                        <input type="hidden" name="id_turma" value="' . $id_turma . '" ></input>
+                        <button type="submit" class="btn btn-ghost btn-xs">X</button>
+                    </form>
+                    </td>
+                </tr>
+                ';
+            }
+            $html .= '     
+                </tbody>
+                </table>
+        </div>
+    </div>
+    
+
+    ';
+    return $html;
+}
