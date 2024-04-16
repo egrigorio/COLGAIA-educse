@@ -2,9 +2,6 @@
 /* include '../include/config.inc.php'; */
 include_once $arrConfig['dir_include'] . 'functions.inc.php';
 
-
-
-
 function def_config_adm($modulo, &$arr_config)
 {
     switch ($modulo) {
@@ -170,14 +167,14 @@ function def_config_adm($modulo, &$arr_config)
                     ),
                     'tab3' => array(
                         'label' => 'Alunos',
-                        'content' => 'Tab content 3',
-                        'checked' => 0,
+                        'content' => tabela_alunos_diretor_turma(),
+                        'checked' => 1,
                         'name' => 'tabs_dt'
                     ),
                     'tab4' => array(
                         'label' => 'Esforço',
                         'content' => esforco_direcao_turma(),
-                        'checked' => 1,
+                        'checked' => 0,
                         'name' => 'tabs_dt'
                     ),
                 );

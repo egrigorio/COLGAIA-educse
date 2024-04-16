@@ -28,4 +28,4 @@ SET limite = $limite, barreira = $barreira, dia_0 = $dia_0, dia_1 = $dia_1, dia_
 WHERE id = $id_esforco";
 my_query($sql);
 
-header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma);
+header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma . '&tab=esforço');

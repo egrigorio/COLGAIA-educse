@@ -79,6 +79,8 @@ function navbar($arr_items) {
 }
 
 function turma($arr_turma, &$flag_direcao_turma) {
+    $flag_tabs = false;
+    $flag_tab_get = isset($_GET['tab']) ? true : false;
 
     if ($arr_turma[0]['id_diretor_turma'] == $_SESSION['id']) {
         $flag_direcao_turma = true;
@@ -97,9 +99,18 @@ function turma($arr_turma, &$flag_direcao_turma) {
     ';
     $tabs = $flag_direcao_turma ? 'tabs_direcao_turma' : 'tabs_turma';
     def_config_adm($tabs, $arr_config);
+
     foreach ($arr_config as $kCampos => $vCampos) {
+        if($flag_tab_get) {
+            if(strtolower($vCampos['label']) == $_GET['tab']) {
+                $vCampos['checked'] = 1;
+                $flag_tabs = true;
+            } else {                
+                $flag_tabs = false;
+            }
+        }        
         echo '
-        <input type="radio" name="' . $vCampos['name'] . '" role="tab" class="tab" aria-label="' . $vCampos['label'] . '" ' . ($vCampos['checked'] == 1 ? 'checked' : '') . ' />
+        <input type="radio" name="' . $vCampos['name'] . '" role="tab" class="tab" aria-label="' . $vCampos['label'] . '" ' . ($vCampos['checked'] == 1 ? 'checked' : '')  . ' />
         <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
             ' . $vCampos['content'] . '
         </div>
@@ -661,7 +672,7 @@ function esforco_direcao_turma() {
         $html .= '
     
                 <td>
-                    <a href="?id_turma=' . $_GET['id_turma'] . '&editar=true" class="btn btn-ghost btn-xs">
+                    <a href="?id_turma=' . $_GET['id_turma'] . '&editar=true&tab=esforço" class="btn btn-ghost btn-xs">
                         <i class="fas fa-edit"></i>
                     </a>
                 </td>
@@ -921,5 +932,40 @@ function gerar_detalhes_evento($id_evento) {
     
     ';
     return $html;                            
+
+}
+
+function tabela_alunos_diretor_turma() {    
+    global $arrConfig;
+    $id_turma = $_GET['id_turma'];
+    $editar = isset($_GET['editar']) ? $_GET['editar'] : '';
+
+    $html = '
+    
+        <div class="overflow-x-auto">
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php' . '">
+                <table class="table" id="tabela_alunos_diretor_turma">
+
+                </table>
+            </form>
+        </div>
+        <script>
+            
+            var tabeladt = document.getElementById(\'tabela_alunos_diretor_turma\');
+            tabeladt.innerHTML = "";
+            var xhr = new XMLHttpRequest();
+            xhr.open(\'GET\', \'' . $arrConfig['url_admin'] . 'dashboards/gerar_tabela_view_alunos_dt.php?id_turma=' . $id_turma .'' . ($editar ? '&editar=true' : '') . '\', true);
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+            
+                    tabeladt.innerHTML = this.responseText;
+                }
+            };
+            xhr.send();
+        </script>
+
+    ';
+
+    return $html;
 
 }
