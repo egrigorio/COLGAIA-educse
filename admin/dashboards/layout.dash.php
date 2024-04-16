@@ -1225,3 +1225,126 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
 
     return $html;
 }
+
+function tabela_vista_professores_turma() {
+    global $arrConfig;
+
+    $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user.id_turno as id_turno FROM users  
+    INNER JOIN rel_turma_user ON rel_turma_user.id_user = users.id 
+    INNER JOIN rel_turno_user ON rel_turno_user.id_user = users.id         
+    WHERE users.cargo = 'professor' 
+    AND rel_turma_user.id_turma = " . $_GET['id_turma'];
+    
+    $res = my_query($sql);
+    
+    $html = '
+    
+    <div class="overflow-x-auto">
+        <table class="table">
+            <!-- head -->
+            <thead>
+            <tr>
+                <th></th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Disciplinas</th>
+                <th>Turno</th>
+                
+            </tr>
+            </thead>
+            <tbody>
+            ';
+
+            foreach($res as $k => $v) {
+                $sql = "SELECT disciplinas.nome as nome_disciplina FROM disciplinas 
+                INNER JOIN rel_disciplina_user ON rel_disciplina_user.id_disciplina = disciplinas.id
+                WHERE rel_disciplina_user.id_user = " . $v['user_id'];
+                $res_disciplinas = my_query($sql);
+                if($v['id_turno'] != -1) {
+                    $sql = "SELECT numero FROM turno WHERE id = " . $v['id_turno'];
+                    $res_turno = my_query($sql);
+                    $res_turno = array_shift($res_turno);
+                } else {
+                    $res_turno = ['numero' => 'Todos'];
+                }                            
+
+                $html .= '
+                <tr class="hover">
+                    <td>' . ($k + 1) . '</td>
+                    <td>' . $v['username'] . '</td>
+                    <td>' . $v['email'] . '</td>
+                    <td>';
+                    foreach($res_disciplinas as $disciplina) {
+                        $html .= $disciplina['nome_disciplina'] . '<br>';
+                    }
+                    $html .= '</td>
+                    <td>Turno: ' . $res_turno['numero'] . '</td>
+                </tr>
+                ';
+            }
+
+            $html .= '            
+            </tbody>
+        </table>
+    </div>
+    
+    ';
+    return $html;
+
+}
+
+function tabela_vista_alunos_turma() {
+    global $arrConfig;
+
+    $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user.id_turno as id_turno FROM users  
+    INNER JOIN rel_turma_user ON rel_turma_user.id_user = users.id 
+    INNER JOIN rel_turno_user ON rel_turno_user.id_user = users.id         
+    WHERE users.cargo = 'aluno' 
+    AND rel_turma_user.id_turma = " . $_GET['id_turma'];
+    
+    $res = my_query($sql);
+    
+    $html = '
+    
+    <div class="overflow-x-auto">
+        <table class="table">
+            <!-- head -->
+            <thead>
+            <tr>
+                <th></th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Turno</th>
+                
+            </tr>
+            </thead>
+            <tbody>
+            ';
+
+            foreach($res as $k => $v) {
+                if($v['id_turno'] != -1) {
+                    $sql = "SELECT numero FROM turno WHERE id = " . $v['id_turno'];
+                    $res_turno = my_query($sql);
+                    $res_turno = array_shift($res_turno);
+                } else {
+                    $res_turno = ['numero' => 'Todos'];
+                }                            
+
+                $html .= '
+                <tr class="hover">
+                    <td>' . ($k + 1) . '</td>
+                    <td>' . $v['username'] . '</td>
+                    <td>' . $v['email'] . '</td>
+                    <td>Turno: ' . $res_turno['numero'] . '</td>
+                </tr>
+                ';
+            }
+
+            $html .= '            
+            </tbody>
+        </table>
+    </div>
+    
+    ';
+    return $html;
+}

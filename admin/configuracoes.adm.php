@@ -177,6 +177,19 @@ function def_config_adm($modulo, &$arr_config)
                         'checked' => 0,
                         'name' => 'tabs_dt'
                     ),
+                    'tab5' => array(
+                        'label' => 'Criar Atividade',
+                        'content' => criar_atividade_turma(),
+                        'checked' => 0,
+                        'name' => 'tabs_dt'
+                    ),
+                    'tab6' => array(
+                        'label' => 'Agenda',
+                        'content' => agenda_turma(),
+                        'checked' => 0,
+                        'name' => 'tabs_dt'
+                    ),
+
                 );
                 break;
                 case 'tabs_turma': 
@@ -188,14 +201,14 @@ function def_config_adm($modulo, &$arr_config)
                             'name' => 'tabs_turma'
                         ),
                         'tab2' => array(
-                            'label' => 'Configurações',
-                            'content' => 'Tab content 2',
+                            'label' => 'Professores',
+                            'content' => tabela_vista_professores_turma(),
                             'checked' => 0,
                             'name' => 'tabs_turma'
                         ),
                         'tab3' => array(
                             'label' => 'Alunos',
-                            'content' => 'Tab content 3',
+                            'content' => tabela_vista_alunos_turma(),
                             'checked' => 0,
                             'name' => 'tabs_turma'
                         ),
