@@ -477,9 +477,11 @@ function disciplinas_tabs_cursos() {
         </div> 
         <div class="">
             <div class="overflow-x-auto">
-                <table class="table" id="tabela_disciplinas">                                                                
+                <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_disciplina_curso.mod.php" id="form_disciplinas">
+                    <table class="table" id="tabela_disciplinas">                                                                
                 
-                </table>                        
+                    </table>  
+                </form>                      
             </div>            
         </div>
     
@@ -489,7 +491,7 @@ function disciplinas_tabs_cursos() {
         var insertedValues = [];
         function generateTable() {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "' . $arrConfig['url_admin'] . 'dashboards/gerar_tabelas_views_disciplinas.php?valor=disciplinas' . '", true);
+            xhr.open("GET", "' . $arrConfig['url_admin'] . 'dashboards/gerar_tabelas_views_disciplinas.php?valor=disciplinas' . (isset($_GET['editar']) ? '&editar=true' : '') . '' . '", true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     document.getElementById("tabela_disciplinas").innerHTML = xhr.responseText;
@@ -502,7 +504,7 @@ function disciplinas_tabs_cursos() {
 
         document.addEventListener(\'DOMContentLoaded\', function() {
             
-            $(\'#disciplinas-input\').select2();
+            /* $(\'#disciplinas-input\').select2(); */
                         
            
             document.getElementById("disciplinas-input").addEventListener("keypress", function(event) {
@@ -587,6 +589,7 @@ function esforco_direcao_turma() {
     INNER JOIN esforco 
     WHERE turma.id_esforco = esforco.id AND turma.id = " . $id_turma;
     $res = my_query($sql);
+    
     /* pr($res); */
 
     $html = '<form method="post" action="' . $arrConfig['url_modules'] . 'trata_esforco_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">';
@@ -790,8 +793,12 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
 
     $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $id_curso);
     foreach($arr_disciplinas as $disciplina) {
-        $sql = "SELECT * FROM disciplinas WHERE id = " . $disciplina['id_disciplina'];
+        $sql = "SELECT * FROM disciplinas 
+        INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
+        WHERE disciplinas.id = " . $disciplina['id_disciplina'] . "";
         $res = my_query($sql);
+        
+    
         $html .= '<option value="' . $res[0]['id'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
     }            
     $turno = isset($_GET['turno']) ? $_GET['turno'] : -1;
@@ -1125,7 +1132,7 @@ function tabela_turnos_diretor_turma() {
                         </div>
                         <div class="flex">
                             <input name="id_turma" type="hidden" value="' . $id_turma . '">
-                            <input name="novo_turno" type="number" min=' . ($res[count($res) - 1]['numero'] + 1) . ' max="' . ($res[count($res) - 1]['numero'] + 1) . '" placeholder="Número do novo turno" class="input input-bordered w-full max-w-xs" />
+                            <input name="novo_turno" type="number" min=' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . ' max="' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . '" placeholder="Número do novo turno" class="input input-bordered w-full max-w-xs" />
                             <button class="btn btn-ghost">Adicionar</button>
                         </div>
                     </label>
@@ -1174,6 +1181,8 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
     global $arrConfig;
     $sql = "SELECT * FROM turma WHERE id_curso = " . $_SESSION['id_curso'];
     $res = my_query($sql);
+    $flag_tem_turmas = false;
+    $flag_tem_turmas = (count($res) > 0 ? true : false);
     // tratar o res e criar um novo array que tenha os anos letivos
     $anos_letivos = [];
     foreach($res as $turma) {
@@ -1186,14 +1195,66 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
     $html = '
     <div class="flex flex-row justify-between">
         <select onchange="change_select_ano_letivo();" id="slc_ano_letivo" class="select w-full max-w-xs">
-            <option disabled selected>Escolha um ano letivo</option>
+            <option disabled>Escolha um ano letivo</option>
             '; 
             foreach($anos_letivos as $ano) {
                 $html .= '<option value="' . $ano . '">' . $ano . '</option>';
             }
+            $alertTitle = $flag_tem_turmas ? 'Atualizando Turmas' : 'Gerando Turmas';
+            $alertText = $flag_tem_turmas ? 'atualizar' : 'gerar';
+            $ano_letivo = get_ano_letivo();
+            $proximo_ano_letivo = get_proximo_ano_letivo($ano_letivo);
             $html .= '
         </select>
-        <button class="btn btn-ghost">Atualizar turmas</button>
+        <form id="form_atualizar_turmas_dc" method="post" action="' . $arrConfig['url_modules'] . 'trata_atualizar_turmas_ano_letivo.mod.php' . '">
+            <input type="hidden" name="tem_turmas" value="' . $flag_tem_turmas . '">
+            <input type="hidden" name="ano_letivo" value="">
+            <a onclick="
+                var flag_tem_turmas = document.getElementById(\'form_atualizar_turmas_dc\').tem_turmas.value;
+                console.log(flag_tem_turmas);
+                Swal.fire({
+                    title: \'' . $alertTitle . '\',
+                    text: \'Tem certeza que deseja ' . $alertText . ' as turmas?\',
+                    icon: \'warning\',
+                    showCancelButton: true,
+                    confirmButtonColor: \'#3085d6\',
+                    cancelButtonColor: \'#d33\',
+                    confirmButtonText: \'Sim\',
+                    cancelButtonText: \'Cancelar\'
+                }).then((result) => {    
+                    if(result.isConfirmed) {                
+                        if(flag_tem_turmas) {
+                            alert(\'Atualizando turmas\');
+                            document.getElementById(\'form_atualizar_turmas_dc\').submit();
+                        } else {
+                            Swal.fire({
+                                title: \'Gerando turmas\',
+                                text: \'Deseja gerar turmas para este ano letivo, ou para o próximo?\',
+                                icon: \'info\',
+                                showCancelButton: true,
+                                confirmButtonColor: \'#3085d6\',
+                                cancelButtonColor: \'green\',
+                                confirmButtonText: \'Este (' . $ano_letivo . ')\',
+                                cancelButtonText: \'Próximo (' . $proximo_ano_letivo . ')\'
+
+                            }).then((result) => {
+                                if(result.isConfirmed) {
+                                    
+                                    document.getElementById(\'form_atualizar_turmas_dc\').ano_letivo.value = \'' . $ano_letivo . '\';
+                                    document.getElementById(\'form_atualizar_turmas_dc\').submit();
+                                } else {
+                                    
+                                    document.getElementById(\'form_atualizar_turmas_dc\').ano_letivo.value = \'' . $proximo_ano_letivo . '\';
+                                    document.getElementById(\'form_atualizar_turmas_dc\').submit();
+                                }
+                            });
+                        }
+                    }
+
+                    
+                });
+            " class="btn btn-ghost">'; $html .= ($flag_tem_turmas ? 'Atualizar turmas' : 'Gerar turmas'); $html .= '</a>
+        </form>
     </div>
     <div id="tabela_turmas_diretor_curso"></div>
     <script>
@@ -1201,7 +1262,7 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
             var select = document.getElementById("slc_ano_letivo");
             var ano_letivo = select.value;
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "' . $arrConfig['url_admin'] . 'dashboards/gerar_turmas_ano_letivo.php?ano_letivo=" + ano_letivo, true);
+            xhr.open("GET", "' . $arrConfig['url_admin'] . 'dashboards/gerar_turmas_ano_letivo.php?' . (isset($_GET['editar']) ? 'editar=true&' : '') . 'ano_letivo=" + ano_letivo, true);
             xhr.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     document.getElementById("tabela_turmas_diretor_curso").innerHTML = this.responseText;
@@ -1210,7 +1271,7 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
             xhr.send();
         }
         var event = new Event("change");
-        var select = document.querySelector(".select");
+        var select = document.getElementById("slc_ano_letivo");
         select.dispatchEvent(event);
     </script>
         ';

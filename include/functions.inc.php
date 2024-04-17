@@ -260,6 +260,18 @@ function get_ano_letivo() {
     return $ano_letivo;
 }
 
+function get_proximo_ano_letivo($ano_letivo) {
+    $anos = explode('/', $ano_letivo); // divide a string do ano letivo em dois anos
+    $ano1 = $anos[0]; // pega o primeiro ano completo
+    $ano2 = '20' . $anos[1]; // adiciona '20' ao início do segundo ano para obter o ano completo
+
+    $proximo_ano1 = $ano1 + 1; // incrementa o primeiro ano
+    $proximo_ano2 = $ano2 + 1; // incrementa o segundo ano
+
+    $proximo_ano_letivo = $proximo_ano1 . '/' . substr($proximo_ano2, 2); // junta os anos incrementados em uma string
+    return $proximo_ano_letivo;
+}
+
 function buscar_turmas_curso($id_curso) {
     $sql = "SELECT * FROM turma WHERE id_curso = ($id_curso) ";
     $res = my_query($sql);
