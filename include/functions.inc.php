@@ -247,9 +247,31 @@ function buscar_disciplinas_curso($id_curso, $tipo) {
 
 }
 
+function get_ano_letivo() {
+    $mes_atual = date("n"); // obtém o mês atual
+    $ano_atual = date("Y"); // obtém o ano atual
+    if ($mes_atual >= 9) {
+        // Se o mês atual for de setembro a dezembro, o ano letivo é o ano atual e o próximo ano
+        $ano_letivo = $ano_atual . "/" . substr($ano_atual + 1, 2);
+    } else {
+        // Se o mês atual for de janeiro a junho, o ano letivo é o ano anterior e o ano atual
+        $ano_letivo = ($ano_atual - 1) . "/" . substr($ano_atual, 2);
+    }
+    return $ano_letivo;
+}
+
 function buscar_turmas_curso($id_curso) {
     $sql = "SELECT * FROM turma WHERE id_curso = ($id_curso) ";
-    return my_query($sql);
+    $res = my_query($sql);
+    $arr_turmas = array();
+    // filtrar pelo ano letivo
+    $ano_letivo = get_ano_letivo();
+    foreach($res as $k => $v) {
+        if($v['ano_letivo'] == $ano_letivo) {
+            $arr_turmas[] = $v;
+        }
+    }
+    return $arr_turmas;
 }
 
 function buscar_nome_turmas_participa_curso($id_user, $id_curso) {
