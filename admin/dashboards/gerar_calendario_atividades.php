@@ -24,10 +24,11 @@ function calcular_esforco_turma($turno) {
     
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
+    $filtro_turno = ($turno != -1 ? "AND atividades.id_turno = $turno" : "" );
     $sql = "SELECT eventos.*, atividades.tempo_sugerido FROM atividades 
     INNER JOIN rel_atividades_turma ON atividades.id = rel_atividades_turma.id_atividade 
     INNER JOIN eventos ON eventos.id = atividades.id_evento
-    WHERE rel_atividades_turma.id_turma = $id_turma AND atividades.id_turno = $turno";            
+    WHERE rel_atividades_turma.id_turma = $id_turma $filtro_turno";            
         
     $res = my_query($sql);    
     
@@ -157,7 +158,7 @@ function gerar_calendario($eventos, $view, $rand) {
     <div id="ec' . $rand . '"></div>
     
     
-    <script>
+    <script>            
         let eventos' . $rand . ' = ' . json_encode($eventos) . ';
         console.log(eventos' . $rand . ');
         let ec' . $rand . ' = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), {
@@ -171,7 +172,7 @@ function gerar_calendario($eventos, $view, $rand) {
                     let title = document.createElement("t");
                     title.innerHTML =
                         arg.event.title +
-                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
+                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
                         "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
                         arg.event.extendedProps.disciplina +
                         " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
@@ -194,7 +195,7 @@ function gerar_calendario($eventos, $view, $rand) {
 
             
             events: eventos' . $rand . ',
-        });
+        });    
 
         function clique_editar_evento(id_atv) {
             let url = window.location.href;

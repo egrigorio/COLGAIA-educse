@@ -711,8 +711,9 @@ function criar_atividade_turma($editar = false, $id_evento = null) {
 
         $sql = "SELECT atividades.*, eventos.* FROM atividades 
         INNER JOIN eventos ON eventos.id = atividades.id_evento
-        WHERE atividades.id = " . $id_evento . " AND atividades.id_professor = " . $_SESSION['id'];
-        $res = my_query($sql);
+        WHERE atividades.id_evento = " . $id_evento . " AND atividades.id_professor = " . $_SESSION['id'];
+        $res = my_query($sql);     
+                   
         $res = array_shift($res);
         if(!$res) {
             header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma);
@@ -737,6 +738,7 @@ function criar_atividade_turma($editar = false, $id_evento = null) {
 
 function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseridos = null) {
     global $arrConfig;
+    $id_user = $_SESSION['id'];
     $html = '
     ' . ($valores_ja_inseridos ? '<h1 class="text-center text-xl font-bold">Editando evento</h1>' : '') . '
     <div class="flex flex-row max-w-full">
@@ -792,7 +794,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
         $res = my_query($sql);
         $html .= '<option value="' . $res[0]['id'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
     }            
-
+    $turno = isset($_GET['turno']) ? $_GET['turno'] : -1;
     $html .= '                                                        
                         </select>                        
                     </label>
@@ -811,12 +813,12 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                     <span class="label-text">Filtre pelo turno</span>                    
                 </div>             
                 <select name="turno" onchange="trata_onchange_select_turno_criar_atv()" class="select select-bordered mb-5" id="select_turno_criar_atv">                    
-                    <option selected value="-1">Todos</option>
+                    <option value="-1" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == -1 ? 'selected' : '') : '') . '>Todos</option>
                     ';
     $sql = "SELECT * FROM turno WHERE id_turma = " . $id_turma;
     $res = my_query($sql);
     foreach($res as $turno) {
-                 $html .= '<option value="' . $turno['id'] . '">Turno ' . $turno['numero'] . '</option>';
+                 $html .= '<option value="' . $turno['id'] . '" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == $turno['id'] ? 'selected' : '') : '') . '>Turno ' . $turno['numero'] . '</option>';
     }            
     $html .= '                
                 </select>
@@ -830,30 +832,100 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
         
         </form>
         <div class="divider lg:divider-horizontal"></div>
-        <div id="render-calendar-here" class="max-w-full flex-grow ">            
-            '; 
+        <div id="render-calendar-here" class="max-w-full flex-grow ">
+            <div id="ec' . $rand . '"></div>
+        '; 
+        
+            /* $turno = $_GET['turno'] ? $_GET['turno'] : -1; */
             /* $html .= gerar_calendario_atividades($rand, -1); */
             $html .= '
         </div>
     </div>
     <script>
-        function trata_onchange_select_turno_criar_atv() {
-            var turno = document.getElementById("select_turno_criar_atv").value;
-            console.log(turno);
-            var xhr = new XMLHttpRequest();            
-            xhr.open("GET", "' . $arrConfig['url_admin'] . 'dashboards/call_func_calendar.php?id_turma=' . $id_turma . '&id_curso=' . $id_curso . '&rand=' . $rand . '&turno=4", true);
+        function gerar_calendario(eventos' . $rand . ' = null) {
+            
+            var calendarElement = document.getElementById(\'ec' . $rand . '\');                        
+            if (calendarElement) {
+                calendarElement.innerHTML = "";
+            }            
+            let ec' . $rand . ' = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), {
+                view: \'dayGridMonth\',
+                allDaySlot: false,
+                eventStartEditable: false,
+                views: {
+                    listMonth: {                    
+                        eventContent: function (arg) {
+                        let arrayOfDomNodes = [];
+                        let title = document.createElement("t");
+                        title.innerHTML =
+                            arg.event.title +
+                            " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
+                            "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
+                            arg.event.extendedProps.disciplina +
+                            " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
+        
+                        arrayOfDomNodes.push(title);
+                        return { domNodes: arrayOfDomNodes };
+                        },
+                    },
+                    dayGridMonth: {
+                        eventContent: function (arg) {
+                        let arrayOfDomNodes = [];
+                        let title = document.createElement("t");
+                        title.innerHTML = arg.event.title;
+        
+                        arrayOfDomNodes.push(title);
+                        return { domNodes: arrayOfDomNodes };
+                        },
+                    },
+                },
+
+                
+                events: eventos' . $rand . ',
+        });    
+
+        }
+        function clique_editar_evento(id_atv) {
+            let url = window.location.href;
+            if (url.indexOf(\'?\') > -1){
+            url += \'&id_atividade=\' + id_atv;
+            
+
+            } else {
+            url += \'?id_atividade=\' + id_atv;
+            }
+            document.getElementById(\'my_modal_5\').dataset.idAtv = id_atv;
+            my_modal_5.showModal();
+            
+        }
+
+        function setCalendarEvents(turno) {
+            var xhr = new XMLHttpRequest();
+            var url = "' . $arrConfig['url_admin'] . 'dashboards/call_func_calendar.php?turno=" + turno + "&id_turma=' . $id_turma . '";
+            var params = "id_turno=" + turno;            
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");            
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log(xhr.responseText)
-                    document.getElementById("render-calendar-here").innerHTML = xhr.responseText;
+                    console.log(xhr.responseText);
+                    var eventos = JSON.parse(xhr.responseText);
+                    gerar_calendario(eventos);
                 }
             };
-            xhr.send();
+            
+            xhr.send(params);
+        }
+
+        function trata_onchange_select_turno_criar_atv() {
+            
+            var turno = document.getElementById("select_turno_criar_atv").value;
+            console.log(turno);
+            setCalendarEvents(turno);
         }
         var event = new Event(\'change\');
         var select = document.getElementById(\'select_turno_criar_atv\');
         select.dispatchEvent(event);
-    </script>
+    </script> 
     ';
 
     return $html;
