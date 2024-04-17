@@ -41,7 +41,7 @@ $html = '
                 $editar = isset($_GET['editar']) ? $_GET['editar'] : '';
                 $sql = "SELECT * FROM rel_turma_user 
                 INNER JOIN users ON users.id = rel_turma_user.id_user
-                WHERE rel_turma_user.id_turma = " . $turma['id'] . " AND users.cargo = 'professor' AND users.id NOT IN (
+                WHERE rel_turma_user.id_turma = " . $turma['id'] . " AND rel_turma_user.ativo = 1 AND users.cargo = 'professor' AND users.id NOT IN (
                     SELECT id_diretor_turma FROM turma
                 )";
                 

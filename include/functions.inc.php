@@ -275,7 +275,7 @@ function buscar_turmas_curso($id_curso) {
 }
 
 function buscar_nome_turmas_participa_curso($id_user, $id_curso) {
-    $sql = "SELECT * FROM rel_turma_user WHERE id_user = ($id_user) ";
+    $sql = "SELECT * FROM rel_turma_user WHERE id_user = ($id_user) AND ativo = 1";
     $res = my_query($sql);
     $arr_turmas = array();
     foreach($res as $k => $v) {
@@ -288,7 +288,7 @@ function buscar_nome_turmas_participa_curso($id_user, $id_curso) {
 }
 
 function buscar_turmas_participa_curso($id_user, $id_curso) {
-    $sql = "SELECT * FROM rel_turma_user WHERE id_user = ($id_user) ";
+    $sql = "SELECT * FROM rel_turma_user WHERE id_user = ($id_user) AND ativo = 1";
     $res = my_query($sql);
     $arr_turmas = array();
     foreach($res as $k => $v) {
@@ -311,7 +311,7 @@ function gerar_items_navbar($id) {
     }             
     if(!$flag_diretor_curso) {
         
-        $sql = "SELECT * FROM rel_turma_user WHERE id_user = $id";
+        $sql = "SELECT * FROM rel_turma_user WHERE id_user = $id AND ativo = 1";
         $res = my_query($sql);
         
         foreach($res as $k => $v){

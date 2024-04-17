@@ -1225,7 +1225,7 @@ function tabela_vista_professores_turma() {
     $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user.id_turno as id_turno FROM users  
     INNER JOIN rel_turma_user ON rel_turma_user.id_user = users.id 
     INNER JOIN rel_turno_user ON rel_turno_user.id_user = users.id         
-    WHERE users.cargo = 'professor' 
+    WHERE users.cargo = 'professor' AND rel_turma_user.ativo = 1 
     AND rel_turma_user.id_turma = " . $_GET['id_turma'];
     
     $res = my_query($sql);
@@ -1292,7 +1292,7 @@ function tabela_vista_alunos_turma() {
     $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user.id_turno as id_turno FROM users  
     INNER JOIN rel_turma_user ON rel_turma_user.id_user = users.id 
     INNER JOIN rel_turno_user ON rel_turno_user.id_user = users.id         
-    WHERE users.cargo = 'aluno' 
+    WHERE users.cargo = 'aluno' AND rel_turma_user.ativo = 1 
     AND rel_turma_user.id_turma = " . $_GET['id_turma'];
     
     $res = my_query($sql);

@@ -25,7 +25,7 @@ if(isset($_GET['id_turma']) && $_GET['id_turma']) {
     $turma = $arrResultado[0];
 
     /* validar se quem acessa essa página pertence a turma */
-    $sql = "SELECT * FROM rel_turma_user WHERE id_turma = $id_turma AND id_user = {$_SESSION['id']}";
+    $sql = "SELECT * FROM rel_turma_user WHERE id_turma = $id_turma AND id_user = {$_SESSION['id']} AND ativo = 1";
     $arrResultado = my_query($sql);
     if (count($arrResultado) == 0) {
         echo '<h1>não pertence a turma</h1>';
