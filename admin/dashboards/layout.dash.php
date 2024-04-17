@@ -504,7 +504,7 @@ function disciplinas_tabs_cursos() {
 
         document.addEventListener(\'DOMContentLoaded\', function() {
             
-            /* $(\'#disciplinas-input\').select2(); */
+            
                         
            
             document.getElementById("disciplinas-input").addEventListener("keypress", function(event) {
