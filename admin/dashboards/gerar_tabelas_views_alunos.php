@@ -101,7 +101,7 @@ foreach ($res as $aluno) {
                                 '
                                 :
                                 '
-                                <input type="text" value="' . $nome_turma . '" disabled></input>
+                                <input type="text" class="input w-full max-w-xs" value="' . $nome_turma . '" disabled></input>
                                 ')
 
                             .

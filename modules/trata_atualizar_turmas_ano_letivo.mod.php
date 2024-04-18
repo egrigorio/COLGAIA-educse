@@ -68,7 +68,7 @@ if($tem_turma) {
     $nome_nova_turma = ($indice + 9) . 'º ' . $abreviatura;
     $sql = "INSERT INTO turma (id_curso, ano_letivo, nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', '$nome_nova_turma')";
     $res = my_query($sql);
-    $sql = "INSERT INTO rel_turma_user (id_turma, id_user, ativo) VALUES ($res, $id_user, 1)";
+    $sql = "INSERT INTO rel_turma_user (id_turma, id_user, ativo) VALUES ($res, $id_user_diretor_curso, 1)";
     $res = my_query($sql);
     
     $sql = "SELECT * FROM rel_disciplina_curso_ano WHERE id_curso = $id_curso AND ano = $i"; // aqui eu pego as disciplinas do curso relativas ao ano para inserir na nova turma
