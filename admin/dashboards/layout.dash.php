@@ -68,6 +68,7 @@ function navbar($arr_items) {
                         </a>
                         </li>
                         <li><a>Settings</a></li>
+                        <li><a href="' . (isset($_GET['al']) ? ($arrConfig['url_admin'] . 'curso.php') : '?al=true') . '">Vista de ' . (isset($_GET['al']) ? get_ano_letivo() : get_proximo_ano_letivo(get_ano_letivo())) . '</a></li>
                         <li><a href="' . $arrConfig['url_modules'] . 'trata_logout.mod.php' . '">Logout</a></li>
                     </ul>
                     

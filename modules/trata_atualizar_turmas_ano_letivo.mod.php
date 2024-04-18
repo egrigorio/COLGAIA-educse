@@ -59,7 +59,7 @@ if($tem_turma) {
         }                                    
     
     } 
-    /* $indice = 1;
+    $indice = 1;
     $nome_turma = ($indice + 9) . 'º ' . $abreviatura;
     $sql = "SELECT * FROM turma WHERE nome_turma = '$nome_turma' AND id_curso = $id_curso AND ano_letivo = '$ano_letivo'";
     $res_turma_antiga = my_query($sql);
@@ -69,8 +69,17 @@ if($tem_turma) {
     $sql = "INSERT INTO turma (id_curso, ano_letivo, nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', '$nome_nova_turma')";
     $res = my_query($sql);
     $sql = "INSERT INTO rel_turma_user (id_turma, id_user, ativo) VALUES ($res, $id_user, 1)";
-    $res = my_query($sql); */
+    $res = my_query($sql);
+    
+    $sql = "SELECT * FROM rel_disciplina_curso_ano WHERE id_curso = $id_curso AND ano = $i"; // aqui eu pego as disciplinas do curso relativas ao ano para inserir na nova turma
+        $res_disciplinas = my_query($sql);                                                                                                                  //
+        foreach($res_disciplinas as $rel) {                                                                                                                 //
+            $id_disciplina = $rel['id_disciplina'];                                                                                                         //
+            $sql = "INSERT INTO rel_disciplina_turma (id_disciplina, id_turma) VALUES ($id_disciplina, $res_id_turma_nova)";                                //
+            my_query($sql);                                                                                                                                 //
+        }         
 
+    // o código abaixo é para remover a última turma do curso, pois ela não será mais utilizada
     $indice = $duracao;
     $nome_turma = ($indice + 9) . 'º ' . $abreviatura;
     $sql = "SELECT * FROM turma WHERE nome_turma = '$nome_turma' AND id_curso = $id_curso AND ano_letivo = '$ano_letivo'";
