@@ -276,8 +276,10 @@ function buscar_turmas_curso($id_curso) {
     $sql = "SELECT * FROM turma WHERE id_curso = ($id_curso) ";
     $res = my_query($sql);
     $arr_turmas = array();
+    $ano_letivo = (isset($_GET['al']) ? get_proximo_ano_letivo(get_ano_letivo()) : get_ano_letivo());
     // filtrar pelo ano letivo
-    $ano_letivo = get_ano_letivo();
+    /* $ano_letivo = '2024/25'; */
+    /* $ano_letivo = get_ano_letivo(); */
     foreach($res as $k => $v) {
         if($v['ano_letivo'] == $ano_letivo) {
             $arr_turmas[] = $v;

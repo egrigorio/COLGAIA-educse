@@ -337,9 +337,11 @@ function alunos_tabs_cursos() {
                 
             </label>
             <div class="overflow-x-auto">
-                <table class="table" id="tabela_alunos">                                                                
-                
-                </table>                        
+                <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_inserir_aluno_turma.mod.php" id="form_edicao_alunos_curso">                    
+                        <table class="table" id="tabela_alunos">
+                    
+                        </table>
+                </form>
             </div>            
         </div>
         
@@ -354,7 +356,7 @@ function alunos_tabs_cursos() {
 
             tabela.innerHTML = "";
             var xhr = new XMLHttpRequest();
-                xhr.open(\'GET\', \'' . $arrConfig['url_admin'] . 'dashboards/' . 'gerar_tabelas_views_alunos.php?valor=\' + valorSelecionado, true);
+                xhr.open(\'GET\', \'' . $arrConfig['url_admin'] . 'dashboards/' . 'gerar_tabelas_views_alunos.php?' . (isset($_GET['editar']) ? 'editar=true&' : '') . 'valor=\' + valorSelecionado, true);
                 xhr.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         
@@ -502,10 +504,7 @@ function disciplinas_tabs_cursos() {
         generateTable();
         
 
-        document.addEventListener(\'DOMContentLoaded\', function() {
-            
-            
-                        
+        document.addEventListener(\'DOMContentLoaded\', function() {                                                
            
             document.getElementById("disciplinas-input").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
@@ -822,7 +821,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                 <select name="turno" onchange="trata_onchange_select_turno_criar_atv()" class="select select-bordered mb-5" id="select_turno_criar_atv">                    
                     <option value="-1" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == -1 ? 'selected' : '') : '') . '>Todos</option>
                     ';
-    $sql = "SELECT * FROM turno WHERE id_turma = " . $id_turma;
+                    $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma;
     $res = my_query($sql);
     foreach($res as $turno) {
                  $html .= '<option value="' . $turno['id'] . '" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == $turno['id'] ? 'selected' : '') : '') . '>Turno ' . $turno['numero'] . '</option>';
@@ -1071,7 +1070,7 @@ function tabela_alunos_diretor_turma() {
                 <select onchange="trata_onchange_select_turno()" class="select select-bordered mb-5" id="select_tabelas_alunos">                    
                     <option selected value="all">Todos</option>
                     ';
-    $sql = "SELECT * FROM turno WHERE id_turma = " . $id_turma;
+                    $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma;
     $res = my_query($sql);
     foreach($res as $turno) {
                  $html .= '<option value="' . $turno['numero'] . '">Turno ' . $turno['numero'] . '</option>';
@@ -1117,7 +1116,7 @@ function tabela_alunos_diretor_turma() {
 function tabela_turnos_diretor_turma() {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
-    $sql = "SELECT * FROM turno WHERE id_turma = " . $id_turma . " ORDER BY numero ASC";
+    $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";
     $res = my_query($sql);
 
     $html = '
@@ -1183,6 +1182,7 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
     $res = my_query($sql);
     $flag_tem_turmas = false;
     $flag_tem_turmas = (count($res) > 0 ? true : false);
+    $flag_turmas_2anos = false;
     // tratar o res e criar um novo array que tenha os anos letivos
     $anos_letivos = [];
     foreach($res as $turma) {
@@ -1190,7 +1190,12 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
             $anos_letivos[] = $turma['ano_letivo'];
         }
     }
-        
+    $proximo_ano_letivo = get_proximo_ano_letivo(get_ano_letivo());
+    $sql = "SELECT id FROM turma WHERE nome_turma = '11º ITM' AND id_curso = 2 AND ano_letivo = '$proximo_ano_letivo'";
+    $res = my_query($sql);
+    if(count($res) > 0) {
+        $flag_turmas_2anos = true;
+    }
 
     $html = '
     <div class="flex flex-row justify-between">
@@ -1204,12 +1209,24 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
             $alertText = $flag_tem_turmas ? 'atualizar' : 'gerar';
             $ano_letivo = get_ano_letivo();
             $proximo_ano_letivo = get_proximo_ano_letivo($ano_letivo);
+
             $html .= '
         </select>
         <form id="form_atualizar_turmas_dc" method="post" action="' . $arrConfig['url_modules'] . 'trata_atualizar_turmas_ano_letivo.mod.php' . '">
             <input type="hidden" name="tem_turmas" value="' . $flag_tem_turmas . '">
             <input type="hidden" name="ano_letivo" value="">
-            <a onclick="
+            '; 
+            
+            if($flag_turmas_2anos) {
+                $html .= '
+                
+                <a class="btn btn-ghost" disabled>'; $html .= ($flag_tem_turmas ? 'Atualizar turmas' : 'Gerar turmas'); $html .= '</a>
+                
+                ';
+            } else {
+                $html .= '
+                
+                <a onclick="
                 var flag_tem_turmas = document.getElementById(\'form_atualizar_turmas_dc\').tem_turmas.value;
                 console.log(flag_tem_turmas);
                 Swal.fire({
@@ -1254,6 +1271,11 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
                     
                 });
             " class="btn btn-ghost">'; $html .= ($flag_tem_turmas ? 'Atualizar turmas' : 'Gerar turmas'); $html .= '</a>
+                
+                ';
+            }
+            
+            $html .= '
         </form>
     </div>
     <div id="tabela_turmas_diretor_curso"></div>
@@ -1349,15 +1371,19 @@ function tabela_vista_professores_turma() {
 
 function tabela_vista_alunos_turma() {
     global $arrConfig;
+    $id_turma = $_GET['id_turma'];
 
-    $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user.id_turno as id_turno FROM users  
+    $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user1.id_turno as id_turno, turno.* 
+    FROM users  
     INNER JOIN rel_turma_user ON rel_turma_user.id_user = users.id 
-    INNER JOIN rel_turno_user ON rel_turno_user.id_user = users.id         
+    INNER JOIN rel_turno_user as rel_turno_user1 ON rel_turno_user1.id_user = users.id      
+    INNER JOIN turno ON turno.id = rel_turno_user1.id_turno    
     WHERE users.cargo = 'aluno' AND rel_turma_user.ativo = 1 
-    AND rel_turma_user.id_turma = " . $_GET['id_turma'];
+    AND (rel_turma_user.id_turma = $id_turma OR rel_turno_user1.id_turno = -1) 
+    AND rel_turno_user1.id_turma = $id_turma;    
+    ";        
     
-    $res = my_query($sql);
-    
+    $res = my_query($sql);        
     $html = '
     
     <div class="overflow-x-auto">
@@ -1381,7 +1407,7 @@ function tabela_vista_alunos_turma() {
                     $res_turno = my_query($sql);
                     $res_turno = array_shift($res_turno);
                 } else {
-                    $res_turno = ['numero' => 'Todos'];
+                    $res_turno = ['numero' => 'N/A'];
                 }                            
 
                 $html .= '

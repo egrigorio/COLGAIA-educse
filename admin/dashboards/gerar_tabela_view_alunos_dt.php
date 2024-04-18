@@ -8,7 +8,9 @@ INNER JOIN users ON users.id = rel_turno_user.id_user
 INNER JOIN turno ON turno.id = rel_turno_user.id_turno 
 WHERE rel_turno_user.id_turma = $id_turma AND users.cargo = 'aluno' " . ((isset($_GET['turno_numero']) && $_GET['turno_numero'] != 'all') ? "AND turno.numero = " . $_GET['turno_numero'] : "");
 
+
 $res = my_query($sql);
+
 
 
 $html = '
@@ -64,6 +66,8 @@ foreach ($res as $aluno) {
         INNER JOIN turma ON rel_turma_user.id_turma = turma.id
         WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1";
         $res_turma = my_query($sql);
+        
+        
         $res_turma ? $nome_turma = $res_turma[0]['nome_turma'] : $nome_turma = 'Sem turma';
         /* $_GET['editar'] = 'true'; */
         

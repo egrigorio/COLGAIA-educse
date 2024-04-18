@@ -73,16 +73,55 @@ foreach ($res as $aluno) {
         WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1";
         $res_turma = my_query($sql);
         $res_turma ? $nome_turma = $res_turma[0]['nome_turma'] : $nome_turma = 'Sem turma';
-        
+        $sql = "SELECT nome_turma, id FROM turma WHERE id_curso = $id_curso";
+        $res_turmas = my_query($sql);
+        $sql = "SELECT rel_turma_user.id_turma FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1";
+        $res_turma_user_participa = my_query($sql);        
+        $res_turma_user_participa = array_shift($res_turma_user_participa);        
+        $options = '';
+        foreach($res_turmas as $k => $v) {
+            $options .= '<option ' . ($res_turma_user_participa ? ($res_turma_user_participa['id_turma'] == $v['id'] ? 'selected' : '') : '') . ' value="' . $v['id'] . '">' . $v['nome_turma'] . '</option>';                        
+        }
+        if($options == '') {
+            $options = '<option value="Sem turmas">Sem turmas</option>';
+        }
         
          
         $html .= '
-                            <td>' . $nome_turma . '</td>
+                            <td>' 
+                            . 
+                            
+                                (isset($_GET['editar']) ? 
+                                '
+                                <select name="select_id_turma%' . $aluno['id'] . '" class="select w-full max-w-xs">
+                                    ' . 
+                                    $options
+                                    . '                                                                                                                                                 
+                                </select>
+                                '
+                                :
+                                '
+                                <input type="text" value="' . $nome_turma . '" disabled></input>
+                                ')
+
+                            .
+                             '</td>
                             
                             <th>
-                                <a href="' . $arrConfig['url_admin'] . 'editar/alunos_curso.php?id_user=' . $aluno['id'] . '" class="btn btn-ghost btn-xs">
+                                ' . (isset($_GET['editar']) ? 
+                                '
+                                <a onclick="document.getElementById(\'form_edicao_alunos_curso\').submit();" class="btn btn-ghost btn-xs">
+                                    Confirmar
+                                </a>
+                                ' 
+                                : 
+                                '
+                                <a href="' . $arrConfig['url_admin'] . 'curso.php?editar=true&tab=alunos" class="btn btn-ghost btn-xs">
                                     <i class="fas fa-edit"></i>
                                 </a>
+                                '
+                                ) . '
+                                
                                 |                                                                                
                                 <a onClick="
                                 

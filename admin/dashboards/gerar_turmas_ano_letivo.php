@@ -33,7 +33,7 @@ $html = '
             '; 
             
             foreach($res as $turma) {
-                $sql = "SELECT * FROM turno WHERE id_turma = " . $turma['id'];
+                $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $turma['id'];
                 $res_turno = my_query($sql);
                 $sql = "SELECT username FROM users WHERE id = " . $turma['id_diretor_turma'];
                 $res_dt = my_query($sql);
