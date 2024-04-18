@@ -794,11 +794,14 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
     foreach($arr_disciplinas as $disciplina) {
         $sql = "SELECT * FROM disciplinas 
         INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
-        WHERE disciplinas.id = " . $disciplina['id_disciplina'] . "";
+        WHERE disciplinas.id = " . $disciplina['id_disciplina'] . " AND rel_disciplina_turma.id_turma = " . $id_turma . " AND disciplinas.ativo = 1";
+     
+        
         $res = my_query($sql);
         
-    
-        $html .= '<option value="' . $res[0]['id'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
+        if(count($res) > 0) {                    
+        $html .= '<option value="' . $res[0]['id_disciplina'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
+        }
     }            
     $turno = isset($_GET['turno']) ? $_GET['turno'] : -1;
     $html .= '                                                        
@@ -946,7 +949,7 @@ function agenda_turma() {
     INNER JOIN eventos ON eventos.id = atividades.id_evento
     WHERE rel_atividades_turma.id_turma = " . $id_turma;        
     $res = my_query($sql);
-                
+         
     $eventos_modelo = [];
     
     foreach($res as $vEvento) {
@@ -1150,20 +1153,25 @@ function tabela_turnos_diretor_turma() {
                 </thead>
                 <tbody>
             '; 
-            
+            $numeros = [];
             foreach($res as $turno) {
-                $html .= '        
-                <tr>            
-                    <td>' . $turno['numero'] . '</td>
-                    <td>
-                    <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_remover_turno_turma.mod.php' . '">
-                        <input type="hidden" name="id_turno" value="' . $turno['id'] . '" ></input>
-                        <input type="hidden" name="id_turma" value="' . $id_turma . '" ></input>
-                        <button type="submit" class="btn btn-ghost btn-xs">X</button>
-                    </form>
-                    </td>
-                </tr>
-                ';
+                if(!in_array($turno['numero'], $numeros)) {
+                    $numeros[] = $turno['numero'];
+                    $html .= '
+                    <tr>
+                        <td>' . $turno['numero'] . '</td>
+                        <td>
+                            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_remover_turno_turma.mod.php' . '">
+                                <input type="hidden" name="id_turno" value="' . $turno['id'] . '">
+                                <input type="hidden" name="id_turma" value="' . $id_turma . '">
+                                <button class="btn btn-ghost">Remover</button>
+                            </form>
+                        </td>
+                    </tr>
+                    ';
+                } else {
+                    continue;
+                }
             }
             $html .= '     
                 </tbody>
@@ -1403,7 +1411,7 @@ function tabela_vista_alunos_turma() {
 
             foreach($res as $k => $v) {
                 if($v['id_turno'] != -1) {
-                    $sql = "SELECT numero FROM turno WHERE id = " . $v['id_turno'];
+                    $sql = "SELECT numero FROM turno WHERE id = " . $v['id_turno'] . "";
                     $res_turno = my_query($sql);
                     $res_turno = array_shift($res_turno);
                 } else {

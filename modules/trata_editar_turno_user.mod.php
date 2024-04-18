@@ -11,7 +11,7 @@ $id_turma = $new_post['id_turma'];
 unset($new_post['id_turma']);
 
 foreach($new_post as $key => $value){
-    $sql = "SELECT id FROM turno WHERE numero = '$value' AND id_turma = $id_turma";
+    $sql = "SELECT turno.id FROM turno INNER JOIN rel_turno_user ON rel_turno_user.id_turno = turno.id WHERE turno.numero = '$value' AND rel_turno_user.id_turma = $id_turma";
     echo $sql;
     $res = my_query($sql);
     

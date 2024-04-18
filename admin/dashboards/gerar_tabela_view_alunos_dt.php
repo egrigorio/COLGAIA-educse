@@ -87,12 +87,18 @@ foreach ($res as $aluno) {
                                         
                                     ';
 
-                                $sql = "SELECT numero FROM turno WHERE id_turma = $id_turma";
+                                $sql = "SELECT numero FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma;
                                 $res_turno = my_query($sql);
+                                $numeros = array();
                                 foreach($res_turno as $turno) {
-                                    $html .='
+                                    if(!in_array($turno['numero'], $numeros)) {                                      
+                                        $numeros[] = $turno['numero'];
+                                        $html .='
                                         <option ' . ($turno['numero'] == $aluno['turno'] ? 'selected' : '') . ' value="' . $turno['numero'] . '">' . $turno['numero'] . '</option>
-                                    ';
+                                        ';
+                                    } else {
+                                        continue;
+                                    }
                                 }
                                 $html .= '
                                     </select>
