@@ -21,8 +21,11 @@ if($tem_turma) {
         $res_turma_antiga = array_shift($res_turma_antiga);                                                                       // pego o id que assim posso remover e fazer o que quiser
         $id_turma_antiga = $res_turma_antiga['id'];                                                                               // depois. 
         
+        $sql = "INSERT INTO esforco";
+        $id_esforco = my_query($sql);
+
         $nome_nova_turma = ($i + 10) . 'º ' . $abreviatura;                                                                             // Aqui eu defino o nome da nova turma
-        $sql = "INSERT INTO turma (id_curso, ano_letivo, nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', '$nome_nova_turma')";    // Insiro a nova turma na BD
+        $sql = "INSERT INTO turma (id_curso, ano_letivo, id_esforco ,nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', $id_esforco ,'$nome_nova_turma')";    // Insiro a nova turma na BD
         $res_id_turma_nova = my_query($sql);                                                                                            // e pego o id da nova turma no $res_id_turma_nova
 
         $sql = "SELECT * FROM rel_disciplina_curso_ano WHERE id_curso = $id_curso AND ano = $i"; // aqui eu pego as disciplinas do curso relativas ao ano para inserir na nova turma
@@ -99,8 +102,11 @@ if($tem_turma) {
     $id_user = $_SESSION['id'];
     for($i = 1; $i <= $res['duracao']; $i++) {
         $nome_turma = $i + 9 . 'º ' . $res['abreviatura'];
-        
-        $sql = "INSERT INTO turma (id_curso, ano_letivo, nome_turma) VALUES ($id_curso, '$ano_letivo', '$nome_turma')";        
+
+        $sql = "INSERT INTO esforco (limite) VALUES (DEFAULT)";
+        $id_esforco = my_query($sql);
+
+        $sql = "INSERT INTO turma (id_curso, ano_letivo, id_esforco, nome_turma) VALUES ($id_curso, '$ano_letivo', $id_esforco, '$nome_turma')";        
         $res_id_turma_nova = my_query($sql);  
         $sql = "INSERT INTO rel_turma_user (id_turma, id_user, ativo) VALUES ($res_id_turma_nova, $id_user , 1)";
             my_query($sql);      

@@ -1,11 +1,16 @@
 
 <?php
 function calcular_esforco_dia($data, $data_certa, $res, $esforco_turma) {
+        
+    // o que é a data? é a data do dia que eu quero calcular o esforço
+    // o que é o data_certa? é a data do dia que eu quero calcular o esforço, mas em formato de DateTime
+    // o que é o res? é o resultado da query que eu fiz para pegar as atividades da turma
+    // o que é o esforco_turma? é o resultado da query que eu fiz para pegar o esforço da turma
     $esforco_dia = 0;
     for($i = 0; $i < count($res); $i++) {
         $comeco = new DateTime($res[$i]['comeco']);
         $fim = new DateTime($res[$i]['fim']);
-        if($data >= $comeco->format('Y-m-d') && $data <= $fim->format('Y-m-d')) {
+        if($data >= $comeco->format('Y-m-d') && $data <= $fim->format('Y-m-d')) { 
             if($res[$i] !== 'limite' || $res[$i] !== 'barreira' || $res[$i] !== 'id' || $res[$i] !== 'ativo') { 
                 $dia_semana = $data_certa->format('N');
                 if($esforco_turma['dia_' . ($dia_semana - 1)] == 1) {                                

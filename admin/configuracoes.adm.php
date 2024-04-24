@@ -153,12 +153,18 @@ function def_config_adm($modulo, &$arr_config)
             break;
             case 'tabs_direcao_turma': 
                 $arr_config = array(
-                    'tab1' => array(
+                    'tab0' => array(
+                        'label' => 'Painel da turma',
+                        'content' => painel_direcao_turma(),
+                        'checked' => 1,
+                        'name' => 'tabs_dt'
+                    ),
+                    /* 'tab1' => array(
                         'label' => 'Customização',
                         'content' => 'Tab content 1',
                         'checked' => 0,
                         'name' => 'tabs_dt'
-                    ),
+                    ), */
                     'tab2' => array(
                         'label' => 'Turno',
                         'content' => tabela_turnos_diretor_turma(),
@@ -186,7 +192,7 @@ function def_config_adm($modulo, &$arr_config)
                     'tab6' => array(
                         'label' => 'Agenda',
                         'content' => agenda_turma(),
-                        'checked' => 1,
+                        'checked' => 0,
                         'name' => 'tabs_dt'
                     ),
 

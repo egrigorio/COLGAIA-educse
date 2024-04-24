@@ -473,3 +473,190 @@ function gerar_tabelas($modulo, &$chave,$filtro) {
 
 
 }
+
+function gerar_dados_chart_atividades_turno($id_turma, &$labels, &$data) {
+    $sql = "SELECT COUNT(*) FROM rel_atividades_turma WHERE id_turma = " . $id_turma;
+    $res_todas_atividades = my_query($sql);    
+    $num_total_atividades = $res_todas_atividades[0]['COUNT(*)'];    
+    $sql = "SELECT turno.numero, turno.id FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";
+    $res_turnos = my_query($sql);    
+    $num_atv_turno = [];
+    $labels = [];
+    $data = [];    
+    foreach($res_turnos as $turno) {
+        $sql = "SELECT COUNT(*) FROM rel_atividades_turma     
+        INNER JOIN atividades ON atividades.id = rel_atividades_turma.id_atividade
+        WHERE rel_atividades_turma.id_turma = $id_turma AND atividades.id_turno = {$turno['id']}";
+        $res = my_query($sql);
+        $num_atv_turno[$turno['numero']] = $res[0]['COUNT(*)'];
+        $labels[] = 'Turno ' . $turno['numero'];
+        $data[] = $res[0]['COUNT(*)'];
+    }
+    
+    $labels[] = 'Turma toda';
+    $data[] = $num_total_atividades - array_sum($data);
+}
+
+
+
+function gerar_dados_chart_atividades_turno_mes($id_turma, &$labels, &$data) {
+    $sql = "SELECT turno.numero, turno.id FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";
+    $res_turnos = my_query($sql);
+
+    $sql = "SELECT eventos.comeco, eventos.fim, atividades.id_turno FROM rel_atividades_turma     
+        INNER JOIN atividades ON atividades.id = rel_atividades_turma.id_atividade 
+        INNER JOIN eventos ON atividades.id_evento = eventos.id 
+        WHERE rel_atividades_turma.id_turma = $id_turma";
+    $res = my_query($sql);
+
+    usort($res, function($a, $b) {
+        return strtotime($a['comeco']) - strtotime($b['comeco']);
+    });
+
+    $start_date = date('Y-m', strtotime($res[0]['comeco']));
+    $end_date = date('Y-m', strtotime(end($res)['fim']));
+
+    while (strtotime($start_date) <= strtotime($end_date)) {
+        $labels[] = $start_date;
+        foreach ($res_turnos as $turno) {
+            $count = 0;
+            foreach ($res as $event) {
+                if ($event['id_turno'] == $turno['id'] && date('Y-m', strtotime($event['comeco'])) <= $start_date && date('Y-m', strtotime($event['fim'])) >= $start_date) {
+                    $count++;
+                }
+            }
+            $data[$turno['numero']][] = $count;
+        }
+        $start_date = date('Y-m', strtotime("+1 month", strtotime($start_date)));
+    }
+    
+}
+
+function gerar_dados_chart_atividades_disciplinas($id_turma, &$labels, &$data) {
+    $sql = "SELECT id_disciplina FROM rel_disciplina_turma WHERE id_turma = $id_turma";
+    $res = my_query($sql);                    
+    foreach($res as $disciplina) {                    
+        $sql = "SELECT COUNT(*), disciplinas.nome FROM rel_atividades_turma 
+        INNER JOIN atividades ON atividades.id = rel_atividades_turma.id_atividade 
+        INNER JOIN disciplinas ON atividades.id_disciplina = disciplinas.id 
+        WHERE rel_atividades_turma.id_turma = $id_turma AND disciplinas.id = {$disciplina['id_disciplina']} GROUP BY disciplinas.nome";    
+        $res_label_data = my_query($sql);        
+        if(count($res_label_data) > 0) {                    
+            $labels[] = $res_label_data[0]['nome'];
+            $data[] = $res_label_data[0]['COUNT(*)'];
+        }        
+    }    
+}
+
+function gerar_dados_esforco_semanal_turma($id_turma, &$labels, &$data) {    
+    $sql = "SELECT turno.numero, turno.id FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";    
+    $res_turnos = my_query($sql);
+    $sql = "SELECT esforco.* FROM esforco 
+    INNER JOIN turma ON turma.id_esforco = esforco.id 
+    WHERE turma.id = $id_turma";
+    $esforco_turma = my_query($sql);
+    $esforco_turma = array_shift($esforco_turma);
+    foreach($res_turnos as $turno) {
+        $filtro_turno = ($turno['id'] != -1 ? "AND atividades.id_turno = {$turno['id']}" : "" );
+        $sql = "SELECT eventos.*, atividades.tempo_sugerido FROM atividades 
+        INNER JOIN rel_atividades_turma ON atividades.id = rel_atividades_turma.id_atividade 
+        INNER JOIN eventos ON eventos.id = atividades.id_evento
+        WHERE rel_atividades_turma.id_turma = $id_turma $filtro_turno";            
+            
+        $res = my_query($sql);    
+        if(count($res) > 0) {
+            //calcular tempo médio diario da atividade        
+            for($i = 0; $i < count($res); $i++) {
+                $atividade = $res[$i];
+                $tempo_medio_diario = 0;
+                $comeco = new DateTime($atividade['comeco']);
+                $fim = new DateTime($atividade['fim']);
+                if($comeco == $fim) {
+                    $tempo_medio_diario = $atividade['tempo_sugerido'];
+                } else {
+                    $fim->modify('+1 day');
+                    /* $dias = $comeco->diff($fim)->days; */
+                    $dias = 0;
+                    // saber quantos dias eu verdadeiramente tenho, percorrer os dias entre o comeco e o fim, e ver se é dia de trabalho
+                    $tempo_medio_diario = 0;
+                    for($j = $comeco; $j < $fim; $j->modify('+1 day')) {
+                        $dia_semana = $j->format('N');
+                        if($esforco_turma['dia_' . ($dia_semana - 1)] == 1) {
+                            $dias++;
+                        }
+                    }
+                    
+                    $tempo_medio_diario = $atividade['tempo_sugerido'] / $dias;
+                }
+                $res[$i]['tempo_medio_diario'] = $tempo_medio_diario;
+                
+            }
+            // fim do calculo, agora cada atividade tem o tempo médio diario
+    
+            // pegar o dia da primeira atividade e o dia da última atividade
+            $menor_data = new DateTime($res[0]['comeco']);
+            $maior_data = new DateTime($res[0]['fim']);
+    
+            for($i = 0; $i < count($res); $i++) {
+                $comeco = new DateTime($res[$i]['comeco']);
+                $fim = new DateTime($res[$i]['fim']);
+                if($comeco < $menor_data) {
+                    $menor_data = $comeco;
+                }
+                if($fim > $maior_data) {
+                    $maior_data = $fim;
+                }
+            }
+    
+            // percorrer todas as datas entre o intervalo, e verificar o esforço em cada dia
+            $intervalo = new DateInterval('P1D'); 
+            $maior_data->modify('+1 day');
+            $daterange = new DatePeriod($menor_data, $intervalo, $maior_data);
+            $esforco = 0;
+            foreach($daterange as $data) {
+                $data_certa = $data;
+                $data = $data->format('Y-m-d');
+                $esforco_dia = calcular_esforco_dia($data, $data_certa, $res, $esforco_turma);            
+                $esforco += $esforco_dia;
+                $eventos_esforco[$data] = $esforco_dia;
+            }
+        }        
+    }
+    
+    list($data, $labels) = agrupar_por_semana($eventos_esforco);    
+    
+}
+function agrupar_por_semana($eventos_esforco) {
+    $esforco_semanal = [];
+    $labels = [];
+    $semana = 0;
+    $esforco = 0;
+
+    // Calcular as datas de início e fim do período de 4 semanas
+    $inicio = strtotime('this week last sunday');
+    $fim = strtotime('+3 weeks next saturday', $inicio);
+
+    foreach ($eventos_esforco as $data => $valor) {
+        $timestamp = strtotime($data);
+        if ($timestamp < $inicio || $timestamp > $fim) {
+            continue;
+        }
+        $dia_semana = date('w', $timestamp);
+        $esforco += $valor;
+        if ($dia_semana == 6) { // 6 = sábado
+            $esforco_semanal[] = $esforco;
+            $labels[] = $semana == 0 ? 'Semana atual' : 'Semana ' . ($semana + 1);
+            $esforco = 0;
+            $semana++;
+        }
+    }
+    // Adicionar o esforço restante se a última semana não terminou no sábado
+    if ($esforco > 0) {
+        $esforco_semanal[] = $esforco;
+        $labels[] = 'Semana ' . ($semana + 1);
+    }
+    return [$esforco_semanal, $labels];
+}
+
+
+

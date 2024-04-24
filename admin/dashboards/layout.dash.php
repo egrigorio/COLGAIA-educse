@@ -23,21 +23,21 @@ function navbar($arr_items) {
         if (isset($item['nome_curso'])) {
             if ($query == '') {
                 echo '
-                    <a href="' . $arrConfig['url_admin'] . 'curso.php?" class="btn btn-ghost text-sm btn-active">' . $item['abreviatura'] . '</a>
+                    <a href="' . $arrConfig['url_admin'] . 'curso.php?' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm btn-active">' . $item['abreviatura'] . '</a>
                     ';
             } else {
                 echo '
-                    <a href="' . $arrConfig['url_admin'] . 'curso.php?" class="btn btn-ghost text-sm">' . $item['abreviatura'] . '</a>
+                    <a href="' . $arrConfig['url_admin'] . 'curso.php?' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm">' . $item['abreviatura'] . '</a>
                     ';
             }
         } else {
             if ($query == 'id_turma=' . $item['id']) {
                 echo '
-                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '" class="btn btn-ghost text-sm btn-active">' . $item['nome_turma'] . '</a>
+                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm btn-active">' . $item['nome_turma'] . '</a>
                 ';
             } else {
                 echo '
-                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '" class="btn btn-ghost text-sm">' . $item['nome_turma'] . '</a>
+                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm">' . $item['nome_turma'] . '</a>
                 ';
             }
         }
@@ -1435,5 +1435,247 @@ function tabela_vista_alunos_turma() {
     </div>
     
     ';
+    return $html;
+}
+
+
+function painel_direcao_turma() {
+    global $arrConfig;
+    $id_turma = $_GET['id_turma'];
+    /* gráfico nº atividades por turno */
+    $labels_atv_turnos = [];
+    $data_atv_turnos = [];
+    gerar_dados_chart_atividades_turno($id_turma, $labels_atv_turnos, $data_atv_turnos);
+    /* gráfico atividades do turno por mês */
+    $labels_atv_turnos_mes = [];
+    $data_atv_turnos_mes = [];
+    gerar_dados_chart_atividades_turno_mes($id_turma, $labels_atv_turnos_mes, $data_atv_turnos_mes);
+    /* gráfico de atividades por disciplinas */
+    $labels_atv_disciplinas = [];
+    $data_atv_disciplinas = [];
+    gerar_dados_chart_atividades_disciplinas($id_turma, $labels_atv_disciplinas, $data_atv_disciplinas);
+    /* gráfico de esforço semanal por turno */
+    $labels_esforco_semanal = [];
+    $data_esforco_semanal = [];
+    gerar_dados_esforco_semanal_turma($id_turma, $labels_esforco_semanal, $data_esforco_semanal);
+
+
+    $html = '
+    <div class=" flex w-1/5 h-1/5 gap-4">
+        <canvas id="myChart_atv_turno"></canvas>
+        <div class="divider lg:divider-horizontal"></div>
+        <canvas id="myChart_atv_turno_mes"></canvas>
+        <div class="divider lg:divider-horizontal"></div>
+        <canvas id="myChart_atv_disciplinas"></canvas>
+        <div class="divider lg:divider-horizontal"></div>
+        <canvas id="myChart_esforco_semanas"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        var chart_esforco_semanas = document.getElementById("myChart_esforco_semanas").getContext("2d");
+        var data_esforco_semanas = {
+            labels: ' . json_encode($labels_esforco_semanal) . ',
+            datasets: [{       
+                label: "Esforço semanal",         
+                data: ' . json_encode($data_esforco_semanal) . ',
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)"
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)"
+                ],
+                borderWidth: 1
+            }]
+        };
+        const config_esforco_semanal = {
+            type: \'bar\',
+            data: data_esforco_semanas,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                    position: \'top\',
+                },
+                title: {
+                    display: true,
+                    text: \'Esforço nas próximas semanas (horas)\'
+                }
+            },
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            },            
+        };
+        new Chart(chart_esforco_semanas, config_esforco_semanal);
+
+        var bar_disciplinas = document.getElementById("myChart_atv_disciplinas").getContext("2d");        
+        var data_disciplinas = {
+            labels: ' . json_encode($labels_atv_disciplinas) . ',
+            datasets: [{
+                label: "Total de atividades",
+                data: ' . json_encode($data_atv_disciplinas) . ',
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)"
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)"
+                ],
+                borderWidth: 1
+            }]
+        };
+        const config_disciplinas = {
+            type: \'pie\',
+            data: data_disciplinas,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: \'top\',
+                    },
+                    title: {
+                        display: true,
+                        text: \'Total de atividades/disciplinas\'
+                    }
+                }
+            },
+        };
+        new Chart(bar_disciplinas, config_disciplinas);
+        
+
+        
+
+                
+
+        var bar_turno_mes = document.getElementById("myChart_atv_turno_mes").getContext("2d");
+        var labels = ' . json_encode($labels_atv_turnos_mes) . ';
+        var data = ' . json_encode($data_atv_turnos_mes) . ';
+        var datasets = [];
+
+        var colors = [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 159, 64, 0.2)"
+        ];
+
+        var borderColors = [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 159, 64, 1)"
+        ];
+
+        var i = 0;
+        for (var turno in data) {
+            datasets.push({
+                label: "Turno " + turno,
+                data: data[turno],
+                backgroundColor: colors[i % colors.length],
+                borderColor: borderColors[i % borderColors.length],
+                borderWidth: 1
+            });
+            i++;
+        }
+
+        var data_turno_mes = {
+            labels: labels,
+            datasets: datasets
+        };
+
+        const config_turno_mes = {
+            type: \'line\',
+            data: data_turno_mes,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: \'top\',
+                    },
+                    title: {
+                        display: true,
+                        text: \'Atividades por mês por turno\'
+                    }
+                }
+            },
+        };
+        new Chart(bar_turno_mes, config_turno_mes);
+
+
+        var ctx = document.getElementById("myChart_atv_turno").getContext("2d");
+
+        var data = {
+            labels: ' . json_encode($labels_atv_turnos) . ',
+            datasets: [{
+                label: "Total de atividades",
+                data: ' . json_encode($data_atv_turnos) . ',
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)"
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)"
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        var config = {
+            type: "doughnut",
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "top",
+                    },
+                    title: {
+                        display: true,
+                        text: "Total de atividades/turnos"
+                    }
+                }
+            },
+        };
+
+        new Chart(ctx, config);
+    </script>
+
+    ';
+
     return $html;
 }

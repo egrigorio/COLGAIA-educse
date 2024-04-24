@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'default'; ?>" class="bg-primary" lang="en" lang="en">
 <head>
+    <?php setlocale(LC_TIME, 'pt_BR'); ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
