@@ -146,7 +146,7 @@ function gerar_input_dinamico($campo, $nome, $chave, $arrDados, $tipo_input, $ar
 
             });
             var insertedValues' . $campo . ' = ["' . implode('","', array_map('addslashes', $valores_ja_inseridos)) . '"];
-            console.log(insertedValues' . $campo . ');
+            
             document.getElementById("' . $campo . '-input").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault(); 
@@ -198,7 +198,7 @@ function gerar_input_dinamico($campo, $nome, $chave, $arrDados, $tipo_input, $ar
                         var ' . $campo . ' = ' . $campo . 'Input.value.trim();
 
                         if(' . $campo . ') {
-                            console.log(insertedValues' . $campo . ');                  
+                                            
                             if (insertedValues' . $campo . '.includes(' . $campo . ')) {
                                 Swal.fire({
                                     title: "' . $campo . ' repetida",

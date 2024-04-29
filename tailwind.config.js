@@ -2,14 +2,27 @@
 module.exports = {
   content: ["./**/*.{html,js,php}"],
   theme: {
-    
+    extend: {
+      colors: {
+        'accent': '#37cdbe',
+      },
+      fontFamily: {
+        'cralika': ['cralika', 'system-ui']
+      }
+    }
     
   },
   plugins: [require("daisyui")],
   daisyui: {
     themes: [
-      "light",
-      "dark",
+      {
+      dark: {
+        ...require("daisyui/src/theming/themes")["dark"],
+        warning: "purple",
+        success: "purple",
+        error: "purple",
+      }
+      },      
       "cupcake",
       "bumblebee",
       "emerald",
@@ -45,7 +58,9 @@ module.exports = {
         mytheme: {
           "primary": "#bfdbfe",
           "secondary": "#3b82f6",
-          "accent": "#37cdbe",
+          "warning": "red",
+          "success": "#f5cb5c",
+          "error": "green",
           "neutral": "#ffffff",
           "base-100": "#ffffff",
 
@@ -62,13 +77,16 @@ module.exports = {
           "--tab-radius": "0.5rem", // border radius of tabs
         },
         nocas: {
-          "primary": "pink",
-          "secondary": "purple",
-          "accent": "#37cdbe",
+          "primary": "#ffcbdb",
+          "secondary": "white",
+          "warning": "#FF5733",
+          "success": "green",
+          "error": "#87ceeb",          
           "neutral": "#ffffff",
           "base-100": "#ffffff",
+          "base-200": "#ffcbdb",
 
-          fontFamily: 'Comic Sans MS, cursive',
+          fontFamily: 'cralika, system-ui',
 
           "--rounded-box": "1rem", // border radius rounded-box utility class, used in card and other large boxes
           "--rounded-btn": "0.5rem", // border radius rounded-btn utility class, used in buttons and similar element

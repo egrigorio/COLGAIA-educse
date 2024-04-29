@@ -154,7 +154,7 @@ function def_config_adm($modulo, &$arr_config)
             case 'tabs_direcao_turma': 
                 $arr_config = array(
                     'tab0' => array(
-                        'label' => 'Painel da turma',
+                        'label' => 'Dashboard',
                         'content' => painel_direcao_turma(),
                         'checked' => 1,
                         'name' => 'tabs_dt'
@@ -184,7 +184,7 @@ function def_config_adm($modulo, &$arr_config)
                         'name' => 'tabs_dt'
                     ),
                     'tab5' => array(
-                        'label' => 'Criar Atividade',
+                        'label' => 'Atividade',
                         'content' => criar_atividade_turma(),
                         'checked' => 0,
                         'name' => 'tabs_dt'

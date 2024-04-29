@@ -5,7 +5,8 @@ function calcular_esforco_dia($data, $data_certa, $res, $esforco_turma) {
     // o que é a data? é a data do dia que eu quero calcular o esforço
     // o que é o data_certa? é a data do dia que eu quero calcular o esforço, mas em formato de DateTime
     // o que é o res? é o resultado da query que eu fiz para pegar as atividades da turma
-    // o que é o esforco_turma? é o resultado da query que eu fiz para pegar o esforço da turma
+    // o que é o esforco_turma? é o resultado da query que eu fiz para pegar o esforço da turma    
+    // tempo_medio_diario é o tempo médio diário da atividade
     $esforco_dia = 0;
     for($i = 0; $i < count($res); $i++) {
         $comeco = new DateTime($res[$i]['comeco']);
@@ -44,7 +45,7 @@ function calcular_esforco_turma($turno) {
     $esforco_turma = array_shift($esforco_turma);
     
     $eventos_esforco = array();
-
+    
     $turma_atividade_esforco = [];
     $esforco = -1;
     if(count($res) > 0) {
@@ -107,78 +108,79 @@ function calcular_esforco_turma($turno) {
 
         $arr_eventos = array();
         /* pr($eventos_esforco); */
-
+        
         foreach($eventos_esforco as $k => $evento) {
             if($evento >= $esforco_turma['limite']) {
                 $arr_eventos[] = array(
                     'title' => '>= ' . $esforco_turma['limite'] . ' horas (' . number_format($evento, 1) . 'h)',
                     'start' => $k,
                     'end' => $k,
-                    'backgroundColor' => '#1E3A8A'
+                    /* 'backgroundColor' => '#1E3A8A'    */    
+                    'extendedProps' => array(
+                        'esforco' => '1'
+                    )
                 );
             } else if($evento >= $esforco_turma['barreira'] && $evento < $esforco_turma['limite']) {
                 $arr_eventos[] = array(
                     'title' => '>= ' . $esforco_turma['barreira'] . ' horas (' . number_format($evento, 1) . 'h)',
                     'start' => $k,
                     'end' => $k,
-                    'backgroundColor' => '#3B82F6'
+                    'extendedProps' => array(
+                        'esforco' => '2'
+                    ),
+
                 );
             } else if($evento < $esforco_turma['barreira'] && $evento > 0) {
                 $arr_eventos[] = array(
                     'title' => '< ' . $esforco_turma['barreira'] . ' horas (' . number_format($evento, 1) . 'h)',
                     'start' => $k,
                     'end' => $k,
-                    'backgroundColor' => '#BFDBFF'
+                    'extendedProps' => array(
+                        'esforco' => '3'
+                    ),
                 );
-            } else if($evento == 0) {
-                
+            } else if($evento == 0) {                
             }
         }
 
-        /* pr($arr_eventos); */
-
+        /* pr($arr_eventos); */                
         return $arr_eventos;
     } else {
         return [];
-    }
-    
-
-    
-        
+    }        
     
 }
-function gerar_calendario_atividades($rand, $turno) {        
-    $eventos = calcular_esforco_turma($turno);       
-    $html = gerar_calendario($eventos, 'dayGridMonth', $rand);    
+function gerar_calendario_atividades($rand, $turno) {    
+    $eventos = calcular_esforco_turma($turno);
+    $html = gerar_calendario($eventos, 'dayGridMonth', $rand);
     return $html;
 }
 
-function gerar_calendario($eventos, $view, $rand) {
-    global $arrConfig;
-    $id_turma = $_GET['id_turma'];      
-    $id_user = $_SESSION['id'];
-    $url_modules = $arrConfig['url_modules'];  
+function gerar_calendario($eventos, $view, $rand) {        
+    global $arrConfig;    
+    $id_user = $_SESSION['id'];        
     $html = ' 
-    
-    <div id="ec' . $rand . '"></div>
-    
+        
+    <div id="ec' . $rand . '"></div>    
     
     <script>            
-        let eventos' . $rand . ' = ' . json_encode($eventos) . ';
-        console.log(eventos' . $rand . ');
+        let eventos' . $rand . ' = ' . json_encode($eventos) . ';        
+        
         let ec' . $rand . ' = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), {
             view: \'' . $view . '\',
             allDaySlot: false,
-            eventStartEditable: false,
+            eventStartEditable: false,            
             views: {
                 listMonth: {                    
                     eventContent: function (arg) {
+                        
                     let arrayOfDomNodes = [];
                     let title = document.createElement("t");
                     title.innerHTML =
+                    "<div class=\'flex justify-between\'><span>" +
                         arg.event.title +
-                        " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
-                        "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
+                        "</span>  - <div>" + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "<a class=\'btn btn-ghost btn-xs\' href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-edit\'></i></a>|<a class=\'btn btn-xs btn-ghost\' href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-eye\'></i></a>|<a class=\'btn btn-xs btn-ghost\' href=\'' . $arrConfig['url_modules'] . 'trata_remover_atividade.mod.php?id_evento=" + arg.event.extendedProps.id_evento + "' . '\'><i class=\'fa fa-trash\'></i></a>" : "<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-eye\'></i></a>") +
+                        "</div></div><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
                         arg.event.extendedProps.disciplina +
                         " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
     
@@ -215,6 +217,7 @@ function gerar_calendario($eventos, $view, $rand) {
             my_modal_5.showModal();
             
         }
+        
 
 
     </script>

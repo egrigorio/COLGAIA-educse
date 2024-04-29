@@ -14,22 +14,12 @@ if(isset($_SESSION['id_curso'])) {
 
 ?>
 
-
-
-<!DOCTYPE html>
-<html lang="pt-pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../../public/styles.css">
-    
-</head>
+<?php include '../../header.php'; ?>
 <body>
     <form class="flex flex-col justify-center items-center h-screen" action="<?php echo $action ?>" method="post">
         
 
-        <div class="card w-full lg:w-6/12 shadow-xl px-2 py-12 bg-blue-200">
+        <div class="card w-full lg:w-6/12 shadow-xl px-2 py-12 bg-primary">
         <h2 class="card-title justify-center font-bold text-2xl">Registo</h2>
             <div class="card-body flex flex-col lg:flex-row items-center">
                 <div class="flex flex-col justify-center items-center  w-full lg:w-7/12 ">
@@ -66,9 +56,10 @@ if(isset($_SESSION['id_curso'])) {
                                 } else {
                                     echo '            
                                         Cargo:
-                                        <select name="cargo" id="cargo">
+                                        <select class="bg-base-100" name="cargo" id="cargo">
                                             <option value="aluno">Aluno</option>
                                             <option value="professor">Professor</option>
+                                            <option value="instituicao">Instituição</option>
                                         </select>
                                     ';
                                 }
@@ -84,7 +75,7 @@ if(isset($_SESSION['id_curso'])) {
                 </div>
             </div>
             <div class="flex justify-center mt-4">
-                <button class="btn bg-blue-300">Registar</button>
+                <button class="btn bg-base-100">Registar</button>
             </div>
             <div class="flex justify-center mt-4">                
                 <?php echo isset($_SESSION['erro']) ? $_SESSION['erro'] : ''; ?>

@@ -12,7 +12,7 @@ echo $codigo;
 echo $_SESSION['codigo'];
 if($codigo != $_SESSION['codigo']) {
     $_SESSION['erro'] = 'Código inválido';
-    header('Location: ../auth/verificar_email.php');
+    header('Location: ../pages/auth/verificar_email.php');
     exit;
 
 } 

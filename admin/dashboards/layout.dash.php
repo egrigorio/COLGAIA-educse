@@ -60,13 +60,14 @@ function navbar($arr_items) {
                         <img alt="Tailwind CSS Navbar component" src="' . $arrConfig['url_pfp'] . $_SESSION['pfp'] . '" />
                     </div>
                 </div>
+                
                     <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                         <li>
                         <a class="justify-between">
                             Profile
                             <span class="badge">New</span>
                         </a>
-                        </li>
+                        </li>                        
                         <li><a>Settings</a></li>
                         <li><a href="' . (isset($_GET['al']) ? ($arrConfig['url_admin'] . 'curso.php') : '?al=true') . '">Vista de ' . (isset($_GET['al']) ? get_ano_letivo() : get_proximo_ano_letivo(get_ano_letivo())) . '</a></li>
                         <li><a href="' . $arrConfig['url_modules'] . 'trata_logout.mod.php' . '">Logout</a></li>
@@ -95,29 +96,32 @@ function turma($arr_turma, &$flag_direcao_turma) {
     echo '
         </b>
     </div>
-    <div role="tablist" class="bg-primary tabs tabs-lifted">
-
-    ';
-    $tabs = $flag_direcao_turma ? 'tabs_direcao_turma' : 'tabs_turma';
-    def_config_adm($tabs, $arr_config);
-
-    foreach ($arr_config as $kCampos => $vCampos) {
-        if($flag_tab_get) {            
-            if(strtolower($vCampos['label']) == $_GET['tab']) {                                
-                $vCampos['checked'] = 1;
-                $flag_tabs = true;
-            } else {                
-                $flag_tabs = false;
-            }
-        }        
-        echo '
-        <input type="radio" name="' . $vCampos['name'] . '" role="tab" class="tab" aria-label="' . $vCampos['label'] . '" ' . ($vCampos['checked'] == 1 ? 'checked' : '')  . ' />
-        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-            ' . $vCampos['content'] . '
-        </div>
+    <div class="">
+        
+        <div role="tablist" class="tabs tabs-lifted">
         ';
-    }
-    echo '
+        $tabs = $flag_direcao_turma ? 'tabs_direcao_turma' : 'tabs_turma';
+        def_config_adm($tabs, $arr_config);
+        foreach ($arr_config as $kCampos => $vCampos) {
+            if($flag_tab_get) {
+                if(strtolower($vCampos['label']) == $_GET['tab']) {
+                    $vCampos['checked'] = 1;
+                    $flag_tabs = true;
+                } else {
+                    $flag_tabs = false;
+                }
+            }
+            echo '
+            <input type="radio" name="' . $vCampos['name'] . '" role="tab" class="tab" aria-label="' . $vCampos['label'] . '" ' . ($vCampos['checked'] == 1 ? 'checked' : '')  . ' />
+        
+            <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                ' . $vCampos['content'] . '
+            </div>
+        
+            ';
+        }
+        echo '
+        </div>
     </div>
     ';
 
@@ -218,7 +222,7 @@ function professores_tabs_cursos() {
     </div>
         <script>
             document.getElementById(\'select_tabelas\').addEventListener(\'change\', function() {
-                console.log(this.value);
+                
                 var valorSelecionado = this.value;
                 var tabela = document.getElementById(\'tabela_professores\');
 
@@ -852,7 +856,11 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
     </div>
     <script>
         function gerar_calendario(eventos' . $rand . ' = null) {
-            
+            /* eventos' . $rand . '.forEach(function(evento) {
+                if(evento.backgroundColor == \'#1E3A8A\') {
+                    evento.backgroundColor = \'red\';                                        
+                }
+            }); */
             var calendarElement = document.getElementById(\'ec' . $rand . '\');                        
             if (calendarElement) {
                 calendarElement.innerHTML = "";
@@ -861,6 +869,27 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                 view: \'dayGridMonth\',
                 allDaySlot: false,
                 eventStartEditable: false,
+                eventClassNames: function(eventInfo) {
+                    console.log(eventInfo.event.extendedProps.esforco);
+                    
+                    switch(Number(eventInfo.event.extendedProps.esforco)) {
+                        case 1:
+                            console.log(\'aqui 1\')
+                            return [\'bg-red-400\'];
+                            break;
+                        case 2:
+                            console.log(\'aqui 2\')
+                            return [\'bg-yellow-200\'];
+                            break;
+                        case 3:
+                            console.log(\'aqui 3\')
+                            return [\'bg-green-400\'];
+                            break;                                             
+                    }
+                    
+                    
+
+                },
                 views: {
                     listMonth: {                    
                         eventContent: function (arg) {
@@ -892,7 +921,8 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                 
                 events: eventos' . $rand . ',
         });    
-
+       
+        console.log(eventos' . $rand . ');
         }
         function clique_editar_evento(id_atv) {
             let url = window.location.href;
@@ -916,7 +946,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");            
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log(xhr.responseText);
+                    
                     var eventos = JSON.parse(xhr.responseText);
                     gerar_calendario(eventos);
                 }
@@ -928,7 +958,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
         function trata_onchange_select_turno_criar_atv() {
             
             var turno = document.getElementById("select_turno_criar_atv").value;
-            console.log(turno);
+            
             setCalendarEvents(turno);
         }
         var event = new Event(\'change\');
@@ -1077,7 +1107,9 @@ function tabela_alunos_diretor_turma() {
                     $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma;
     $res = my_query($sql);
     foreach($res as $turno) {
-                 $html .= '<option value="' . $turno['numero'] . '">Turno ' . $turno['numero'] . '</option>';
+                if($turno['numero'] != 0) {
+                    $html .= '<option value="' . $turno['numero'] . '">Turno ' . $turno['numero'] . '</option>';
+                }
     }            
     $html .= '                
                 </select>
@@ -1092,7 +1124,7 @@ function tabela_alunos_diretor_turma() {
         <script>
             function trata_onchange_select_turno() {
                 var valorSelecionado = document.getElementById(\'select_tabelas_alunos\').value;                
-                console.log(valorSelecionado);
+                
                 var tabeladt = document.getElementById(\'tabela_alunos_diretor_turma\');
                 tabeladt.innerHTML = "";
                 var xhr = new XMLHttpRequest();
@@ -1237,7 +1269,7 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
                 
                 <a onclick="
                 var flag_tem_turmas = document.getElementById(\'form_atualizar_turmas_dc\').tem_turmas.value;
-                console.log(flag_tem_turmas);
+                
                 Swal.fire({
                     title: \'' . $alertTitle . '\',
                     text: \'Tem certeza que deseja ' . $alertText . ' as turmas?\',
@@ -1443,13 +1475,16 @@ function painel_direcao_turma() {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
     /* gráfico nº atividades por turno */
+    $flag_verif_n_atividades_turno = true;
     $labels_atv_turnos = [];
     $data_atv_turnos = [];
-    gerar_dados_chart_atividades_turno($id_turma, $labels_atv_turnos, $data_atv_turnos);
+    gerar_dados_chart_atividades_turno($id_turma, $labels_atv_turnos, $data_atv_turnos, $flag_verif_n_atividades_turno);
     /* gráfico atividades do turno por mês */
+    $flag_verif_n_atividades_turno_turma = true;
     $labels_atv_turnos_mes = [];
     $data_atv_turnos_mes = [];
-    gerar_dados_chart_atividades_turno_mes($id_turma, $labels_atv_turnos_mes, $data_atv_turnos_mes);
+    gerar_dados_chart_atividades_turno_mes($id_turma, $labels_atv_turnos_mes, $data_atv_turnos_mes, $flag_verif_n_atividades_turno_turma);        
+    $condicao = ($flag_verif_n_atividades_turno_turma ? '1==1' : '1==2');        
     /* gráfico de atividades por disciplinas */
     $labels_atv_disciplinas = [];
     $data_atv_disciplinas = [];
@@ -1458,11 +1493,75 @@ function painel_direcao_turma() {
     $labels_esforco_semanal = [];
     $data_esforco_semanal = [];
     gerar_dados_esforco_semanal_turma($id_turma, $labels_esforco_semanal, $data_esforco_semanal);
+    $mes_atual = date('F');
+    $porcentagem = 0;
+    $total_atividades_mes = 0;
+    $texto_atividades_mes = '';
+    gerar_dados_total_atividades_mes($id_turma, $porcentagem, $total_atividades_mes, $texto_atividades_mes);
+    $atividade_maior_duracao = get_atividade_de_maior_duracao();    
+    
+    if(count($atividade_maior_duracao) == 0) {
+        $texto_atividade_maior_duracao = '0';
+        $descricao_atividade_maior_duracao = 'N/A';
+    } else {                
+        $texto_atividade_maior_duracao = $atividade_maior_duracao[0]['tempo_sugerido'] . ' horas';
+        $descricao_atividade_maior_duracao = $atividade_maior_duracao[0]['titulo'];
+    }    
+    $mes_atual = date('m');
+    $esforco_medio_diario_turma = get_esforco_medio_diario_mes($id_turma, $mes_atual);
+    
+    $mes_anterior = date('m', strtotime('-1 month'));
+    $esforco_medio_diario_turma_mes_anterior = get_esforco_medio_diario_mes($id_turma, $mes_anterior);
+    
+    
+    
+    if($esforco_medio_diario_turma_mes_anterior == 0 && $esforco_medio_diario_turma == 0) { // não há atividades no mes anterior e no mês atual
+        $texto_porcentagem = 'N/A';
+    } else if($esforco_medio_diario_turma_mes_anterior == 0 && $esforco_medio_diario_turma != 0) { // não há atividades no mes anterior e há no atual
+        $texto_porcentagem = 'Sem esforço no mês anterior';
+    } else if($esforco_medio_diario_turma_mes_anterior != 0 && $esforco_medio_diario_turma != 0) { // há atividades no mes anterior e no atual
+        $porcentagem = (($esforco_medio_diario_turma - $esforco_medio_diario_turma_mes_anterior) / $esforco_medio_diario_turma_mes_anterior) * 100;
+        if($porcentagem > 0) {
+            $texto_porcentagem = abs(round($porcentagem, 2)) . '% a mais que o mês anterior';
+        } else {
+            $texto_porcentagem = abs(round($porcentagem, 2)) . '% a menos que o mês anterior';
+        }
 
+    } else if($esforco_medio_diario_turma_mes_anterior != 0 && $esforco_medio_diario_turma == 0) { // há atividades no mes anterior e não há no atual
+        $texto_porcentagem = 'Sem atividades no mês atual';
+    }
+    
+    
+    
 
     $html = '
-    <div class=" flex w-1/5 h-1/5 gap-4">
-        <canvas id="myChart_atv_turno"></canvas>
+    <div class=" flex w-1/5 h-1/5 gap-4">        
+
+        <div id="total_atividades_turma" class="">
+            <div class="flex flex-col gap-4">                    
+                <div class="stats shadow">
+                    <div class="stat">
+                        <div class="stat-title">Número de atividades em ' . $mes_atual . '</div>
+                        <div class="stat-value">' . $total_atividades_mes . '</div>
+                        <div class="stat-desc">' . $texto_atividades_mes . '</div>
+                    </div>
+                </div>
+                <div class="stats shadow">
+                    <div class="stat">
+                        <div class="stat-title">Atividade de maior duração</div>
+                        <div class="stat-value">' . $texto_atividade_maior_duracao . '</div>
+                        <div class="stat-desc">' . $descricao_atividade_maior_duracao . '</div>
+                    </div>
+                </div>
+                <div class="stats shadow">
+                    <div class="stat">
+                        <div class="stat-title">Esforço médio diário em abril</div>
+                        <div class="stat-value">' . $esforco_medio_diario_turma . ' h/dia</div>
+                        <div class="stat-desc">' . $texto_porcentagem . '</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="divider lg:divider-horizontal"></div>
         <canvas id="myChart_atv_turno_mes"></canvas>
         <div class="divider lg:divider-horizontal"></div>
@@ -1524,6 +1623,7 @@ function painel_direcao_turma() {
         var bar_disciplinas = document.getElementById("myChart_atv_disciplinas").getContext("2d");        
         var data_disciplinas = {
             labels: ' . json_encode($labels_atv_disciplinas) . ',
+            
             datasets: [{
                 label: "Total de atividades",
                 data: ' . json_encode($data_atv_disciplinas) . ',
@@ -1563,17 +1663,12 @@ function painel_direcao_turma() {
             },
         };
         new Chart(bar_disciplinas, config_disciplinas);
-        
-
-        
-
-                
-
+                        
         var bar_turno_mes = document.getElementById("myChart_atv_turno_mes").getContext("2d");
         var labels = ' . json_encode($labels_atv_turnos_mes) . ';
         var data = ' . json_encode($data_atv_turnos_mes) . ';
         var datasets = [];
-
+        
         var colors = [
             "rgba(255, 99, 132, 0.2)",
             "rgba(54, 162, 235, 0.2)",
@@ -1593,16 +1688,38 @@ function painel_direcao_turma() {
         ];
 
         var i = 0;
-        for (var turno in data) {
+        if(' . $condicao . ') {
+            for (var turno in data) {
+                // tentar converter o turno em numero
+                var aux = parseInt(turno);
+                
+                var label;
+                if(isNaN(aux)) {
+                    label = "Todos";
+                } else {
+                    label = "Turno " + turno;
+                }
+                
+                datasets.push({
+                    label: label,
+                    data: data[turno],
+                    backgroundColor: colors[i % colors.length],
+                    borderColor: borderColors[i % borderColors.length],
+                    borderWidth: 1
+                });
+                i++;
+            }
+
+        } else {
             datasets.push({
-                label: "Turno " + turno,
-                data: data[turno],
-                backgroundColor: colors[i % colors.length],
-                borderColor: borderColors[i % borderColors.length],
+                label: "Turma toda",
+                data: data,
+                backgroundColor: colors[0],
+                borderColor: borderColors[0],
                 borderWidth: 1
             });
-            i++;
         }
+
 
         var data_turno_mes = {
             labels: labels,
@@ -1620,7 +1737,7 @@ function painel_direcao_turma() {
                     },
                     title: {
                         display: true,
-                        text: \'Atividades por mês por turno\'
+                        text: \'Atividades por mês ' . ($condicao ? '' : 'por turno') . '\'
                     }
                 }
             },
@@ -1628,51 +1745,8 @@ function painel_direcao_turma() {
         new Chart(bar_turno_mes, config_turno_mes);
 
 
-        var ctx = document.getElementById("myChart_atv_turno").getContext("2d");
+        
 
-        var data = {
-            labels: ' . json_encode($labels_atv_turnos) . ',
-            datasets: [{
-                label: "Total de atividades",
-                data: ' . json_encode($data_atv_turnos) . ',
-                backgroundColor: [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(255, 206, 86, 0.2)",
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(153, 102, 255, 0.2)",
-                    "rgba(255, 159, 64, 0.2)"
-                ],
-                borderColor: [
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(54, 162, 235, 1)",
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(153, 102, 255, 1)",
-                    "rgba(255, 159, 64, 1)"
-                ],
-                borderWidth: 1
-            }]
-        };
-
-        var config = {
-            type: "doughnut",
-            data: data,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: "top",
-                    },
-                    title: {
-                        display: true,
-                        text: "Total de atividades/turnos"
-                    }
-                }
-            },
-        };
-
-        new Chart(ctx, config);
     </script>
 
     ';

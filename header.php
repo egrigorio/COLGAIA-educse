@@ -14,3 +14,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+<script>
+    $(document).ready(function(){
+    var themes = ['nocas', 'black', 'mytheme'];
+    var currentThemeIndex = localStorage.getItem('currentThemeIndex') || 0;
+
+    $('input[type=radio][name=theme-radios]').change(function() {
+        var theme = this.value;
+        currentThemeIndex = themes.indexOf(theme);
+        localStorage.setItem('currentThemeIndex', currentThemeIndex);
+        $.ajax({
+            url: '<?php echo $arrConfig['url_modules'] . 'trata_mudar_tema.mod.php' ?>',
+            type: 'post',
+            data: {theme: theme},
+            success: function(response){
+                location.reload(); 
+            }
+        });
+    });
+
+    $(document).keydown(function(e) {
+        if(e.key == 'j' && e.metaKey) {
+            e.preventDefault();
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            localStorage.setItem('currentThemeIndex', currentThemeIndex);
+            var theme = themes[currentThemeIndex];
+            $.ajax({
+                url: '<?php echo $arrConfig['url_modules'] . 'trata_mudar_tema.mod.php' ?>',
+                type: 'post',
+                data: {theme: theme},
+                success: function(response){
+                    location.reload(); 
+                }
+            });
+        }
+    });
+});    
+</script>

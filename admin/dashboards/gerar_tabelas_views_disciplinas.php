@@ -89,7 +89,7 @@ foreach ($res as $disciplina) {
                         }
 
                         $html .= '
-                        <td>' . $disciplina['ativo'] . '</td>
+                        <td>' . ($disciplina['ativo'] ? 'Sim' : 'Não') . '</td>
                         <td>                            
                         <a onClick="
                                 

@@ -6,20 +6,12 @@ if(isset($_SESSION['id'])){
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../../public/styles.css">
-    
-</head>
+<?php include '../../header.php'; ?>
 <body>
     <form class="flex flex-col justify-center items-center h-screen" action="<?php echo $arrConfig['url_modules'] . 'trata_login.mod.php' ?>" method="post">
         
 
-        <div class="card lg:w-6/12 shadow-xl py-10 bg-blue-200">
+        <div class="card lg:w-6/12 shadow-xl py-10 bg-primary">
         <h2 class="card-title justify-center font-bold text-2xl">Login</h2>
             <div class="card-body flex flex-col lg:flex-row items-center">
                 <div class="flex flex-col justify-center items-center  w-full lg:w-7/12 ">
@@ -46,7 +38,7 @@ if(isset($_SESSION['id'])){
                 </div>
             </div>
             <div class="flex justify-center mt-4">
-                <button class="btn bg-blue-300">Login</button>
+                <button class="btn bg-base-100">Login</button>
             </div>
             <div class="flex justify-center mt-4">                
                 <?php echo isset($_SESSION['erro']) ? $_SESSION['erro'] : ''; ?>

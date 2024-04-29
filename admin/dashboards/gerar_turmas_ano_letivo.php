@@ -92,7 +92,7 @@ $html = '
                     $numeros = []; // array para evitar repetição de turnos
 
                     foreach($res_turno as $turno) {                        
-                        if(in_array($turno['numero'], $numeros)) {
+                        if(in_array($turno['numero'], $numeros) || $turno['numero'] == 0) {
                             continue;
                         } else {
                             $html .= 'Turno ' . $turno['numero'] . '<br>';

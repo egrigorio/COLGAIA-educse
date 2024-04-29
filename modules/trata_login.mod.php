@@ -30,6 +30,7 @@ if(count($arrResultado) == 0) {
     $_SESSION['tipoLog'] = "Login do $user";
     $_SESSION['cargo'] = $arrResultado[0]['cargo'];
     $_SESSION['pfp'] = $arrResultado[0]['pfp'];
+    $_SESSION['theme'] = 'mytheme';
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');
     exit;
 } else {
