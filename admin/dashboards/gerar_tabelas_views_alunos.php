@@ -73,9 +73,17 @@ foreach ($res as $aluno) {
         WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1";
         $res_turma = my_query($sql);
         $res_turma ? $nome_turma = $res_turma[0]['nome_turma'] : $nome_turma = 'Sem turma';
-        $sql = "SELECT nome_turma, id FROM turma WHERE id_curso = $id_curso";
-        $res_turmas = my_query($sql);
-        $sql = "SELECT rel_turma_user.id_turma FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1";
+        $al = isset($_GET['al']) ? $_GET['al'] : '';
+        if($al) {
+            $ano_letivo = get_proximo_ano_letivo(get_ano_letivo());
+        } else {
+            $ano_letivo = get_ano_letivo();
+        }
+        $sql = "SELECT nome_turma, id FROM turma WHERE id_curso = $id_curso AND ano_letivo = '$ano_letivo'";
+        $res_turmas = my_query($sql);        
+        $sql = "SELECT rel_turma_user.id_turma FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1 AND turma.ano_letivo = '$ano_letivo'";
+        
+        
         $res_turma_user_participa = my_query($sql);        
         $res_turma_user_participa = array_shift($res_turma_user_participa);        
         $options = '';

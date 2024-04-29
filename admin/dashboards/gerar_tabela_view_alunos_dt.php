@@ -8,7 +8,6 @@ INNER JOIN users ON users.id = rel_turno_user.id_user
 INNER JOIN turno ON turno.id = rel_turno_user.id_turno 
 WHERE rel_turno_user.id_turma = $id_turma AND users.cargo = 'aluno' " . ((isset($_GET['turno_numero']) && $_GET['turno_numero'] != 'all') ? "AND turno.numero = " . $_GET['turno_numero'] : "");
 
-
 $res = my_query($sql);
 
 

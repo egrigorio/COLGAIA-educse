@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'default'; ?>" class="bg-primary" lang="en" lang="en">
+<html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'default'; ?>" class="bg-primary selection:text-accent" lang="en" lang="en">
 <head>
     <?php setlocale(LC_TIME, 'pt_BR'); ?>
     <meta charset="UTF-8">

@@ -2,10 +2,7 @@
 module.exports = {
   content: ["./**/*.{html,js,php}"],
   theme: {
-    extend: {
-      colors: {
-        'accent': '#37cdbe',
-      },
+    extend: {      
       fontFamily: {
         'cralika': ['cralika', 'system-ui']
       }
@@ -16,11 +13,9 @@ module.exports = {
   daisyui: {
     themes: [
       {
-      dark: {
-        ...require("daisyui/src/theming/themes")["dark"],
-        warning: "purple",
-        success: "purple",
-        error: "purple",
+      "black": {
+        ...require("daisyui/src/theming/themes")["black"],
+        "accent": "#95A472",
       }
       },      
       "cupcake",
@@ -39,7 +34,7 @@ module.exports = {
       "pastel",
       "fantasy",
       "wireframe",
-      "black",
+      /* "black", */
       "luxury",
       "dracula",
       "cmyk",
@@ -59,6 +54,7 @@ module.exports = {
           "primary": "#bfdbfe",
           "secondary": "#3b82f6",
           "warning": "red",
+          "accent": "orange",
           "success": "#f5cb5c",
           "error": "green",
           "neutral": "#ffffff",
@@ -81,6 +77,7 @@ module.exports = {
           "secondary": "white",
           "warning": "#FF5733",
           "success": "green",
+          "accent": "#F865B0",
           "error": "#87ceeb",          
           "neutral": "#ffffff",
           "base-100": "#ffffff",
@@ -98,6 +95,7 @@ module.exports = {
           "--tab-border": "1px", // border width of tabs
           "--tab-radius": "0.5rem", // border radius of tabs
         },
+        
         
       }
     ],
