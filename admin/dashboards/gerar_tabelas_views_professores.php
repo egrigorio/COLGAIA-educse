@@ -43,7 +43,13 @@ if ($professor['estado'] == '1') {
     $direcao_turma = '';
     $direcao_turma = buscar_direcao_turma($professor['id']);
     $disciplinas = buscar_disciplinas_cargo($professor['id'], 'professor', $id_curso);
-    $arr_nome_turmas_participa = buscar_nome_turmas_participa_curso($professor['id'], $id_curso);
+    $al = isset($_GET['al']) ? $_GET['al'] : 0;
+    if($al) {
+        $ano_letivo = get_proximo_ano_letivo(get_ano_letivo());
+    } else {
+        $ano_letivo = get_ano_letivo();
+    }
+    $arr_nome_turmas_participa = buscar_nome_turmas_participa_curso($professor['id'], $id_curso, $ano_letivo);
     count($direcao_turma) == 0 ? $direcao_turma = 'Nenhuma turma' : $direcao_turma = $direcao_turma[0]['nome_turma'];
     $nome_turmas_participa = '';
     foreach ($arr_nome_turmas_participa as $turma) {

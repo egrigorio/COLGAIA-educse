@@ -288,8 +288,10 @@ function buscar_turmas_curso($id_curso) {
     return $arr_turmas;
 }
 
-function buscar_nome_turmas_participa_curso($id_user, $id_curso) {
-    $sql = "SELECT * FROM rel_turma_user WHERE id_user = ($id_user) AND ativo = 1";
+function buscar_nome_turmas_participa_curso($id_user, $id_curso, $ano_letivo) {
+    $sql = "SELECT * FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE id_user = ($id_user) AND rel_turma_user.ativo = 1 AND ano_letivo = '$ano_letivo'";
+    /* echo $sql;
+    die; */
     $res = my_query($sql);
     $arr_turmas = array();
     foreach($res as $k => $v) {
