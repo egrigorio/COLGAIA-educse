@@ -1282,7 +1282,7 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
                 }).then((result) => {    
                     if(result.isConfirmed) {                
                         if(flag_tem_turmas) {
-                            alert(\'Atualizando turmas\');
+                            
                             document.getElementById(\'form_atualizar_turmas_dc\').submit();
                         } else {
                             Swal.fire({

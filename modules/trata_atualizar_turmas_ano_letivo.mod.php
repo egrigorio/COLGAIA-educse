@@ -44,9 +44,9 @@ if($tem_turma) {
         INNER JOIN users ON rel_turma_user.id_user = users.id                            
         WHERE users.cargo = 'professor' AND rel_turma_user.id_turma = $id_turma_antiga"; //  #####      
         $res_professores = my_query($sql);                                               //  essa query serve para separar os ids dos professores, pq eu não
-        pr($res_professores);                                                            //  quero que os professores 'avancem' de ano também por assim dizer
-
-        $sql = "UPDATE rel_turma_user SET ativo = 0 WHERE id_turma = $id_turma_antiga"; // corto as ligações as turmas antigas por definir para 0 o ativo
+                                                                                         //  quero que os professores 'avancem' de ano também por assim dizer
+        
+        $sql = "UPDATE rel_turma_user SET ativo = 0 WHERE id_turma = $id_turma_antiga AND id_user <> $id_user_diretor_curso"; // corto as ligações as turmas antigas por definir para 0 o ativo
         $res = my_query($sql);                                                          // 
 
         $sql = "SELECT * FROM rel_turma_user INNER JOIN users ON rel_turma_user.id_user = users.id WHERE users.cargo = 'aluno' AND rel_turma_user.id_turma = $id_turma_antiga"; // me certifico aqui         
@@ -92,7 +92,7 @@ if($tem_turma) {
     $res_turma_antiga = my_query($sql);
     $res_turma_antiga = array_shift($res_turma_antiga);
     $id_turma_antiga = $res_turma_antiga['id'];
-    $sql = "UPDATE rel_turma_user SET ativo = 0 WHERE id_turma = $id_turma_antiga";    
+    $sql = "UPDATE rel_turma_user SET ativo = 0 WHERE id_turma = $id_turma_antiga AND id_user <> $id_user_diretor_curso";    
     $res = my_query($sql);
     $sql = "DELETE FROM rel_turno_user WHERE id_turma = $id_turma_antiga";
     my_query($sql);
