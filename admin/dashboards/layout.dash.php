@@ -1238,10 +1238,15 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
         }
     }
     $proximo_ano_letivo = get_proximo_ano_letivo(get_ano_letivo());
-    $sql = "SELECT id FROM turma WHERE nome_turma = '11º ITM' AND id_curso = 2 AND ano_letivo = '$proximo_ano_letivo'";
+    $sql = "SELECT * FROM curso WHERE id_diretor_curso = " . $_SESSION['id'];
+    $res = my_query($sql);
+    $abreviatura = $res[0]['abreviatura'];
+    $abreviatura = strtoupper($abreviatura);
+
+    $sql = "SELECT id FROM turma WHERE nome_turma = '11º $abreviatura' AND id_curso = 2 AND ano_letivo = '$proximo_ano_letivo'"; 
     $res = my_query($sql);
     if(count($res) > 0) {
-        $flag_turmas_2anos = true;
+        $flag_turmas_2anos = true; // se tiver turmas para o próximo ano letivo, não permitir a criação de turmas para o ano letivo atual
     }
 
     $html = '

@@ -144,7 +144,7 @@ function def_config_adm($modulo, &$arr_config)
                     'name' => 'tabs_curso'
                 ),
                 'tab5' => array(
-                    'label' => 'Gestão das Turmas',
+                    'label' => 'Turmas',
                     'content' => painel_gestao_turmas_diretor_curso(),
                     'checked' => 1,
                     'name' => 'tabs_curso'

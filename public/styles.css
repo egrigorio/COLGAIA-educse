@@ -2529,8 +2529,7 @@ html{
 
 [data-theme=mytheme]{
   --p: 88.2343% 0.057057 254.128381;
-  --b2: 93% 0 0;
-  --b3: 86% 0 0;
+  --b3: 82.0579% 0.053063 254.128381;
   --in: 72.06% 0.191 231.6;
   --bc: 20% 0 0;
   --pc: 17.6469% 0.011411 254.128381;
@@ -2548,6 +2547,7 @@ html{
   --er: 51.9752% 0.176858 142.495339;
   --n: 100% 0 0;
   --b1: 100% 0 0;
+  --b2: 88.2343% 0.057057 254.128381;
   font-family: Poppins, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -2562,8 +2562,7 @@ html{
 
 :root:has(input.theme-controller[value=mytheme]:checked){
   --p: 88.2343% 0.057057 254.128381;
-  --b2: 93% 0 0;
-  --b3: 86% 0 0;
+  --b3: 82.0579% 0.053063 254.128381;
   --in: 72.06% 0.191 231.6;
   --bc: 20% 0 0;
   --pc: 17.6469% 0.011411 254.128381;
@@ -2581,6 +2580,7 @@ html{
   --er: 51.9752% 0.176858 142.495339;
   --n: 100% 0 0;
   --b1: 100% 0 0;
+  --b2: 88.2343% 0.057057 254.128381;
   font-family: Poppins, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -2597,7 +2597,7 @@ html{
   --p: 89.1993% 0.062113 358.105745;
   --b3: 82.9553% 0.057765 358.105745;
   --in: 72.06% 0.191 231.6;
-  --bc: 20% 0 0;
+  --bc: 18.741% 0 0;
   --pc: 17.8399% 0.012423 358.105745;
   --sc: 20% 0 0;
   --ac: 14.2478% 0.038948 351.456687;
@@ -2612,7 +2612,7 @@ html{
   --a: 71.2389% 0.19474 351.456687;
   --er: 81.4817% 0.081916 225.753653;
   --n: 100% 0 0;
-  --b1: 100% 0 0;
+  --b1: 93.7049% 0 0;
   --b2: 89.1993% 0.062113 358.105745;
   font-family: cralika, system-ui;
   --rounded-box: 1rem;
@@ -2630,7 +2630,7 @@ html{
   --p: 89.1993% 0.062113 358.105745;
   --b3: 82.9553% 0.057765 358.105745;
   --in: 72.06% 0.191 231.6;
-  --bc: 20% 0 0;
+  --bc: 18.741% 0 0;
   --pc: 17.8399% 0.012423 358.105745;
   --sc: 20% 0 0;
   --ac: 14.2478% 0.038948 351.456687;
@@ -2645,7 +2645,7 @@ html{
   --a: 71.2389% 0.19474 351.456687;
   --er: 81.4817% 0.081916 225.753653;
   --n: 100% 0 0;
-  --b1: 100% 0 0;
+  --b1: 93.7049% 0 0;
   --b2: 89.1993% 0.062113 358.105745;
   font-family: cralika, system-ui;
   --rounded-box: 1rem;
@@ -11680,10 +11680,6 @@ html:has(.drawer-open.drawer-open){
   border-top-width: 1px;
 }
 
-.border-r-8{
-  border-right-width: 8px;
-}
-
 .border-solid{
   border-style: solid;
 }
@@ -12617,26 +12613,6 @@ html:has(.drawer-open.drawer-open){
   }
 }
 
-.selection\:bg-accent *::-moz-selection{
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
-}
-
-.selection\:bg-accent *::selection{
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
-}
-
-.selection\:text-xl *::-moz-selection{
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-.selection\:text-xl *::selection{
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
 .selection\:text-accent *::-moz-selection{
   --tw-text-opacity: 1;
   color: var(--fallback-a,oklch(var(--a)/var(--tw-text-opacity)));
@@ -12645,26 +12621,6 @@ html:has(.drawer-open.drawer-open){
 .selection\:text-accent *::selection{
   --tw-text-opacity: 1;
   color: var(--fallback-a,oklch(var(--a)/var(--tw-text-opacity)));
-}
-
-.selection\:bg-accent::-moz-selection{
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
-}
-
-.selection\:bg-accent::selection{
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
-}
-
-.selection\:text-xl::-moz-selection{
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-.selection\:text-xl::selection{
-  font-size: 1.25rem;
-  line-height: 1.75rem;
 }
 
 .selection\:text-accent::-moz-selection{

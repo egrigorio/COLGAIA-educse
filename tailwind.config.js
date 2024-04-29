@@ -59,6 +59,7 @@ module.exports = {
           "error": "green",
           "neutral": "#ffffff",
           "base-100": "#ffffff",
+          "base-200": "#bfdbfe",
 
           fontFamily: 'Poppins, system-ui',
 
@@ -80,7 +81,7 @@ module.exports = {
           "accent": "#F865B0",
           "error": "#87ceeb",          
           "neutral": "#ffffff",
-          "base-100": "#ffffff",
+          "base-100": "#eaeaea",
           "base-200": "#ffcbdb",
 
           fontFamily: 'cralika, system-ui',

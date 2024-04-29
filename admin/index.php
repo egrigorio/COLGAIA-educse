@@ -32,6 +32,7 @@ if($_SESSION['cargo'] == 'instituicao') {
                             <div class="">     
                                 <?php
                                 $agent = $_SERVER['HTTP_USER_AGENT'];
+                                
                                 if (strpos($agent, 'Mac') !== false) {
                                     // Code for macOS
                                     echo '<kbd class="kbd kbd-sm">⌘</kbd>';
@@ -83,7 +84,7 @@ if($_SESSION['cargo'] == 'instituicao') {
                             </div>                                     
                             <div class="">     
                                 <?php
-                                $agent = $_SERVER['HTTP_USER_AGENT'];
+                                $agent = $_SERVER['HTTP_USER_AGENT'];                                
                                 if (strpos($agent, 'Mac') !== false) {
                                     // Code for macOS
                                     echo '<kbd class="kbd kbd-sm">⌘</kbd>';

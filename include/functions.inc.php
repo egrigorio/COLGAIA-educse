@@ -289,9 +289,7 @@ function buscar_turmas_curso($id_curso) {
 }
 
 function buscar_nome_turmas_participa_curso($id_user, $id_curso, $ano_letivo) {
-    $sql = "SELECT * FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE id_user = ($id_user) AND rel_turma_user.ativo = 1 AND ano_letivo = '$ano_letivo'";
-    /* echo $sql;
-    die; */
+    $sql = "SELECT * FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE id_user = ($id_user) AND rel_turma_user.ativo = 1 AND ano_letivo = '$ano_letivo'";    
     $res = my_query($sql);
     $arr_turmas = array();
     foreach($res as $k => $v) {
@@ -316,10 +314,24 @@ function buscar_turmas_participa_curso($id_user, $id_curso) {
     return $arr_turmas;
 }
 
+function buscar_todas_turmas_que_participa() {
+    $sql = "SELECT * FROM rel_turma_user WHERE id_user = " . $_SESSION['id'] . " AND ativo = 1";
+    $res = my_query($sql);
+    $arr_turmas = array();
+    foreach($res as $k => $v) {
+        $sql = "SELECT * FROM turma WHERE id = " . $v['id_turma'];
+        $res2 = my_query($sql);
+        $arr_turmas = array_merge($arr_turmas, $res2);
+    }
+    return $arr_turmas;
+
+}
+
 function gerar_items_navbar($id) {
     $turmas = array();
     $flag_diretor_curso = false;
     $curso = buscar_cursos_diretor($id); /* pego o curso, se for diretor de curso */ 
+    $turmas = buscar_todas_turmas_que_participa();
     if(isset($curso) && count($curso) > 0) {
         
         $turmas = buscar_turmas_curso($curso[0]['id']); /* pego as turmas todas do curso, se for diretor de curso */
@@ -335,10 +347,12 @@ function gerar_items_navbar($id) {
             $res2 = my_query($sql);
             $turmas = array_merge($turmas, $res2);
         }
-        $turmas = buscar_turmas_diretor($id, $turmas);
+        $turmas = buscar_turmas_diretor($id, $turmas);        
     } else {
+        $turmas = buscar_todas_turmas_que_participa();
         $turmas = buscar_turmas_diretor($id, $turmas); /* pego as direções de turma */
-        $turmas = array_merge($curso, $turmas);
+        $turmas = array_merge($curso, $turmas);   
+
         
     }
 

@@ -127,4 +127,4 @@ if($tem_turma) {
     }
 }
 
-header('Location: ' . $arrConfig['url_admin'] . 'curso.php?tab=gestão%20das%20turmas');
+header('Location: ' . $arrConfig['url_admin'] . 'curso.php?tab=turmas');

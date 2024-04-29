@@ -11,4 +11,4 @@ foreach($id_turmas as $key => $value){
     my_query($sql);
 }
 
-header('Location: ' . $arrConfig['url_admin'] . 'curso.php?tab=gestão%20das%20turmas');
+header('Location: ' . $arrConfig['url_admin'] . 'curso.php?tab=turmas');
