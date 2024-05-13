@@ -1,18 +1,18 @@
 <?php
 include '../../include/config.inc.php';
 $valor = $_GET['valor'];
+$id_user_diretor_curso = $_SESSION['id'];
+$sql = "SELECT * FROM view_user_curso 
+        WHERE cargo = 'aluno' AND id_diretor_curso = $id_user_diretor_curso";
 
-$sql = "SELECT users.*, estado FROM users
-        JOIN rel_user_curso ON users.id = rel_user_curso.id_user
-        JOIN curso ON rel_user_curso.id_curso = curso.id
-        WHERE curso.id_diretor_curso = " . $_SESSION['id'] . " AND rel_user_curso.cargo = 'aluno'";
 $res = my_query($sql);
-
+/* pr($res);
+die; */
 switch ($valor) {
     
     case 'efetivos': {
         
-        $sql = "SELECT id FROM curso WHERE id_diretor_curso = " . $_SESSION['id'];
+        $sql = "SELECT id FROM curso WHERE id_diretor_curso = $id_user_diretor_curso";
         $res2 = my_query($sql);
 
         $id_curso = $res2[0]['id'];
@@ -70,7 +70,7 @@ foreach ($res as $aluno) {
         $sql = "SELECT turma.nome_turma 
         FROM rel_turma_user 
         INNER JOIN turma ON rel_turma_user.id_turma = turma.id
-        WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1";
+        WHERE rel_turma_user.id_user = " . $aluno['id_user'] . " AND rel_turma_user.ativo = 1";
         $res_turma = my_query($sql);
         $res_turma ? $nome_turma = $res_turma[0]['nome_turma'] : $nome_turma = 'Sem turma';
         $al = isset($_GET['al']) ? $_GET['al'] : '';
@@ -81,7 +81,7 @@ foreach ($res as $aluno) {
         }
         $sql = "SELECT nome_turma, id FROM turma WHERE id_curso = $id_curso AND ano_letivo = '$ano_letivo'";
         $res_turmas = my_query($sql);        
-        $sql = "SELECT rel_turma_user.id_turma FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1 AND turma.ano_letivo = '$ano_letivo'";
+        $sql = "SELECT rel_turma_user.id_turma FROM rel_turma_user INNER JOIN turma ON rel_turma_user.id_turma = turma.id WHERE rel_turma_user.id_user = " . $aluno['id_user'] . " AND rel_turma_user.ativo = 1 AND turma.ano_letivo = '$ano_letivo'";
         
         
         $res_turma_user_participa = my_query($sql);        
@@ -101,7 +101,7 @@ foreach ($res as $aluno) {
                             
                                 (isset($_GET['editar']) ? 
                                 '
-                                <select name="select_id_turma%' . $aluno['id'] . '" class="select w-full max-w-xs">
+                                <select name="select_id_turma%' . $aluno['id_user'] . '" class="select w-full max-w-xs">
                                     ' . 
                                     $options
                                     . '                                                                                                                                                 
@@ -144,7 +144,7 @@ foreach ($res as $aluno) {
                                         confirmButtonText: \'Sim, remover!\'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $aluno['id'] . '\';
+                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $aluno['id_user'] . '\';
                                             
                                         }
                                     });

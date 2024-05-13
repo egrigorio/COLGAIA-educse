@@ -2,13 +2,13 @@
 include '../../include/config.inc.php'; 
 
 $id_turma = $_GET['id_turma'];
-$sql = "SELECT users.*, turno.numero AS turno 
-FROM rel_turno_user 
-INNER JOIN users ON users.id = rel_turno_user.id_user 
-INNER JOIN turno ON turno.id = rel_turno_user.id_turno 
-WHERE rel_turno_user.id_turma = $id_turma AND users.cargo = 'aluno' " . ((isset($_GET['turno_numero']) && $_GET['turno_numero'] != 'all') ? "AND turno.numero = " . $_GET['turno_numero'] : "");
 
+$sql = "SELECT * FROM view_aluno_turno_turma WHERE id_turma = $id_turma " . ((isset($_GET['turno_numero']) && $_GET['turno_numero'] != 'all') ? "AND num_turno = " . $_GET['turno_numero'] : "");
 $res = my_query($sql);
+
+/* echo $sql;
+pr($res);
+die; */
 
 
 
@@ -22,24 +22,21 @@ $html = '
                             <input type="checkbox" class="checkbox" />
                             </label>
                         </th>
-                        <th>Nome</th>                        
-                        <th>Turma</th>                        
+                        <th>Nome</th>
+                        <th>Turma</th>
                         <th>Turno</th>
                         <th>Opções</th>
-
                     </tr>
                 </thead>
                 <!-- head -->
                 <!-- body -->
 
-                <tbody>          
-                
+                <tbody>
                 ';
 foreach ($res as $aluno) {
-    
-    
+    /* pr($res); */
+
     $html .= '
-                        
                         <tr>
                             <th>
                                 <label>
@@ -58,59 +55,53 @@ foreach ($res as $aluno) {
                                         <div class="text-sm opacity-50">' . $aluno['email'] . '</div>
                                     </div>
                                 </div>
-                            </td>                                                                                                                                                                                    
+                            </td>
                             ';
         $sql = "SELECT turma.nome_turma 
         FROM rel_turma_user 
         INNER JOIN turma ON rel_turma_user.id_turma = turma.id
-        WHERE rel_turma_user.id_user = " . $aluno['id'] . " AND rel_turma_user.ativo = 1";
+        WHERE rel_turma_user.id_user = " . $aluno['id_user'] . " AND rel_turma_user.ativo = 1";
         $res_turma = my_query($sql);
-        
-        
-        $res_turma ? $nome_turma = $res_turma[0]['nome_turma'] : $nome_turma = 'Sem turma';
-        /* $_GET['editar'] = 'true'; */
-        
-        
+
+        $res_turma ? $nome_turma = $res_turma[0]['nome_turma'] : $nome_turma = 'Sem turma';        
         $html .= '
-                            <td>' . $nome_turma . '</td> 
-                            
-                            
-                            ';                            
+                            <td>' . $nome_turma . '</td>                             
+                            '; 
                             if(isset($_GET['editar']) && $_GET['editar'] == 'true') {   
                                 
                                                              
                                 $html .= '                                                                               
                                 <input name="id_turma" value=' . $_GET['id_turma'] . ' type="hidden" class="input w-14 max-w-xs">
                                 <td>
-                                    <select name="turno_'. $aluno['id'] .'" class="input w-14 max-w-xs">
+                                    <select name="turno_'. $aluno['id_user'] .'" class="input w-14 max-w-xs">
                                         
                                     ';
 
-                                $sql = "SELECT numero FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma;
+                                
+                                $sql = "SELECT * FROM view_turno_turma WHERE id_turma = $id_turma AND numero <> 0";
                                 $res_turno = my_query($sql);
-                                $numeros = array();
-                                foreach($res_turno as $turno) {
+                                /* pr($res_turno);
+                                die; */
+                                $numeros = array();                                                                
+                                foreach($res_turno as $turno) {                                    
                                     if(!in_array($turno['numero'], $numeros)) {                                      
                                         $numeros[] = $turno['numero'];
                                         $html .='
-                                        <option ' . ($turno['numero'] == $aluno['turno'] ? 'selected' : '') . ' value="' . $turno['numero'] . '">' . $turno['numero'] . '</option>
+                                        <option ' . ($turno['numero'] == $aluno['num_turno'] ? 'selected' : '') . ' value="' . $turno['id_turno'] . '">' . $turno['numero'] . '</option>
                                         ';
                                     } else {
                                         continue;
                                     }
                                 }
                                 $html .= '
-                                    </select>
-                                    <!-- <label class="form-control w-full max-w-xs">                        
-                                        <input type="number" placeholder="0" name="turno_'. $aluno['id'] .'" value="' . $aluno['turno'] . '" class="input w-14 max-w-xs" />
-                                    </label> -->
+                                    </select>                                    
                                 </td>                          
                                 ';
                             } else {                                
                                 $html .= '                    
                                 <td>
                                     <label class="form-control w-full max-w-xs">                        
-                                        <input type="number" placeholder="0" name="turno_'. $aluno['id'] .'" value="' . $aluno['turno'] . '" class="input w-14 max-w-xs" disabled />
+                                        <input type="number" placeholder="0" name="turno_'. $aluno['id_turno'] .'" value="' . $aluno['num_turno'] . '" class="input w-14 max-w-xs" disabled />
                                     </label>
                                 </td>
                                 ';

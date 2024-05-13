@@ -159,12 +159,12 @@ function def_config_adm($modulo, &$arr_config)
                         'checked' => 1,
                         'name' => 'tabs_dt'
                     ),
-                    /* 'tab1' => array(
-                        'label' => 'Customização',
-                        'content' => 'Tab content 1',
+                    'tab1' => array(
+                        'label' => 'Professores',
+                        'content' => tabela_vista_professores_turma(true),
                         'checked' => 0,
                         'name' => 'tabs_dt'
-                    ), */
+                    ),
                     'tab2' => array(
                         'label' => 'Turno',
                         'content' => tabela_turnos_diretor_turma(),

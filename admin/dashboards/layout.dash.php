@@ -802,11 +802,13 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                             ';
 
     $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $id_curso);
+    /* pr($arr_disciplinas); */
     foreach($arr_disciplinas as $disciplina) {
         $sql = "SELECT * FROM disciplinas 
         INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
         WHERE disciplinas.id = " . $disciplina['id_disciplina'] . " AND rel_disciplina_turma.id_turma = " . $id_turma . " AND disciplinas.ativo = 1";
      
+        
         
         $res = my_query($sql);
         
@@ -834,11 +836,13 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                 </div>             
                 <select name="turno" onchange="trata_onchange_select_turno_criar_atv()" class="select select-bordered mb-5" id="select_turno_criar_atv">                    
                     <option value="-1" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == -1 ? 'selected' : '') : '') . '>Todos</option>
-                    ';
-                    $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma;
+                    ';                    
+                    $sql = "SELECT DISTINCT num_turno, id_turno FROM view_user_turma_turno WHERE id_turma = $id_turma AND num_turno <> 0";
     $res = my_query($sql);
+    
+    
     foreach($res as $turno) {
-                 $html .= '<option value="' . $turno['id'] . '" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == $turno['id'] ? 'selected' : '') : '') . '>Turno ' . $turno['numero'] . '</option>';
+                 $html .= '<option value="' . $turno['id_turno'] . '" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == $turno['id_turno'] ? 'selected' : '') : '') . '>Turno ' . $turno['num_turno'] . '</option>';
     }            
     $html .= '                
                 </select>
@@ -1096,6 +1100,7 @@ function gerar_detalhes_evento($id_evento) {
 }
 
 function tabela_alunos_diretor_turma() {    
+   
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
     $editar = isset($_GET['editar']) ? $_GET['editar'] : '';
@@ -1109,9 +1114,13 @@ function tabela_alunos_diretor_turma() {
                 </div>             
                 <select onchange="trata_onchange_select_turno()" class="select select-bordered mb-5" id="select_tabelas_alunos">                    
                     <option selected value="all">Todos</option>
-                    ';
-                    $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma;
+                    ';                    
+                    /* $sql = "SELECT DISTINCT * FROM view_turnos_id_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC"; */
+                    $sql = "SELECT DISTINCT * FROM view_turno_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC";
+
     $res = my_query($sql);
+    /* pr($res); */
+    
     foreach($res as $turno) {
                 if($turno['numero'] != 0) {
                     $html .= '<option value="' . $turno['numero'] . '">Turno ' . $turno['numero'] . '</option>';
@@ -1121,7 +1130,7 @@ function tabela_alunos_diretor_turma() {
                 </select>
             </label>
             <hr>
-            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php' . '">
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php?cargo=alunos' . '">
                 <table class="table" id="tabela_alunos_diretor_turma">
 
                 </table>
@@ -1157,8 +1166,9 @@ function tabela_alunos_diretor_turma() {
 
 function tabela_turnos_diretor_turma() {
     global $arrConfig;
-    $id_turma = $_GET['id_turma'];
-    $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";
+    $id_turma = $_GET['id_turma'];    
+    /* $sql = "SELECT * FROM view_turnos_id_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC"; */
+    $sql = "SELECT * FROM view_turno_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC";
     $res = my_query($sql);
 
     $html = '
@@ -1193,7 +1203,9 @@ function tabela_turnos_diretor_turma() {
                 <tbody>
             '; 
             $numeros = [];
+            $cont = 1;
             foreach($res as $turno) {
+                
                 if(!in_array($turno['numero'], $numeros)) {
                     $numeros[] = $turno['numero'];
                     $html .= '
@@ -1201,9 +1213,9 @@ function tabela_turnos_diretor_turma() {
                         <td>' . $turno['numero'] . '</td>
                         <td>
                             <form method="post" action="' . $arrConfig['url_modules'] . 'trata_remover_turno_turma.mod.php' . '">
-                                <input type="hidden" name="id_turno" value="' . $turno['id'] . '">
+                                <input type="hidden" name="id_turno" value="' . $turno['id_turno'] . '">
                                 <input type="hidden" name="id_turma" value="' . $id_turma . '">
-                                <button class="btn btn-ghost">Remover</button>
+                                ' . ($cont == count($res) ? '<button class="btn btn-ghost">Remover</button>' : '') . '
                             </form>
                         </td>
                     </tr>
@@ -1211,6 +1223,7 @@ function tabela_turnos_diretor_turma() {
                 } else {
                     continue;
                 }
+                $cont++;
             }
             $html .= '     
                 </tbody>
@@ -1354,88 +1367,181 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
     return $html;
 }
 
-function tabela_vista_professores_turma() {
+function tabela_vista_professores_turma($dt = false) {    
     global $arrConfig;
+    $cont = 0;
+    $id_turma = $_GET['id_turma'];    
+    $sql = "SELECT DISTINCT view_professor_turno_turma.*, rel_turno_user.id_turno FROM view_professor_turno_turma 
+            INNER JOIN rel_turma_user ON rel_turma_user.id_user = view_professor_turno_turma.id_user 
+            INNER JOIN rel_turno_user ON rel_turno_user.id_rel_turma_user =  rel_turma_user.id 
+            WHERE view_professor_turno_turma.id_turma = $id_turma";
+    $res = my_query($sql);  
+    $condensado = array();
 
-    $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user.id_turno as id_turno FROM users  
-    INNER JOIN rel_turma_user ON rel_turma_user.id_user = users.id 
-    INNER JOIN rel_turno_user ON rel_turno_user.id_user = users.id         
-    WHERE users.cargo = 'professor' AND rel_turma_user.ativo = 1 
-    AND rel_turma_user.id_turma = " . $_GET['id_turma'];
+    foreach ($res as $registro) {
+        $id_user = $registro['id_user'];
+
+        // Se o registro do usuário já existe no array condensado
+        if (isset($condensado[$id_user])) {
+            // Adiciona o turno ao campo 'turnos' do registro condensado
+            $condensado[$id_user]['turnos'][] = $registro['id_turno'];
+        } else {
+            // Cria um novo registro condensado para o usuário
+            $condensado[$id_user] = $registro;
+            // Inicializa o campo 'turnos' com um array contendo o primeiro turno
+            $condensado[$id_user]['turnos'] = array($registro['id_turno']);
+        }
+    }
+
+    // Exibe o resultado
+
+    $res_turnos_condensados = array_values($condensado);                
+    /* pr($res_turnos_condensados); */
     
-    $res = my_query($sql);
     
     $html = '
     
     <div class="overflow-x-auto">
-        <table class="table">
-            <!-- head -->
-            <thead>
-            <tr>
-                <th></th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Disciplinas</th>
-                <th>Turno</th>
-                
-            </tr>
-            </thead>
-            <tbody>
-            ';
-
-            foreach($res as $k => $v) {
-                $sql = "SELECT disciplinas.nome as nome_disciplina FROM disciplinas 
-                INNER JOIN rel_disciplina_user ON rel_disciplina_user.id_disciplina = disciplinas.id
-                WHERE rel_disciplina_user.id_user = " . $v['user_id'];
-                $res_disciplinas = my_query($sql);
-                if($v['id_turno'] != -1) {
-                    $sql = "SELECT numero FROM turno WHERE id = " . $v['id_turno'];
-                    $res_turno = my_query($sql);
-                    $res_turno = array_shift($res_turno);
-                } else {
-                    $res_turno = ['numero' => 'Todos'];
-                }                            
-
-                $html .= '
-                <tr class="hover">
-                    <td>' . ($k + 1) . '</td>
-                    <td>' . $v['username'] . '</td>
-                    <td>' . $v['email'] . '</td>
-                    <td>';
-                    foreach($res_disciplinas as $disciplina) {
-                        $html .= $disciplina['nome_disciplina'] . '<br>';
-                    }
-                    $html .= '</td>
-                    <td>Turno: ' . $res_turno['numero'] . '</td>
+        <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php?cargo=professores' . '">
+            <input type="hidden" name="id_turma" value="' . $id_turma . '">
+            <table class="table">
+                <!-- head -->
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Disciplinas</th>
+                    <th>Turno</th>
+                    '; $html .= ($dt ? '<th>Editar</th>' : ''); $html .= '
                 </tr>
-                ';
-            }
+                </thead>
+                <tbody>
+                ';    
+                foreach($res_turnos_condensados as $k => $v) {
+                    $cont++;
+                    $sql = "SELECT disciplinas.nome as nome_disciplina FROM disciplinas 
+                    INNER JOIN rel_disciplina_user ON rel_disciplina_user.id_disciplina = disciplinas.id
+                    WHERE rel_disciplina_user.id_user = " . $v['id_user'];
+                    $res_disciplinas = my_query($sql);
+                    if($v['id_turno'] != -1) {
+                        $sql = "SELECT numero FROM turno WHERE id = " . $v['id_turno'];
+                        $res_turno = my_query($sql);
+                        $res_turno = array_shift($res_turno);
+                    } else {
+                        $res_turno = ['numero' => 'Todos'];
+                    }                            
 
-            $html .= '            
-            </tbody>
-        </table>
+                    $html .= '
+                    <tr class="hover">
+                        <td>' . ($k + 1) . '</td>
+                        <td>' . $v['username'] . '</td>
+                        <td>' . $v['email'] . '</td>
+                        <td>';
+                        foreach($res_disciplinas as $disciplina) {
+                            $html .= $disciplina['nome_disciplina'] . '<br>';
+                        }
+                        $html .= '
+                        </td>
+                        '; $edicao = (isset($_GET['editar']) ? $_GET['editar'] : ''); $html .= ($dt ? ($edicao ? 
+                        '<td>
+                        ' . gerar_options_turnos($id_turma, $res_turnos_condensados, $v['id_user'], $cont) . '                        
+                        </td>' : 
+                        '<td>
+                        ' . gerar_options_turnos($id_turma,$res_turnos_condensados,$v['id_user'],$cont,true) . '
+                        </td>') : '<td>Turno: ' . $res_turno['numero'] . '</td>'); 
+                        $html .= ($dt ? ($edicao ? '<td><button class="btn btn-ghost btn-xs" type="submit">Confirmar</button></td>' : '<td><a class="fa fa-edit" href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&editar=true&tab=professores"></a></td>') : ''); $html .= '
+                    </tr>
+                    ';                                    
+                }
+                $html .= '
+                </tbody>
+            </table>
+        </form>
     </div>
-    
     ';
     return $html;
 
 }
 
+function gerar_options_turnos($id_turma, $turnos_pertence, $id_user, &$cont ,$disabled = false) {    
+    $sql = "SELECT DISTINCT id_turno AS id, numero FROM view_turno_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC";
+    $res = my_query($sql);        
+    
+    // Inicializar array vazio para os turnos do professor
+    /* echo $id_user; */
+    $arr_turnos = array();
+    foreach ($turnos_pertence as $turno) {
+        if($id_user == $turno['id_user']) {
+            $arr_turnos = $turno['turnos'];
+        }
+    }    
+
+    /* pr($arr_turnos); */
+
+    
+    $html = '<input type="hidden" name="id_user$' . $cont . '" value="' . $id_user . '">';
+    
+    foreach($res as $turno) {
+        // Verificar se o ID do turno está presente nos turnos do professor
+        if(in_array($turno['id'] ,$arr_turnos)) {
+            // Checkbox marcado se o turno estiver presente
+            if(!$disabled) {
+                $html .= '
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        
+                        <span class="label-text">Turno ' . $turno['numero'] .'</span>
+                        <input type="checkbox" name="turno_' . $id_user . '%' . $turno['id'] . '" class="checkbox" value="' . $turno['id'] . '" checked></input>
+                    </label>
+                </div>
+                ';
+            } else {
+                $html .= '
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">Turno ' . $turno['numero'] .'</span>                         
+                        <input type="checkbox" class="checkbox" value="' . $turno['id'] . '" disabled checked ></input>
+                    </label>
+                </div>
+                ';                            
+            }
+        } else {
+            // Checkbox não marcado se o turno não estiver presente
+            if(!$disabled) {
+                $html .= '
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        
+                        <span class="label-text">Turno ' . $turno['numero'] .'</span>                         
+                        <input type="checkbox" name="turno_' . $id_user . '%' . $turno['id'] . '" class="checkbox" value="' . $turno['id'] . '" ></input>
+                    </label>
+                </div>
+                ';
+            } else {
+                $html .= '
+                <div class="form-control">
+                    <label class="label cursor-pointer">
+                        <span class="label-text">Turno ' . $turno['numero'] .'</span>                         
+                        <input type="checkbox" class="checkbox" value="' . $turno['id'] . '" disabled  ></input>
+                    </label>
+                </div>
+                ';                            
+            }
+        }                
+    }
+    
+    return $html;
+}
+
+
+
 function tabela_vista_alunos_turma() {
     global $arrConfig;
-    $id_turma = $_GET['id_turma'];
-
-    $sql = "SELECT users.id as user_id, users.username as username, users.email as email, rel_turno_user1.id_turno as id_turno, turno.* 
-    FROM users  
-    INNER JOIN rel_turma_user ON rel_turma_user.id_user = users.id 
-    INNER JOIN rel_turno_user as rel_turno_user1 ON rel_turno_user1.id_user = users.id      
-    INNER JOIN turno ON turno.id = rel_turno_user1.id_turno    
-    WHERE users.cargo = 'aluno' AND rel_turma_user.ativo = 1 
-    AND (rel_turma_user.id_turma = $id_turma OR rel_turno_user1.id_turno = -1) 
-    AND rel_turno_user1.id_turma = $id_turma;    
-    ";        
-    
-    $res = my_query($sql);        
+    $id_turma = $_GET['id_turma'];    
+    $sql = "SELECT * FROM view_aluno_turno_turma WHERE id_turma = $id_turma";
+    $res = my_query($sql);
+    /* pr($res); */
     $html = '
     
     <div class="overflow-x-auto">

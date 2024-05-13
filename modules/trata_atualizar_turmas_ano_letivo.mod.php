@@ -56,10 +56,15 @@ if($tem_turma) {
             $id_user = $rel['id_user'];             // nesse foreach, o que faço é pegar o id do user, e inserir ele na nova turma
                                                     // também tenho que atualizar as relações associadas ao turno dele, isto é, atualizar o id_turma para o id da nova turma
                                                     // no rel_user_turno, e assim, o turno dele será atualizado e a nova turma receberá os turnos da turma antiga
-            $sql = "UPDATE rel_turno_user SET id_turma = $res_id_turma_nova WHERE id_user = $id_user";
-            my_query($sql);
+            $sql = "SELECT id FROM rel_user_turma WHERE id_user = $id_user AND id_turma = $id_turma_antiga";
+            $res_id_rel_user_turma = my_query($sql);
+            $sql = "SELECT id_turno FROM rel_turno_user WHERE id_rel_turma_user = {$res_id_rel_user_turma[0]['id']}";
+            $res_id_turno = my_query($sql);     
+            $res_id_turno = $res_id_turno[0]['id_turno'];                   
             $sql = "INSERT INTO rel_turma_user (id_turma, id_user, ativo) VALUES ((SELECT id FROM turma WHERE nome_turma = '$nome_nova_turma' AND id_curso = $id_curso AND ano_letivo = '$proximo_ano_letivo'), $id_user, 1)";                        
-            $res = my_query($sql);
+            $id_rel_turma_user = my_query($sql);
+            $sql = "INSERT INTO rel_turno_user (id_turno, id_rel_turma_user) VALUES ($res_id_turno, $id_rel_turma_user)";
+            my_query($sql);
         }                                    
     
     } 
@@ -92,11 +97,15 @@ if($tem_turma) {
     $res_turma_antiga = my_query($sql);
     $res_turma_antiga = array_shift($res_turma_antiga);
     $id_turma_antiga = $res_turma_antiga['id'];
-    $sql = "UPDATE rel_turma_user SET ativo = 0 WHERE id_turma = $id_turma_antiga AND id_user <> $id_user_diretor_curso";    
+    $sql = "UPDATE rel_turma_user SET ativo = 0 WHERE id_turma = $id_turma_antiga AND id_user <> $id_user_diretor_curso";        
     $res = my_query($sql);
-    $sql = "DELETE FROM rel_turno_user WHERE id_turma = $id_turma_antiga";
-    my_query($sql);
-
+    $sql = "SELECT * FROM rel_turma_user WHERE ativo = 0 AND id_turma = $id_turma_antiga AND id_user <> $id_user_diretor_curso";
+    $res = my_query($sql);
+    foreach($res as $rel) {
+        $id_rel_turma_user = $rel['id'];
+        $sql = "DELETE FROM rel_turno_user WHERE id_rel_turma_user = $id_rel_turma_user";
+        my_query($sql);
+    }
 } else {
     $id_curso = $_SESSION['id_curso'];
     pr($_POST);

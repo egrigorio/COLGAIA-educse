@@ -16,7 +16,7 @@
 </head>
 <script>
     $(document).ready(function(){
-    var themes = ['nocas', 'black', 'mytheme'];
+    var themes = ['nocas', 'mytheme'];
     var currentThemeIndex = localStorage.getItem('currentThemeIndex') || 0;
 
     $('input[type=radio][name=theme-radios]').change(function() {
@@ -33,7 +33,7 @@
         });
     });
 
-    $(document).keydown(function(e) {
+    $(document).keydown(function(e) {        
         if(e.key == 'j' && e.metaKey) {
             e.preventDefault();
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;

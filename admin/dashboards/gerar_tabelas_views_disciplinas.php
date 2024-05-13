@@ -5,8 +5,9 @@ $valor = $_GET['valor'];
 $id_instituicao = $_SESSION['id_instituicao'];
 $sql = "SELECT rel_disciplina_curso.id_disciplina, disciplinas.*
     FROM rel_disciplina_curso 
-    INNER JOIN disciplinas 
-    WHERE rel_disciplina_curso.id_disciplina = disciplinas.id";
+    INNER JOIN disciplinas ON rel_disciplina_curso.id_disciplina = disciplinas.id 
+    INNER JOIN rel_instituicao_disciplinas ON id_disc = disciplinas.id
+    WHERE rel_disciplina_curso.id_curso = " . $_SESSION['id_curso'] . " AND rel_instituicao_disciplinas.id_instituicao = $id_instituicao";
 $res = my_query($sql);
 
 

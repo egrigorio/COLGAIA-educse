@@ -21,6 +21,7 @@ if(count($disciplinas) > 0) {
     foreach($disciplinas as $id_disciplina) {
 
         $sql = "INSERT INTO rel_disciplina_user (id_user, id_disciplina, id_curso, cargo) VALUES ($id_user, $id_disciplina, $id_curso ,'professor')";
+        echo $sql;
         my_query($sql);
     }
 } else {
@@ -38,9 +39,12 @@ if(count($turmas) > 0) {
         my_query($sql);
     }
 
-    foreach($turmas as $id_turma) {
-        
+    foreach($turmas as $id_turma) {                        
         $sql = "INSERT INTO rel_turma_user (id_user, id_turma) VALUES ($id_user, $id_turma)";
+        echo $sql;
+        $id_rel_turma_user =my_query($sql);
+        $sql = "INSERT INTO rel_turno_user (id_turno, id_rel_turma_user) VALUES (-1, $id_rel_turma_user)";
+        echo $sql;
         my_query($sql);
     } 
     

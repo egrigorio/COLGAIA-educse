@@ -328,12 +328,12 @@ function buscar_todas_turmas_que_participa() {
 }
 
 function gerar_items_navbar($id) {
+    
     $turmas = array();
     $flag_diretor_curso = false;
     $curso = buscar_cursos_diretor($id); /* pego o curso, se for diretor de curso */ 
     $turmas = buscar_todas_turmas_que_participa();
-    if(isset($curso) && count($curso) > 0) {
-        
+    if(isset($curso) && count($curso) > 0) {        
         $turmas = buscar_turmas_curso($curso[0]['id']); /* pego as turmas todas do curso, se for diretor de curso */
         $flag_diretor_curso = true;
     }             
@@ -355,7 +355,8 @@ function gerar_items_navbar($id) {
 
         
     }
-
+    //remover turmas repetidas
+    $turmas = array_map("unserialize", array_unique(array_map("serialize", $turmas)));
     return $turmas;
     
     
@@ -493,10 +494,9 @@ function gerar_tabelas($modulo, &$chave,$filtro) {
 function gerar_dados_chart_atividades_turno($id_turma, &$labels, &$data, &$flag) {
     $sql = "SELECT COUNT(*) FROM rel_atividades_turma WHERE id_turma = " . $id_turma;
     $res_todas_atividades = my_query($sql);    
-    $num_total_atividades = ($res_todas_atividades ? $res_todas_atividades[0]['COUNT(*)'] : 0);    
-    $sql = "SELECT turno.numero, turno.id FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";
-    $res_turnos = my_query($sql);    
-    $num_atv_turno = [];
+    $num_total_atividades = ($res_todas_atividades ? $res_todas_atividades[0]['COUNT(*)'] : 0);        
+    $sql = "SELECT id_turno AS id, numero FROM view_turno_turma WHERE id_turma = $id_turma ORDER BY numero ASC";
+    $res_turnos = my_query($sql);        
     $labels = [];
     $data = [];  
     if(count($res_turnos) > 0) {
@@ -527,7 +527,8 @@ function gerar_dados_chart_atividades_turno($id_turma, &$labels, &$data, &$flag)
 
 
 function gerar_dados_chart_atividades_turno_mes($id_turma, &$labels, &$data, &$flag){
-    $sql = "SELECT turno.numero, turno.id FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";
+    
+    $sql = "SELECT id_turno AS id, numero FROM view_turno_turma WHERE id_turma = $id_turma ORDER BY numero ASC";
     $res_turnos = my_query($sql);
 
     $sql = "SELECT eventos.comeco, eventos.fim, atividades.id_turno FROM rel_atividades_turma     
@@ -610,8 +611,8 @@ function gerar_dados_chart_atividades_disciplinas($id_turma, &$labels, &$data) {
     }
 }
 
-function gerar_dados_esforco_semanal_turma($id_turma, &$labels, &$data) {    
-    $sql = "SELECT turno.numero, turno.id FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $id_turma . " ORDER BY numero ASC";    
+function gerar_dados_esforco_semanal_turma($id_turma, &$labels, &$data) {        
+    $sql = "SELECT id_turno AS id, numero FROM view_turno_turma WHERE id_turma = $id_turma ORDER BY numero ASC";
     $res_turnos = my_query($sql);
     $sql = "SELECT esforco.* FROM esforco 
     INNER JOIN turma ON turma.id_esforco = esforco.id 

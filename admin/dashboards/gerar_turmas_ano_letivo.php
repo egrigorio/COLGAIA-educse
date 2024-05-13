@@ -32,8 +32,11 @@ $html = '
             <tbody>
             '; 
             
-            foreach($res as $turma) {
-                $sql = "SELECT turno.* FROM turno INNER JOIN rel_turno_user ON turno.id = rel_turno_user.id_turno WHERE rel_turno_user.id_turma = " . $turma['id'];
+            foreach($res as $turma) {     
+                $id_turma = $turma['id'];           
+                $sql = "SELECT turno.* FROM view_turno_turma 
+                INNER JOIN turno ON turno.id = view_turno_turma.id_turno 
+                WHERE id_turma = $id_turma ORDER BY numero ASC";
                 $res_turno = my_query($sql);
                 $sql = "SELECT username FROM users WHERE id = " . $turma['id_diretor_turma'];
                 $res_dt = my_query($sql);

@@ -1,10 +1,12 @@
 <?php
 include '../../include/config.inc.php';
 $valor = $_GET['valor'];
-$sql = "SELECT users.*, estado FROM users
-        JOIN rel_user_curso ON users.id = rel_user_curso.id_user
-        JOIN curso ON rel_user_curso.id_curso = curso.id
-        WHERE curso.id_diretor_curso = " . $_SESSION['id'] . " AND rel_user_curso.cargo = 'professor'";
+
+$id_user_diretor_curso = $_SESSION['id'];
+$sql = "SELECT * FROM view_user_curso 
+        WHERE cargo = 'professor' AND id_diretor_curso = $id_user_diretor_curso";
+
+
 $res = my_query($sql);
 
 switch ($valor) {
@@ -41,15 +43,15 @@ foreach ($res as $professor) {
 if ($professor['estado'] == '1') {
 
     $direcao_turma = '';
-    $direcao_turma = buscar_direcao_turma($professor['id']);
-    $disciplinas = buscar_disciplinas_cargo($professor['id'], 'professor', $id_curso);
+    $direcao_turma = buscar_direcao_turma($professor['id_user']);
+    $disciplinas = buscar_disciplinas_cargo($professor['id_user'], 'professor', $id_curso);
     $al = isset($_GET['al']) ? $_GET['al'] : 0;
     if($al) {
         $ano_letivo = get_proximo_ano_letivo(get_ano_letivo());
     } else {
         $ano_letivo = get_ano_letivo();
     }
-    $arr_nome_turmas_participa = buscar_nome_turmas_participa_curso($professor['id'], $id_curso, $ano_letivo);
+    $arr_nome_turmas_participa = buscar_nome_turmas_participa_curso($professor['id_user'], $id_curso, $ano_letivo);
     count($direcao_turma) == 0 ? $direcao_turma = 'Nenhuma turma' : $direcao_turma = $direcao_turma[0]['nome_turma'];
     $nome_turmas_participa = '';
     foreach ($arr_nome_turmas_participa as $turma) {
@@ -100,7 +102,7 @@ if ($professor['estado'] == '1') {
                             <td>' . $nome_turmas_participa . '</td>
                             <td>' . $direcao_turma . '</td>
                             <th>
-                                <a href="' . $arrConfig['url_admin'] . 'editar/professores_curso.php?id_user=' . $professor['id'] . '" class="btn btn-ghost btn-xs">
+                                <a href="' . $arrConfig['url_admin'] . 'editar/professores_curso.php?id_user=' . $professor['id_user'] . '" class="btn btn-ghost btn-xs">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 |                                                                                
@@ -117,7 +119,7 @@ if ($professor['estado'] == '1') {
                                         confirmButtonText: \'Sim, remover!\'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id'] . '\';
+                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id_user'] . '\';
                                             
                                         }
                                     });
@@ -189,6 +191,8 @@ $html .= '
         
                 ';
         foreach ($res as $professor) {
+            
+
             if($professor['estado'] !== '1') {
                 $html .= '
                         <tr>
@@ -228,7 +232,7 @@ $html .= '
                                         confirmButtonText: \'Sim, remover!\'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id'] . '\';
+                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id_user'] . '\';
                                             
                                         }
                                     });

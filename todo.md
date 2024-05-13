@@ -11,6 +11,9 @@
 - [X] transformar a turma num 'objeto?' continuo, em que ao mudar o ano letivo, os alunos avançam entre elas, e depois eu posso alterar configurações da turma para poder adaptar aos novos alunos. Quando fizer isso, guardar as informações da turma no ano anterior para manter o histórico da turma consoante o ano letivo; <!-- chato --> <!-- aqui o que falta é: criar um painel de vista para as turmas, mas isso estou tratando agora enquanto crio o dashboard do dt, ou seja, após concluir isso, posso dar display dessa informação para o diretor de curso ver. Depois posso aplicar o mesmo (ou semelhante) para as turmas antigas -->
 
 - [X] no painel do diretor de turma, criar uma visualização em gráficos de como a turma dele está sobrecarregada, as semanas com mais atividades, disciplinas com mais atividades...; <!-- meio chato também -->
+- [X] corrigir o remover disciplina, tá dando erro não sei pq;
+- [X] corrigir erro da tabela dos professores não estar sendo gerada corretamente;
+- [ ] adicionar a tabela de vista de professores da turma para o diretor de turma
 - [ ] criar instituição, isto é, criar conta como dono da instituição em questão, e permitir a criação de disciplinas para os cursos, bem como convite de diretores de cursos e um pequeno painel para visualização dos cursos disponíveis na instituição; <!-- não tão chato -->
 - [ ] implementar as notificações; <!-- um pouco chato -->
 - [ ] criar a vista do aluno
@@ -20,6 +23,15 @@
 
 
 
+<!-- o que estive fazendo até agora foram correções de erros, tenho que:
 
+    !! mudar a designação do turno 0 de todos para alguma outra coisa, perguntar ao stor nuno ou assim!!
+
+    - ajustar na db o rel_turma_user e rel_turno_user, há redundancias, dados de uma tabela são iguais aos da outra, tenho que ajustar isso a nível do código para deixar mais fácil de trabalhar, não faz sentido ficar sempre relacionando os mesmos dados;
+
+    - depois daquilo ali em cima, tenho que corrigir os erros que advém disso, sobretudo nas tabelas de professores de diretores de turma;
+
+    - corrigir a tabela de professor do direto de curso, tenho que ver pq que quando eu removo a relação de um professor com uma turma, se ele for dt da turma continua aparecendo lá que ele é dt da turma, isso não deveria acontecer (não sei se isso aconteceu por eu ter tirado os dados direto desde da db, não sei, tenho que ver);
+ -->
 
 
