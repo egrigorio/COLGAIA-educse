@@ -22,7 +22,7 @@ if($_SESSION['cargo'] == 'instituicao') {
                                     <div class="gap-1 flex justify-center items-center w-full">
                                         <a class="btn btn-secondary">Dashboard</a>                                        
                                         <div class="divider divider-horizontal"></div>
-                                        <a class="btn btn-secondary">Gestão</a>
+                                        <a href="<?php echo $arrConfig['url_admin'] . 'instituicao.php' ?>" class="btn btn-secondary">Gestão</a>
                                         <div class="divider divider-horizontal"></div>
                                         <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary">Logout</a>
                                     </div>

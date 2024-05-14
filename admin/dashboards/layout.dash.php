@@ -4,6 +4,15 @@ include_once $arrConfig['dir_admin'] . 'dashboards/gerar_calendario_atividades.p
 include_once $arrConfig['dir_admin'] . 'configuracoes.adm.php';
 
 
+if(isset($_GET['id_turma'])) {
+    $id_turma = $_GET['id_turma'];
+    $sql = "SELECT curso.id FROM curso 
+        INNER JOIN turma ON curso.id = turma.id_curso
+        WHERE turma.id = " . $id_turma;
+        $res = my_query($sql);
+    $_SESSION['id_curso'] = $res[0]['id'];
+}
+
 function navbar($arr_items) {
     global $arrConfig;
     $teste = parse_url($_SERVER['REQUEST_URI']);
@@ -108,6 +117,50 @@ function turma($arr_turma, &$flag_direcao_turma) {
         ';
         $tabs = $flag_direcao_turma ? 'tabs_direcao_turma' : 'tabs_turma';
         def_config_adm($tabs, $arr_config);
+        foreach ($arr_config as $kCampos => $vCampos) {
+            if($flag_tab_get) {
+                if(strtolower($vCampos['label']) == $_GET['tab']) {
+                    $vCampos['checked'] = 1;
+                    $flag_tabs = true;
+                } else {
+                    $flag_tabs = false;
+                }
+            }
+            echo '
+            <input type="radio" name="' . $vCampos['name'] . '" role="tab" class="tab" aria-label="' . $vCampos['label'] . '" ' . ($vCampos['checked'] == 1 ? 'checked' : '')  . ' />
+        
+            <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                ' . $vCampos['content'] . '
+            </div>
+        
+            ';
+        }
+        echo '
+        </div>
+    </div>
+    ';
+
+}
+
+
+function instituicao($arr_instituicao) {
+    $flag_tab_get = isset($_GET['tab']) ? true : false;
+
+    echo '
+    
+    <div class="bg-primary flex justify-center w-full h-52 text-center">
+        <b>
+            <h1 class="bold mt-20 text-4xl">' . $arr_instituicao[0]['nome'] . '</h1>';
+    
+    echo '
+        </b>
+    </div>
+    <div class="">
+        
+        <div role="tablist" class="tabs tabs-lifted">
+        ';
+        
+        def_config_adm('tabs_instituicao', $arr_config);
         foreach ($arr_config as $kCampos => $vCampos) {
             if($flag_tab_get) {
                 if(strtolower($vCampos['label']) == $_GET['tab']) {
@@ -719,7 +772,7 @@ function criar_atividade_turma($editar = false, $id_evento = null) {
 
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
-    $id_curso = $_SESSION['id_curso'];
+    $id_curso = (isset($_SESSION['id_curso']) ? $_SESSION['id_curso'] : '');
     if($editar) {
 
         $sql = "SELECT atividades.*, eventos.* FROM atividades 
@@ -734,14 +787,7 @@ function criar_atividade_turma($editar = false, $id_evento = null) {
         $rand = rand(8999, 8990);
         $html = gerar_formulario_edicao($id_turma, $id_curso, $rand, $res);
         return $html;                    
-    } else {
-
-        $sql = "SELECT curso.id FROM curso 
-        INNER JOIN turma ON curso.id = turma.id_curso
-        WHERE turma.id = " . $id_turma;
-        $res = my_query($sql);
-        $_SESSION['id_curso'] = $res[0]['id'];
-
+    } else {        
         $rand = rand(9999, 9990);
         $html = gerar_formulario_edicao($id_turma, $id_curso, $rand);
         return $html;
@@ -807,11 +853,8 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
         $sql = "SELECT * FROM disciplinas 
         INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
         WHERE disciplinas.id = " . $disciplina['id_disciplina'] . " AND rel_disciplina_turma.id_turma = " . $id_turma . " AND disciplinas.ativo = 1";
-     
-        
-        
-        $res = my_query($sql);
-        
+                     
+        $res = my_query($sql);        
         if(count($res) > 0) {                    
         $html .= '<option value="' . $res[0]['id_disciplina'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
         }
@@ -835,7 +878,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                     <span class="label-text">Filtre pelo turno</span>                    
                 </div>             
                 <select name="turno" onchange="trata_onchange_select_turno_criar_atv()" class="select select-bordered mb-5" id="select_turno_criar_atv">                    
-                    <option value="-1" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == -1 ? 'selected' : '') : '') . '>Todos</option>
+                    <option value="-1" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == -1 ? 'selected' : '') : '') . '>Turma toda</option>
                     ';                    
                     $sql = "SELECT DISTINCT num_turno, id_turno FROM view_user_turma_turno WHERE id_turma = $id_turma AND num_turno <> 0";
     $res = my_query($sql);
@@ -1130,7 +1173,7 @@ function tabela_alunos_diretor_turma() {
                 </select>
             </label>
             <hr>
-            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php?cargo=alunos' . '">
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php">
                 <table class="table" id="tabela_alunos_diretor_turma">
 
                 </table>
@@ -1168,7 +1211,7 @@ function tabela_turnos_diretor_turma() {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];    
     /* $sql = "SELECT * FROM view_turnos_id_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC"; */
-    $sql = "SELECT * FROM view_turno_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC";
+    $sql = "SELECT DISTINCT * FROM view_turno_turma WHERE numero <> 0 AND id_turma = $id_turma ORDER BY numero ASC";
     $res = my_query($sql);
 
     $html = '
@@ -1203,9 +1246,10 @@ function tabela_turnos_diretor_turma() {
                 <tbody>
             '; 
             $numeros = [];
-            $cont = 1;
+            $cont = 0;
+            
             foreach($res as $turno) {
-                
+                $cont++;
                 if(!in_array($turno['numero'], $numeros)) {
                     $numeros[] = $turno['numero'];
                     $html .= '
@@ -1222,8 +1266,7 @@ function tabela_turnos_diretor_turma() {
                     ';
                 } else {
                     continue;
-                }
-                $cont++;
+                }                
             }
             $html .= '     
                 </tbody>
@@ -1377,7 +1420,8 @@ function tabela_vista_professores_turma($dt = false) {
             WHERE view_professor_turno_turma.id_turma = $id_turma";
     $res = my_query($sql);  
     $condensado = array();
-
+    /* pr($res);
+    die; */
     foreach ($res as $registro) {
         $id_user = $registro['id_user'];
 
@@ -1397,13 +1441,26 @@ function tabela_vista_professores_turma($dt = false) {
 
     $res_turnos_condensados = array_values($condensado);                
     /* pr($res_turnos_condensados); */
+    $num_turnos = array();
     
+
+    foreach($res_turnos_condensados as $turno) {
+        foreach($turno['turnos'] as $id_turno) {
+            $sql = "SELECT numero FROM turno WHERE id = " . $id_turno;
+            $res = my_query($sql);
+            if($res[0]['numero'] != 0) {
+                $num_turnos[$turno['id_user']][] = $res[0]['numero'];
+            }
+        }        
+    }
+    /* pr($num_turnos); */
     
     $html = '
     
     <div class="overflow-x-auto">
-        <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php?cargo=professores' . '">
+        <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php' . '">
             <input type="hidden" name="id_turma" value="' . $id_turma . '">
+            <input type="hidden" name="cargo" value="professores">
             <table class="table">
                 <!-- head -->
                 <thead>
@@ -1423,15 +1480,12 @@ function tabela_vista_professores_turma($dt = false) {
                     $sql = "SELECT disciplinas.nome as nome_disciplina FROM disciplinas 
                     INNER JOIN rel_disciplina_user ON rel_disciplina_user.id_disciplina = disciplinas.id
                     WHERE rel_disciplina_user.id_user = " . $v['id_user'];
-                    $res_disciplinas = my_query($sql);
-                    if($v['id_turno'] != -1) {
-                        $sql = "SELECT numero FROM turno WHERE id = " . $v['id_turno'];
-                        $res_turno = my_query($sql);
-                        $res_turno = array_shift($res_turno);
-                    } else {
-                        $res_turno = ['numero' => 'Todos'];
-                    }                            
-
+                    $res_disciplinas = my_query($sql);                    
+                    foreach($num_turnos as $id_user => $turnos) {
+                        if($id_user == $v['id_user']) {
+                            $res_turno = ['numero' => implode(', ', $turnos)];
+                        }
+                    }
                     $html .= '
                     <tr class="hover">
                         <td>' . ($k + 1) . '</td>
@@ -1869,4 +1923,147 @@ function painel_direcao_turma() {
     ';
 
     return $html;
+}
+
+
+function tabela_disciplinas_instituicao() {
+    global $arrConfig;
+    $sql = "SELECT * FROM rel_instituicao_disciplinas
+            INNER JOIN disciplinas ON disciplinas.id = rel_instituicao_disciplinas.id_disc
+            WHERE id_instituicao = " . $_SESSION['id_instituicao'];
+    $res = my_query($sql);
+    /* pr($res);
+    die; */
+    $html = '
+    <div class="flex justify-around">
+        <div class="w-auto text-center pt-5">
+            <h2 class=" text-lg mb-4 ">Adicionar disciplinas a instituição</h2>
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_disciplina_instituicao.mod.php" id="disciplinas_form">
+                <div class="flex mb-4 gap-2">                                            
+                    <input type="text" name="nome_disciplina" id="disciplinas-input" placeholder="Nome da disciplina" class="input input-bordered">                    
+                    <button type="button" id="add-disciplinas" class="btn btn-ghost text-xs py-1 px-2">
+                        Adicionar
+                    </button>
+                    <button type="submit" class="btn btn-ghost text-xs py-1 px-2">
+                        Submeter
+                    </button>
+                </div>
+                <div id="disciplinas-list" class="mb-4">
+                    <!-- Os itens de e-mail serão inseridos aqui -->
+                    
+                </div>
+            </form>
+        </div>
+        
+        <div class="overflow-x-auto">
+            
+            <table class="table">
+                <!-- head -->
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Nome</th>                
+                    <th>Remover</th>
+                </tr>
+                </thead>
+                <tbody>
+                ';
+                $cont = 0;
+                foreach($res as $disciplina) {
+                    $cont++;
+                    $html .= '
+                    <tr class="hover">
+                        <td>' . $cont . '</td>
+                        <td>' . $disciplina['nome'] . '</td>                    
+                        <td><a style="cursor: pointer;" class="fa fa-trash" href="' . $arrConfig['url_modules'] . 'trata_remover_disciplina_instituicao.mod.php?id_disciplina=' . $disciplina['id'] . '"></a></td>
+                    </tr>
+                    ';
+                }
+                $html .= '            
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+    
+        document.addEventListener(\'DOMContentLoaded\', function() {                                                
+            let insertedValues = [];
+            document.getElementById("disciplinas-input").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault(); 
+                    document.getElementById("add-disciplinas").click();
+                    
+                }
+            });
+
+            document.getElementById("add-disciplinas").onclick = function() {    
+                console.log("aqui");            
+                var disciplinaInput = document.getElementById("disciplinas-input");
+                var disciplinaList = document.getElementById("disciplinas-list");
+                var disciplinaId = disciplinaInput.value.trim();
+                var disciplinaText = disciplinaInput.value;
+                
+                
+                
+
+                if(disciplinaId) {    
+                    var flag = false;                
+                    insertedValues.forEach(function(value) {
+                        if(value == disciplinaId) {
+                            Swal.fire({
+                                title: "Disciplina já inserida",
+                                text: "A disciplina já foi inserida",
+                                icon: "error",
+                                timer: 2000,
+                                
+                            })
+                            flag = true;
+                            return;
+                        }
+                    });
+                    if(!flag) {
+
+                        var newDiv = document.createElement("div");
+                        newDiv.className = "flex items-center bg-base-100 px-3 py-1 rounded shadow mb-1 text-xs";
+                        
+                        var newInput = document.createElement("input");
+                        newInput.type = "hidden";
+                        newInput.name = "disciplinas[]";
+                        newInput.value = disciplinaId;
+                        
+                        newDiv.innerHTML = `<span class="flex-auto">${disciplinaText}</span>
+                                    <button type="button"
+                                            onclick="removedisciplina(this)"
+                                            class="flex-none text-xs bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                                        Remover
+                                    </button>`;
+                        newDiv.appendChild(newInput);                        
+                        disciplinaList.appendChild(newDiv);                        
+                        disciplinaInput.value = "";
+                        insertedValues.push(disciplinaId);
+                    }
+                }
+            };
+            
+        })
+        function removedisciplina(button) {        
+            button.parentElement.remove();
+            var index = insertedValues.indexOf(button.parentElement.querySelector("input").value);
+                if (index > -1) {
+                    insertedValues.splice(index, 1);
+                }
+            
+        }
+
+    </script>
+    ';
+    return $html;
+}
+
+function tabela_diretores_curso_instituicao() {
+    return 'daniel cancela';
+}
+
+function tabela_cursos_instituicao() {
+    return 'daniel cancela';
 }

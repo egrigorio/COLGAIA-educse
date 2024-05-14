@@ -10,6 +10,11 @@ WHERE conf_convite.id = " . $_GET['convite'];
 
 
 $res = my_query($sql);
+if(count($res) == 0) {
+    $_SESSION['convite_aceite'] = true;
+    header('Location:' . $arrConfig['url_admin'] . 'turma.php');
+    exit;
+}
 pr($res);
 $id_user = $res[0]['id'];
 $id_curso = $res[0]['id_curso'];
@@ -21,5 +26,5 @@ $res = my_query($sql);
 $sql = "DELETE FROM conf_convite WHERE id = " . $_GET['convite'];
 $res = my_query($sql);
 
-
+$_SESSION['convite_aceite'] = true;
 header('Location:' . $arrConfig['url_admin'] . 'turma.php');

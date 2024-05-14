@@ -232,5 +232,27 @@ function def_config_adm($modulo, &$arr_config)
                         ),
                     );
                     break;
+                case 'tabs_instituicao':         
+                    $arr_config = array(
+                        'tab1' => array(
+                            'label' => 'Disciplinas',
+                            'content' => tabela_disciplinas_instituicao(),
+                            'checked' => 1,
+                            'name' => 'tabs_instituicao'
+                        ),
+                        'tab2' => array(
+                            'label' => 'Diretores de Curso',
+                            'content' => tabela_diretores_curso_instituicao(),
+                            'checked' => 0,
+                            'name' => 'tabs_instituicao'
+                        ),
+                        'tab3' => array(
+                            'label' => 'Cursos',
+                            'content' => tabela_cursos_instituicao(),
+                            'checked' => 0,
+                            'name' => 'tabs_instituicao'
+                        ),                        
+                    );
+                    break;
     }
 };

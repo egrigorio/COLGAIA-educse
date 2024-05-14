@@ -30,14 +30,32 @@ if(count($disciplinas) > 0) {
 
 }
 if(count($turmas) > 0) {
-        
-    $arr_turmas_participa_curso = buscar_turmas_participa_curso($id_user, $_SESSION['id_curso']);
-    
+    $flag_direcao = false;
+    $id_curso = $_SESSION['id_curso'];
+    $sql = "SELECT * FROM turma WHERE id_diretor_turma = $id_user AND id_curso = $id_curso";
+    $arr_turma = my_query($sql);
+    $id_direcao = (count($arr_turma) > 0 ? $arr_turma[0]['id'] : -1);
+    foreach($turmas as $id_turma) {
+        if($id_turma == $id_direcao) {
+            $flag_direcao = true;
+        }
+    }
+    if(!$flag_direcao) { 
+        $sql = "UPDATE turma SET id_diretor_turma = -1 WHERE id = $id_direcao AND id_curso = $id_curso";
+        my_query($sql);
+        $sql = "DELETE FROM rel_turma_user WHERE id_user = $id_user AND id_turma = $id_direcao";
+        my_query($sql);
+    }
+
+    $sql = "SELECT * FROM rel_turma_user  
+            INNER JOIN turma ON rel_turma_user.id_turma = turma.id
+            WHERE turma.id_curso = $id_curso AND id_user = $id_user";
+    $arr_turmas_participa_curso = my_query($sql);
     foreach($arr_turmas_participa_curso as $id_turma) {
         $id_turma = $id_turma['id'];
         $sql = "DELETE FROM rel_turma_user WHERE id_user = $id_user AND id_turma = $id_turma";
         my_query($sql);
-    }
+    }            
 
     foreach($turmas as $id_turma) {                        
         $sql = "INSERT INTO rel_turma_user (id_user, id_turma) VALUES ($id_user, $id_turma)";
@@ -47,10 +65,20 @@ if(count($turmas) > 0) {
         echo $sql;
         my_query($sql);
     } 
+    $sql = "SELECT * FROM rel_turma_user WHERE id_user = $id_user";
+    $arr_turmas = my_query($sql);
     
 } else {
     $arr_turmas_participa_curso = buscar_turmas_participa_curso($id_user, $_SESSION['id_curso']);
-    
+    $sql = "SELECT * FROM turma WHERE id_diretor_turma = $id_user";
+    $arr_turma = my_query($sql);
+    $id_direcao = (count($arr_turma) > 0 ? $arr_turma[0]['id'] : -1);
+    if($id_direcao != -1) {
+        $sql = "UPDATE turma SET id_diretor_turma = -1 WHERE id = $id_direcao";
+        my_query($sql);
+        $sql = "DELETE FROM rel_turma_user WHERE id_user = $id_user AND id_turma = $id_direcao";
+        my_query($sql);
+    }
     foreach($arr_turmas_participa_curso as $id_turma) {
         $id_turma = $id_turma['id'];
         $sql = "DELETE FROM rel_turma_user WHERE id_user = $id_user AND id_turma = $id_turma";

@@ -38,6 +38,17 @@ if(isset($_GET['id_turma']) && $_GET['id_turma']) {
     
 }
 $cargo = $_SESSION['cargo'];
+if(isset($_SESSION['convite_aceite']) && $_SESSION['convite_aceite']) {
+    echo '
+    <script>
+    Swal.fire({
+        title: "Convite aceite com sucesso!",
+        text: "Você já pertence ao curso!",
+        icon: "success"
+      });
+    </script>';
+    unset($_SESSION['convite_aceite']);
+}
 switch($cargo) {
     case 'aluno':
         include './dashboards/aluno.dash.php';

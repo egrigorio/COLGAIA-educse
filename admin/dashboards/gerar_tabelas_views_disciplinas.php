@@ -34,7 +34,7 @@ switch ($valor) {
                         </th>
                         <th>ID</th>
                         <th>Nome</th>                        
-                        <th>Duração (em anos)</th>
+                        
                         '; 
         
         for($i = 1; $i <= $duracao; $i++) {
@@ -70,7 +70,7 @@ foreach ($res as $disciplina) {
                         <br>
                         <span class="badge badge-ghost badge-sm">' . $disciplina['abreviatura'] . '</span>
                         </td>
-                        <td>' . $disciplina['duracao'] . '</td>
+                        
                         '; 
                         
                         for($i = 1; $i <= $duracao; $i++) {
@@ -133,7 +133,7 @@ $html .= '
                 <th> </th>
                 <th>ID</th>
                 <th>Nome</th>                
-                <th>Duração (em anos)</th>
+                
                 <th>Ativo</th>
                 <th>Opções</th>
             </tr>

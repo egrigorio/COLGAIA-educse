@@ -25,7 +25,7 @@ if($tem_turma) {
         $id_esforco = my_query($sql);
 
         $nome_nova_turma = ($i + 10) . 'º ' . $abreviatura;                                                                             // Aqui eu defino o nome da nova turma
-        $sql = "INSERT INTO turma (id_curso, ano_letivo, id_esforco, nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', $id_esforco ,'$nome_nova_turma')";    // Insiro a nova turma na BD
+        $sql = "INSERT INTO turma (id_curso, ano_letivo, ano, id_esforco, nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', $i , $id_esforco ,'$nome_nova_turma')";    // Insiro a nova turma na BD
         echo $sql;        
         $res_id_turma_nova = my_query($sql);                                                                                            // e pego o id da nova turma no $res_id_turma_nova
 
@@ -77,12 +77,12 @@ if($tem_turma) {
     $nome_nova_turma = ($indice + 9) . 'º ' . $abreviatura;
     $sql = "INSERT INTO esforco (limite) VALUES (DEFAULT)";
     $id_esforco = my_query($sql);
-    $sql = "INSERT INTO turma (id_curso, ano_letivo, id_esforco ,nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', $id_esforco ,'$nome_nova_turma')";
+    $sql = "INSERT INTO turma (id_curso, ano_letivo, ano, id_esforco ,nome_turma) VALUES ($id_curso, '$proximo_ano_letivo', $indice, $id_esforco ,'$nome_nova_turma')";
     $res = my_query($sql);
     $sql = "INSERT INTO rel_turma_user (id_turma, id_user, ativo) VALUES ($res, $id_user_diretor_curso, 1)";
     $res = my_query($sql);
     
-    $sql = "SELECT * FROM rel_disciplina_curso_ano WHERE id_curso = $id_curso AND ano = $i"; // aqui eu pego as disciplinas do curso relativas ao ano para inserir na nova turma
+    $sql = "SELECT * FROM rel_disciplina_curso_ano WHERE id_curso = $id_curso AND ano = $indice"; // aqui eu pego as disciplinas do curso relativas ao ano para inserir na nova turma
         $res_disciplinas = my_query($sql);                                                                                                                  //
         foreach($res_disciplinas as $rel) {                                                                                                                 //
             $id_disciplina = $rel['id_disciplina'];                                                                                                         //

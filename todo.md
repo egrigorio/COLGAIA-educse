@@ -13,10 +13,10 @@
 - [X] no painel do diretor de turma, criar uma visualização em gráficos de como a turma dele está sobrecarregada, as semanas com mais atividades, disciplinas com mais atividades...; <!-- meio chato também -->
 - [X] corrigir o remover disciplina, tá dando erro não sei pq;
 - [X] corrigir erro da tabela dos professores não estar sendo gerada corretamente;
-- [ ] adicionar a tabela de vista de professores da turma para o diretor de turma
+- [X] adicionar a tabela de vista de professores da turma para o diretor de turma
 - [ ] criar instituição, isto é, criar conta como dono da instituição em questão, e permitir a criação de disciplinas para os cursos, bem como convite de diretores de cursos e um pequeno painel para visualização dos cursos disponíveis na instituição; <!-- não tão chato -->
 - [ ] implementar as notificações; <!-- um pouco chato -->
-- [ ] criar a vista do aluno
+- [ ] criar a vista do aluno <!-- tranquilo -->
 - [ ] criar visualização da conta do utilizador, e permitir alterações de informações como foto de perfil por exemplo; <!-- fácil -->
 - [ ] criar um frontoffice? <!-- logo se vê -->
 
@@ -25,13 +25,8 @@
 
 <!-- o que estive fazendo até agora foram correções de erros, tenho que:
 
-    !! mudar a designação do turno 0 de todos para alguma outra coisa, perguntar ao stor nuno ou assim!!
-
-    - ajustar na db o rel_turma_user e rel_turno_user, há redundancias, dados de uma tabela são iguais aos da outra, tenho que ajustar isso a nível do código para deixar mais fácil de trabalhar, não faz sentido ficar sempre relacionando os mesmos dados;
-
-    - depois daquilo ali em cima, tenho que corrigir os erros que advém disso, sobretudo nas tabelas de professores de diretores de turma;
-
-    - corrigir a tabela de professor do direto de curso, tenho que ver pq que quando eu removo a relação de um professor com uma turma, se ele for dt da turma continua aparecendo lá que ele é dt da turma, isso não deveria acontecer (não sei se isso aconteceu por eu ter tirado os dados direto desde da db, não sei, tenho que ver);
+    !! mudar a designação do turno 0 de todos para alguma outra coisa, perguntar ao stor nuno ou assim !!
+            
  -->
 
 

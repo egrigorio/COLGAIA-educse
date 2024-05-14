@@ -14,7 +14,7 @@ die; */
 
 $html = '
                 <!-- head -->
-                
+                <input type="hidden" name="cargo" value="alunos">
                 <thead>
                     <tr>
                         <th>
