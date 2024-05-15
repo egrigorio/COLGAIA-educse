@@ -1,7 +1,10 @@
 <?php include '../include/config.inc.php';
 if(isset($_POST['tem_turmas']) && $_POST['tem_turmas'] == 1) {
     $tem_turma = 1;
-} 
+} else {
+    $tem_turma = 0;
+
+}
 
 $id_curso = $_SESSION['id_curso'];
 $ano_letivo = get_ano_letivo();    
@@ -118,7 +121,7 @@ if($tem_turma) {
         $sql = "INSERT INTO esforco (limite) VALUES (DEFAULT)";
         $id_esforco = my_query($sql);
 
-        $sql = "INSERT INTO turma (id_curso, ano_letivo, id_esforco, nome_turma) VALUES ($id_curso, '$ano_letivo', $id_esforco, '$nome_turma')";        
+        $sql = "INSERT INTO turma (id_curso, ano_letivo, ano, id_esforco, nome_turma) VALUES ($id_curso, '$ano_letivo', $i ,$id_esforco, '$nome_turma')";        
         $res_id_turma_nova = my_query($sql);  
         $sql = "INSERT INTO rel_turma_user (id_turma, id_user, ativo) VALUES ($res_id_turma_nova, $id_user , 1)";
             my_query($sql);      

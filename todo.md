@@ -14,10 +14,10 @@
 - [X] corrigir o remover disciplina, tá dando erro não sei pq;
 - [X] corrigir erro da tabela dos professores não estar sendo gerada corretamente;
 - [X] adicionar a tabela de vista de professores da turma para o diretor de turma
-- [ ] criar instituição, isto é, criar conta como dono da instituição em questão, e permitir a criação de disciplinas para os cursos, bem como convite de diretores de cursos e um pequeno painel para visualização dos cursos disponíveis na instituição; <!-- não tão chato -->
-- [ ] implementar as notificações; <!-- um pouco chato -->
+- [X] criar instituição, isto é, criar conta como dono da instituição em questão, e permitir a criação de disciplinas para os cursos, bem como convite de diretores de cursos e um pequeno painel para visualização dos cursos disponíveis na instituição; <!-- não tão chato -->
 - [ ] criar a vista do aluno <!-- tranquilo -->
 - [ ] criar visualização da conta do utilizador, e permitir alterações de informações como foto de perfil por exemplo; <!-- fácil -->
+- [ ] implementar as notificações; <!-- um pouco chato -->
 - [ ] criar um frontoffice? <!-- logo se vê -->
 
 
@@ -28,5 +28,11 @@
     !! mudar a designação do turno 0 de todos para alguma outra coisa, perguntar ao stor nuno ou assim !!
             
  -->
+
+ <!-- 
+ 
+ no painel de edição de diretor de curso, tenho que fazer de modo que ao alterar o diretor de curso, eu atualize as relações da turmas para adicionar o novo diretor de turma como sendo parte das turmas atuais daquele curso
+
+  -->
 
 

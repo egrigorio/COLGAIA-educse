@@ -6,9 +6,18 @@ if(isset($_SESSION['id'])){
 }
 ?>
 
-<?php include '../../header.php'; ?>
+<?php include '../../header.php';
+
+if(isset($_SESSION['id_curso'])) {
+    $action = 'trata_login_convite.mod.php';
+} else {
+    $action = 'trata_login.mod.php';
+
+}
+
+?>
 <body>
-    <form class="flex flex-col justify-center items-center h-screen" action="<?php echo $arrConfig['url_modules'] . 'trata_login.mod.php' ?>" method="post">
+    <form class="flex flex-col justify-center items-center h-screen" action="<?php echo $arrConfig['url_modules'] . $action ?>" method="post">
         
 
         <div class="card lg:w-6/12 shadow-xl py-10 bg-primary">

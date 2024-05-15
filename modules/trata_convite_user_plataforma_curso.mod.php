@@ -12,9 +12,15 @@ if(count($res) > 0) {
     $cargo = $res[0]['cargo'];
     
     $_SESSION['email'] = $email;
-    $_SESSION['id_curso'] = $id_curso;
-    $_SESSION['cargo'] = $cargo;
-
+    $_SESSION['id_curso'] = $id_curso;    
+    $_SESSION['convite'] = $convite;
+    if($cargo == 'Diretor de Curso') {        
+        $_SESSION['cargo'] = 'Professor';
+        $_SESSION['dc'] = true;
+    } else {        
+        $_SESSION['dc'] = false;
+        $_SESSION['cargo'] = $cargo;
+    }
     header('Location: ' . $arrConfig['url_paginas'] . 'auth/registo.php' );
 } else {
     echo 'não foram encontrados dados para o convite em questão, podendo este ter sido retirado ou já ter sido utilizado.';

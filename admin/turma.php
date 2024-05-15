@@ -6,7 +6,7 @@ if(!isset($_SESSION['id'])){
     exit;
 }
 ?>
-<?php include '../header.php'; ?>
+<?php include '../header.php';?>
 <body>
 <?php
 if(isset($_GET['id_turma']) && $_GET['id_turma']) {

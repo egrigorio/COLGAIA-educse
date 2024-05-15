@@ -200,12 +200,12 @@ function def_config_adm($modulo, &$arr_config)
                 break;
                 case 'tabs_turma': 
                     $arr_config = array(
-                        'tab1' => array(
+                        /* 'tab1' => array(
                             'label' => 'Customização',
                             'content' => 'Tab content 1',
                             'checked' => 0,
                             'name' => 'tabs_turma'
-                        ),
+                        ), */
                         'tab2' => array(
                             'label' => 'Professores',
                             'content' => tabela_vista_professores_turma(),
@@ -237,7 +237,7 @@ function def_config_adm($modulo, &$arr_config)
                         'tab1' => array(
                             'label' => 'Disciplinas',
                             'content' => tabela_disciplinas_instituicao(),
-                            'checked' => 1,
+                            'checked' => 0,
                             'name' => 'tabs_instituicao'
                         ),
                         'tab2' => array(
@@ -249,7 +249,7 @@ function def_config_adm($modulo, &$arr_config)
                         'tab3' => array(
                             'label' => 'Cursos',
                             'content' => tabela_cursos_instituicao(),
-                            'checked' => 0,
+                            'checked' => 1,
                             'name' => 'tabs_instituicao'
                         ),                        
                     );

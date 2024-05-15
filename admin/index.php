@@ -56,6 +56,7 @@ if($_SESSION['cargo'] == 'instituicao') {
         
     <?php
 } else {
+    
     ?>
         <body class="bg-base-200">
             <div class="hero min-h-screen">

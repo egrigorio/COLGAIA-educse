@@ -38,9 +38,25 @@ $id = my_query($sql);
 
 $sql = "SELECT * FROM rel_user_curso WHERE id_user = $id AND id_curso = $id_curso";
 $res = my_query($sql);
-if(count($res) == 0) {
-    $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id, $id_curso, '$cargo', '1')";
-    my_query($sql);
+if(count($res) == 0) {    
+    
+    if($_SESSION['dc']) {
+        $sql = "UPDATE curso SET id_diretor_curso = $id WHERE id = $id_curso";
+        my_query($sql);    
+        $sql = "UPDATE curso SET ativo = 1 WHERE id = $id_curso";
+        my_query($sql);        
+    } else {
+        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id, $id_curso, '$cargo', '1')";
+        my_query($sql);
+    }
+    unset($_SESSION['id_curso']);
+    unset($_SESSION['email']);
+    unset($_SESSION['dc']);
+    unset($_SESSION['id_user']);
+    $_SESSION['convite_aceite'] = 1;
+    $sql = "DELETE FROM conf_convite WHERE id = " . $_SESSION['convite'];
+    $res = my_query($sql);
+    unset($_SESSION['convite']);
 } else {
     // tratar exceção de o user já estar na turma
 }
@@ -49,7 +65,8 @@ if(count($res) == 0) {
 $codigo = rand(10000, 99999);
 $_SESSION['codigo'] = $codigo;
 $_SESSION['id'] = $id;
-$_SESSION['cargo'] = $cargo;
+$_SESSION['cargo'] = strtolower($cargo);
+$_SESSION['theme'] = 'mytheme';
 $_SESSION['pfp'] = $pfp;
 $_SESSION['user'] = $user;
 $_SESSION['ultimo_login'] = date('d/m/Y H:i');
