@@ -214,6 +214,7 @@ $html .= '
         
                 ';
         foreach ($res as $professor) {
+            
             if($professor['estado'] !== '1') {
                 $html .= '
                         <tr>
@@ -253,7 +254,7 @@ $html .= '
                                         confirmButtonText: \'Sim, remover!\'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id'] . '\';
+                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id_user'] . '\';
                                             
                                         }
                                     });

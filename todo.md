@@ -31,7 +31,8 @@
 
  <!-- 
  
- no painel de edição de diretor de curso, tenho que fazer de modo que ao alterar o diretor de curso, eu atualize as relações da turmas para adicionar o novo diretor de turma como sendo parte das turmas atuais daquele curso
+ tabela turno diretor de turma verificar turnos, e professor não aparece se não estiver nenhum turno acho
+ tabela professores curso, não aparece o próprio user quaando ele é professor
 
   -->
 

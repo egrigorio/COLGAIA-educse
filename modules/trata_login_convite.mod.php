@@ -21,27 +21,39 @@ if(count($arrResultado) == 0) {
     }
     $_SESSION['ultimo_login'] = $arrResultado[0]['ultimo_login'];
     $_SESSION['id'] = $arrResultado[0]['id'];
-    if($email != '') {
-        $_SESSION['user'] = $email;
+    if(isset($email) && $email != '') {
+        $user = $arrResultado[0]['username'];
+        $_SESSION['user'] = $user;
     } else {
         $_SESSION['user'] = $user;
     }
     my_query("UPDATE users SET ultimo_login = NOW() WHERE id = " . $arrResultado[0]['id']);
     $_SESSION['tipoLog'] = "Login do $user";
-    $_SESSION['cargo'] = $arrResultado[0]['cargo'];
+    $_SESSION['cargo'] = strtolower($arrResultado[0]['cargo']);
     $_SESSION['pfp'] = $arrResultado[0]['pfp'];
     $_SESSION['theme'] = 'mytheme';
     if($_SESSION['id_user'] == $_SESSION['id']) {
+        $id_user = $_SESSION['id_user'];
+        $id_curso = $_SESSION['id_curso'];
         if($_SESSION['dc']) {
-            $id_user = $_SESSION['id_user'];
-            $id_curso = $_SESSION['id_curso'];
             $sql = "UPDATE curso SET id_diretor_curso = $id_user WHERE id = $id_curso";
             my_query($sql);    
             $sql = "UPDATE curso SET ativo = 1 WHERE id = $id_curso";
             my_query($sql);
+            $sql = "SELECT * FROM turma WHERE id_curso = $id_curso";
+            $res = my_query($sql);
+            if(count($res) > 0) {
+                foreach($res as $turma) {
+                    $sql = "INSERT INTO rel_turma_user (id_turma, id_user) VALUES (" . $turma['id'] . ", $id_user)";
+                    $id_inserido = my_query($sql);
+                    $sql = "INSERT INTO rel_turno_user (id_turno, id_rel_turma_user) VALUES ( -1, $id_inserido)";
+                    my_query($sql);
+
+                }
+            }
         } else {
             $sql = "UPDATE rel_user_curso SET estado = '1' WHERE id_user = $id_user AND id_curso = $id_curso";
-            $res = my_query($sql);
+            $res = my_query($sql);            
         }
         unset($_SESSION['id_user']);
         unset($_SESSION['email']);

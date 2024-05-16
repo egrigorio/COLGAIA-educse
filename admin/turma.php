@@ -49,7 +49,8 @@ if(isset($_SESSION['convite_aceite']) && $_SESSION['convite_aceite']) {
     </script>';
     unset($_SESSION['convite_aceite']);
 }
-switch($cargo) {
+
+switch(strtolower($cargo)) {
     case 'aluno':
         include './dashboards/aluno.dash.php';
         break;

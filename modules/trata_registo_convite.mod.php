@@ -8,6 +8,7 @@ $email = $_SESSION['email'];
 $user = $_POST['user'];
 $pass = $_POST['pass'];
 $confirmar_pass = $_POST['confirmar_pass'];
+$_SESSION['cargo'] = strtolower($_SESSION['cargo']);
 $cargo = $_SESSION['cargo'];
 $id_curso = $_SESSION['id_curso'];
 $pfp = 'e.png';
@@ -44,9 +45,23 @@ if(count($res) == 0) {
         $sql = "UPDATE curso SET id_diretor_curso = $id WHERE id = $id_curso";
         my_query($sql);    
         $sql = "UPDATE curso SET ativo = 1 WHERE id = $id_curso";
-        my_query($sql);        
+        my_query($sql);
+        $sql = "SELECT * FROM turma WHERE id_curso = $id_curso";
+        $res = my_query($sql);
+        if(count($res) > 0) {
+            foreach($res as $r) {
+                $sql = "INSERT INTO rel_turma_user (id_turma, id_user) VALUES (" . $r['id'] . ", $id)";
+                $id_inserido = my_query($sql);
+                $sql = "INSERT INTO rel_turno_user (id_turno, id_rel_turma_user) VALUES ( -1, $id_inserido)";
+                my_query($sql);
+
+            }
+        }
+        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id, $id_curso, 'professor', '1')";
+        my_query($sql);
     } else {
         $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id, $id_curso, '$cargo', '1')";
+        echo $sql;
         my_query($sql);
     }
     unset($_SESSION['id_curso']);

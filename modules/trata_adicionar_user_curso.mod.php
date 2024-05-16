@@ -14,21 +14,25 @@ $emails = array_unique($emails);
 foreach($emails as $email) {    
     $sql = "SELECT * FROM users WHERE email = '$email'";
     $res = my_query($sql);
-    $id_user = $res[0]['id'];
     if(count($res) == 0) {
-                
+                        
         $sql = "INSERT INTO conf_convite (email, id_curso, cargo) VALUES ('$email', $id_curso, '$cargo')";
+        echo $sql;
         $id_inserido = my_query($sql);        
         $url = $arrConfig['url_modules'] . 'trata_convite_user_plataforma_curso.mod.php?convite=' . $id_inserido;                
         enviar_convite_plataforma($email, $url, $cargo, $nome_curso);
         
 
     } else {
+        $id_user = $res[0]['id'];
         //validar cargo do convite com cargo do user
-        $sql = "SELECT * FROM users WHERE email = '$email'";
-        $res = my_query($sql);
-        if($cargo == $res[0]['cargo']) {
+        
+        echo 'aqui';
+        pr($res);
+        echo $cargo;
+        if(strtolower($cargo) == strtolower($res[0]['cargo'])) {
             $sql = "SELECT * FROM rel_user_curso WHERE id_user = $id_user AND id_curso = $id_curso";
+            echo $sql;
             $res = my_query($sql);
             if(count($res) == 0) {
                 $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id_user, $id_curso, '$cargo', 'Convite enviado')";

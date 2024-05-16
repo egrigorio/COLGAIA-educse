@@ -3,9 +3,13 @@ include '../../include/config.inc.php';
 
 $id_turma = $_GET['id_turma'];
 
-$sql = "SELECT * FROM view_aluno_turno_turma WHERE id_turma = $id_turma " . ((isset($_GET['turno_numero']) && $_GET['turno_numero'] != 'all') ? "AND num_turno = " . $_GET['turno_numero'] : "");
+/* $sql = "SELECT * FROM view_aluno_turno_turma WHERE id_turma = $id_turma " . ((isset($_GET['turno_numero']) && $_GET['turno_numero'] != 'all') ? "AND num_turno = " . $_GET['turno_numero'] : "");
+$res = my_query($sql); */
+$sql = "SELECT * FROM view_user_curso 
+            INNER JOIN rel_turma_user ON rel_turma_user.id_user = view_user_curso.id_user   
+            INNER JOIN rel_turno_user ON rel_turno_user.id_rel_turma_user = rel_turma_user.id           
+            WHERE cargo = 'aluno' AND id_turma = $id_turma";
 $res = my_query($sql);
-
 /* echo $sql;
 pr($res);
 die; */
@@ -35,6 +39,13 @@ $html = '
                 ';
 foreach ($res as $aluno) {
     /* pr($res); */
+    if($aluno['id_turno'] != -1) {
+        $sql = "SELECT * FROM turno WHERE id = " . $aluno['id_turno'];
+        $res_turno = my_query($sql);
+        $aluno['num_turno'] = $res_turno[0]['numero'];
+    } else {
+        $aluno['num_turno'] = 0;
+    }
 
     $html .= '
                         <tr>

@@ -28,15 +28,31 @@ if(isset($_SESSION['id'])) {
             my_query($sql);
             $sql = "UPDATE curso SET ativo = 1 WHERE id = $id_curso";
             my_query($sql);
+            $sql = "SELECT * FROM turma WHERE id_curso = $id_curso";
+            $res = my_query($sql);
+            foreach($res as $turma) {
+                if(count($res) > 0) {
+                    $sql = "INSERT INTO rel_turma_user (id_turma, id_user) VALUES (" . $turma['id'] . ", $id_user)";
+                    $id_inserido = my_query($sql);
+                    $sql = "INSERT INTO rel_turno_user (id_turno, id_rel_turma_user) VALUES ( -1, $id_inserido)";
+                    my_query($sql);
+                }
+
+            }
         } else {
             $dc = false;
         }
 
 
-
-        $sql = "UPDATE rel_user_curso SET estado = '1' WHERE id_user = $id_user AND id_curso = $id_curso";
+        $sql = "SELECT * FROM rel_user_curso WHERE id_user = $id_user AND id_curso = $id_curso";
         $res = my_query($sql);
-
+        if(count($res) == 0) {
+            $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id_user, $id_curso, '$cargo', '1')";
+            my_query($sql);
+        } else {
+            $sql = "UPDATE rel_user_curso SET estado = '1' WHERE id_user = $id_user AND id_curso = $id_curso";
+            $res = my_query($sql);
+        }        
         $sql = "DELETE FROM conf_convite WHERE id = " . $_GET['convite'];
         $res = my_query($sql);
 

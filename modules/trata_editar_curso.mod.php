@@ -6,22 +6,23 @@ $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : '';
 switch ($tipo) {
     case 'editar':
         $sql = "SELECT * FROM curso WHERE id = {$_POST['id_curso']}";
-        $res = my_query($sql);
+        $res1 = my_query($sql);
         pr($_POST);
-        $sql = "SELECT id FROM users WHERE users.email = '{$_POST['diretor_curso']}'";
-        echo $sql;
+        $sql = "SELECT id FROM users WHERE users.email = '{$_POST['diretor_curso']}'";        
         $res_dc = my_query($sql);
         if(count($res_dc) == 0) {
             // não tá na plataforma
             $sql = "UPDATE curso SET ativo = 0 WHERE id = {$_POST['id_curso']}";
             my_query($sql);
-            $sql = "SELECT * FROM turma WHERE id_diretor_turma = {$res[0]['id_diretor_curso']}";
+            $sql = "UPDATE curso SET id_diretor_curso = -1 WHERE id = {$_POST['id_curso']}";
+            my_query($sql);
+            $sql = "SELECT * FROM turma WHERE id_diretor_turma = {$res1[0]['id_diretor_curso']}";
             $res = my_query($sql);
             if(count($res) > 0) {
                 $sql = "UPDATE turma SET id_diretor_turma = -1 WHERE id = {$res[0]['id']}";
                 my_query($sql);
             }
-            $sql = "SELECT * FROM rel_turma_user WHERE id_user = {$res[0]['id_diretor_curso']}";
+            $sql = "SELECT * FROM rel_turma_user WHERE id_user = {$res1[0]['id_diretor_curso']}";
             $res = my_query($sql);
             if(count($res) > 0) {
                 $sql = "DELETE FROM rel_turma_user WHERE id = {$res[0]['id']}";
@@ -31,8 +32,8 @@ switch ($tipo) {
             $id_inserido = my_query($sql);
             $url = $arrConfig['url_modules'] . 'trata_convite_user_plataforma_curso.mod.php?convite=' . $id_inserido;
             enviar_convite_plataforma($_POST['diretor_curso'], $url, 'Diretor de Curso', $_POST['nome_curso']);
-        }
-        if($res_dc[0]['id'] == $res[0]['id_diretor_curso']) {
+        }        
+        if($res_dc[0]['id'] == $res1[0]['id_diretor_curso']) {
             
             $sql = "UPDATE curso SET nome_curso = '{$_POST['nome_curso']}', abreviatura = '{$_POST['abreviatura']}', duracao = {$_POST['duracao']} WHERE id = {$_POST['id_curso']}";
             my_query($sql);
@@ -42,19 +43,19 @@ switch ($tipo) {
             // tá na plataforma mas não é o atual diretor de curso
             $sql = "UPDATE curso SET ativo = 0 WHERE id = {$_POST['id_curso']}";
             my_query($sql);
-            $sql = "SELECT * FROM turma WHERE id_diretor_turma = {$res[0]['id_diretor_curso']}";
+            $sql = "SELECT * FROM turma WHERE id_diretor_turma = {$res1[0]['id_diretor_curso']}";
             $res = my_query($sql);
             if(count($res) > 0) {
                 $sql = "UPDATE turma SET id_diretor_turma = -1 WHERE id = {$res[0]['id']}";
                 my_query($sql);
             }
-            $sql = "SELECT * FROM rel_turma_user WHERE id_user = {$res[0]['id_diretor_curso']}";
+            $sql = "SELECT * FROM rel_turma_user WHERE id_user = {$res1[0]['id_diretor_curso']}";
             $res = my_query($sql);
             if(count($res) > 0) {
                 $sql = "DELETE FROM rel_turma_user WHERE id = {$res[0]['id']}";
                 my_query($sql);
             }
-            $sql = "INSERT INTO conf_convite (email, id_curso, cargo) VALUES ('{$_POST['diretor_curso']}', $id_curso, 'Diretor de Curso')";
+            $sql = "INSERT INTO conf_convite (email, id_curso, cargo) VALUES ('{$_POST['diretor_curso']}', {$_POST['id_curso']}, 'Diretor de Curso')";
             $id_inserido = my_query($sql);
             $url = $arrConfig['url_modules'] . 'trata_convite_user_curso.mod.php?convite=' . $id_inserido;
             enviar_convite_curso($_POST['diretor_curso'], $url, 'Diretor de Curso', $_POST['nome_curso']);
@@ -107,7 +108,7 @@ switch ($tipo) {
         break;
 }
 
-header('Location: ' . $_SERVER['HTTP_REFERER']);
+header('Location: ' . $arrConfig['url_admin'] . 'instituicao.php?tab=cursos');
 
 function convidar() {
 

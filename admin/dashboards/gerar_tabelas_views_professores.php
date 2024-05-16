@@ -7,7 +7,9 @@ $sql = "SELECT * FROM view_user_curso
         WHERE cargo = 'professor' AND id_diretor_curso = $id_user_diretor_curso";
 
 
+
 $res = my_query($sql);
+
 
 switch ($valor) {
     

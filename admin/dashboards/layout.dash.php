@@ -84,7 +84,16 @@ function navbar($arr_items) {
                         </a>
                         </li>                        
                         <li><a>Settings</a></li>
-                        <li><a href="' . (isset($_GET['al']) ? ($arrConfig['url_admin'] . 'curso.php') : '?al=true') . '">Vista de ' . (isset($_GET['al']) ? get_ano_letivo() : get_proximo_ano_letivo(get_ano_letivo())) . '</a></li>
+                        
+                        '; 
+                        
+                        $sql = "SELECT * FROM curso WHERE id_diretor_curso = " . $_SESSION['id'];
+                        $res = my_query($sql);
+                        if($res) {
+                            echo '<li><a href="' . (isset($_GET['al']) ? ($arrConfig['url_admin'] . 'curso.php') : '?al=true') . '">Vista de ' . (isset($_GET['al']) ? get_ano_letivo() : get_proximo_ano_letivo(get_ano_letivo())) . '</a></li>';
+                        }
+
+                        echo '
                         <li><a href="' . $arrConfig['url_modules'] . 'trata_logout.mod.php' . '">Logout</a></li>
                     </ul>
                     
@@ -95,7 +104,7 @@ function navbar($arr_items) {
     ';
 }
 
-function turma($arr_turma, &$flag_direcao_turma) {
+function turma($arr_turma, &$flag_direcao_turma, $aluno = false) {
     $flag_tabs = false;
     $flag_tab_get = isset($_GET['tab']) ? true : false;
 
@@ -115,7 +124,7 @@ function turma($arr_turma, &$flag_direcao_turma) {
         
         <div role="tablist" class="tabs tabs-lifted">
         ';
-        $tabs = $flag_direcao_turma ? 'tabs_direcao_turma' : 'tabs_turma';
+        $tabs = ($aluno ? 'tabs_aluno' : ($flag_direcao_turma ? 'tabs_direcao_turma' : 'tabs_turma'));
         def_config_adm($tabs, $arr_config);
         foreach ($arr_config as $kCampos => $vCampos) {
             if($flag_tab_get) {
@@ -951,7 +960,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                         let title = document.createElement("t");
                         title.innerHTML =
                             arg.event.title +
-                            " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
+                            " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
                             "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
                             arg.event.extendedProps.disciplina +
                             " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
@@ -1099,40 +1108,70 @@ function gerar_detalhes_evento($id_evento) {
     /* pr($res); */
     $html = '
     
-    <div class="flex w-full flex-col h-full">
+    <div class="flex w-full flex-col h-full gap-8">
 
-        <h1 class="text-center">' . $res[0]['titulo'] . '.</h1>
-        <div class="flex flex-row gap-5">
-            <div>
-                <p>Descrição da atividade:</p>
-                <p>' . $res[0]['descricao'] . '</p>
-            </div>
-            <div>
-                <p>Começo da atividade:</p>
-                <p>' . $res[0]['comeco'] . '</p>
-            </div>
-            <div>
-                <p>Fim da atividade:</p>
-                <p>' . $res[0]['fim'] . '</p>
-            </div>
-            <div>
-                <p>Criado em:</p>
-                <p>' . $res[0]['criado_em'] . '</p>
-            </div>
-            <div>
-                <p>Ultima vez editado em:</p>
-                <p>' . $res[0]['editado_em'] . '</p>
-            </div>
-            <div>
-                <p>Tipo da atividade:</p>
-                <p>' . $res[0]['tipo'] . '</p>
-            </div>
-            <div>
-                <p>Tempo sugerido:</p>
-                <p>' . $res[0]['tempo_sugerido'] . '</p>
-            </div>
-
-        </div>
+        <h1 class="text-center text-lg font-bold">' . $res[0]['titulo'] . '</h1>
+        
+        <div class="flex gap-8">
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Descrição</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . $res[0]['descricao'] . '" class="input w-full max-w-xs" disabled />                    
+            </label>                             
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Começo</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . substr($res[0]['comeco'], 0, 10) . '" class="input w-full max-w-xs" disabled />
+            </label>
+        
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Fim</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . $res[0]['descricao'] . '" class="input w-full max-w-xs" disabled />                    
+            </label>                             
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Criado em</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . substr($res[0]['comeco'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
+            </label>                 
+        
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Fim da atividade</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . substr($res[0]['fim'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
+            </label>                             
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Criado em</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . substr($res[0]['criado_em'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
+            </label>                 
+        
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Editado em</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . substr($res[0]['editado_em'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
+            </label>                             
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Tipo</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . $res[0]['tipo'] . '" class="input w-full max-w-xs" disabled />                    
+            </label>      
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Tempo sugerido</span>                        
+                </div>
+                <input type="text" placeholder="Type here" value="' . $res[0]['tempo_sugerido'] . '" class="input w-full max-w-xs" disabled />                    
+            </label>                 
+        </div>                        
+        
         <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '" class="btn btn-ghost">Voltar</a>
 
 
@@ -1260,7 +1299,8 @@ function tabela_turnos_diretor_turma() {
                             <form method="post" action="' . $arrConfig['url_modules'] . 'trata_remover_turno_turma.mod.php' . '">
                                 <input type="hidden" name="id_turno" value="' . $turno['id_turno'] . '">
                                 <input type="hidden" name="id_turma" value="' . $id_turma . '">
-                                ' . ($cont == count($res) ? '<button class="btn btn-ghost">Remover</button>' : '') . '
+                                <button class="btn btn-ghost btn-sm">Remover</button>
+                                ' . /* ($cont == count($res) ? '<button class="btn btn-ghost btn-sm">Remover</button>' : '') */ /* ativar isso caso queira permitir remoção apenas do último turno */ '
                             </form>
                         </td>
                     </tr>
@@ -1449,8 +1489,10 @@ function tabela_vista_professores_turma($dt = false) {
         foreach($turno['turnos'] as $id_turno) {
             $sql = "SELECT numero FROM turno WHERE id = " . $id_turno;
             $res = my_query($sql);
-            if($res[0]['numero'] != 0) {
-                $num_turnos[$turno['id_user']][] = $res[0]['numero'];
+            if(count($res) > 0) {
+                if($res[0]['numero'] != 0) {
+                    $num_turnos[$turno['id_user']][] = $res[0]['numero'];
+                }
             }
         }        
     }
@@ -1610,7 +1652,10 @@ function gerar_options_turnos($id_turma, $turnos_pertence, $id_user, &$cont ,$di
 function tabela_vista_alunos_turma() {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];    
-    $sql = "SELECT * FROM view_aluno_turno_turma WHERE id_turma = $id_turma";
+    $sql = "SELECT * FROM view_user_curso 
+            INNER JOIN rel_turma_user ON rel_turma_user.id_user = view_user_curso.id_user   
+            INNER JOIN rel_turno_user ON rel_turno_user.id_rel_turma_user = rel_turma_user.id           
+            WHERE cargo = 'aluno' AND id_turma = $id_turma";
     $res = my_query($sql);
     /* pr($res); */
     $html = '
@@ -1719,7 +1764,20 @@ function painel_direcao_turma() {
         $texto_porcentagem = 'Sem atividades no mês atual';
     }
     
-    
+    $correspondencia_mes = [
+        '01' => 'Janeiro',
+        '02' => 'Fevereiro',
+        '03' => 'Março',
+        '04' => 'Abril',
+        '05' => 'Maio',
+        '06' => 'Junho',
+        '07' => 'Julho',
+        '08' => 'Agosto',
+        '09' => 'Setembro',
+        '10' => 'Outubro',
+        '11' => 'Novembro',
+        '12' => 'Dezembro'
+    ];
     
 
     $html = '
@@ -1729,7 +1787,7 @@ function painel_direcao_turma() {
             <div class="flex flex-col gap-4">                    
                 <div class="stats shadow">
                     <div class="stat">
-                        <div class="stat-title">Número de atividades em ' . $mes_atual . '</div>
+                        <div class="stat-title">Número de atividades em ' . $correspondencia_mes[$mes_atual] . '</div>
                         <div class="stat-value">' . $total_atividades_mes . '</div>
                         <div class="stat-desc">' . $texto_atividades_mes . '</div>
                     </div>
@@ -1743,7 +1801,7 @@ function painel_direcao_turma() {
                 </div>
                 <div class="stats shadow">
                     <div class="stat">
-                        <div class="stat-title">Esforço médio diário em abril</div>
+                        <div class="stat-title">Esforço médio diário em ' . $correspondencia_mes[$mes_atual] . ' </div>
                         <div class="stat-value">' . $esforco_medio_diario_turma . ' h/dia</div>
                         <div class="stat-desc">' . $texto_porcentagem . '</div>
                     </div>
@@ -1945,6 +2003,7 @@ function painel_direcao_turma() {
 
 function tabela_disciplinas_instituicao() {
     global $arrConfig;
+    
     $sql = "SELECT * FROM rel_instituicao_disciplinas
             INNER JOIN disciplinas ON disciplinas.id = rel_instituicao_disciplinas.id_disc
             WHERE id_instituicao = " . $_SESSION['id_instituicao'];
@@ -2143,9 +2202,20 @@ function tabela_cursos_instituicao() {
         $res_editar = my_query($sql);
         $res_editar = array_shift($res_editar);
         
-        $sql = "SELECT email FROM users WHERE id = " . $res_editar['id_diretor_curso'];
-        $res_email = my_query($sql);
-        $res_editar['email'] = $res_email[0]['email'];
+
+        if(isset($res_editar)) {
+            if($res_editar['id_diretor_curso'] != -1) {
+                
+                $sql = "SELECT email FROM users WHERE id = " . $res_editar['id_diretor_curso'];
+                $res_email = my_query($sql);
+                $res_editar['email'] = $res_email[0]['email'];
+            } else {
+                $res_editar['email'] = '';
+            }
+        } else {
+            $editar = false;
+        
+        }
     }
     
     $html = '
@@ -2155,52 +2225,52 @@ function tabela_cursos_instituicao() {
         <div class="flex flex-row">
         <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_editar_curso.mod.php' . ($editar ? '?tipo=editar' : '?tipo=criar' ) . '" class="overflow-x-auto">
         
-        <div class="flex flex-col gap-6 ml-8">
-        <h1 class="text-xl text-center font-bold">Criar curso</h1>
-        ' . ($editar ? '<input type="hidden" name="id_curso" value="' . $_GET['id_curso'] . '" />' : '') . '
-            <div class="flex flex-row gap-8">
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Nome do curso</span>
-                    </div>
-                    <input name="nome_curso" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['nome_curso'] : '') . '" />
+            <div class="flex flex-col gap-6 ml-8">
+            <h1 class="text-xl text-center font-bold">Criar curso</h1>
+            ' . ($editar ? '<input type="hidden" name="id_curso" value="' . $_GET['id_curso'] . '" />' : '') . '
+                <div class="flex flex-row gap-8">
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Nome do curso</span>
+                        </div>
+                        <input name="nome_curso" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['nome_curso'] : '') . '" />
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Abreviatura</span>
+                        </div>
+                        <input name="abreviatura" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['abreviatura'] : '') . '"/>
+                    </label>
+                </div>
+                <div class="flex flex-row gap-8">
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Duração (anos)</span>
+                        </div>
+                        <input name="duracao" required type="number" min="0" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['duracao'] : '') . '"/>
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Diretor de curso</span>
+                        </div>
+                        <input name="diretor_curso" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['email'] : '') . '"/>
+                    </label>
+                </div>                                                                                    
+                <label class="form-control mt-auto w-full">        
+                    <button class="btn w-full">' . ($editar ? 'Editar' : 'Criar') . '</button>
                 </label>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Abreviatura</span>
-                    </div>
-                    <input name="abreviatura" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['abreviatura'] : '') . '"/>
-                </label>
+                
+                ' . (isset($_SESSION['msg_erro']) ? '<span class="text-xs text-red-500">Erro: ' . $_SESSION['msg_erro'] . ' </span>' : '') . '';
+                if(isset($_SESSION['msg_erro'])) {
+                    unset($_SESSION['msg_erro']);
+                }
+                $html .= '
+                
+                
+                
             </div>
-            <div class="flex flex-row gap-8">
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Duração (anos)</span>
-                    </div>
-                    <input name="duracao" required type="number" min="0" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['duracao'] : '') . '"/>
-                </label>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Diretor de curso</span>
-                    </div>
-                    <input name="diretor_curso" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['email'] : '') . '"/>
-                </label>
-            </div>                                                                                    
-            <label class="form-control mt-auto w-full">        
-                <button class="btn w-full">' . ($editar ? 'Editar' : 'Criar') . '</button>
-            </label>
-            
-            ' . (isset($_SESSION['msg_erro']) ? '<span class="text-xs text-red-500">Erro: ' . $_SESSION['msg_erro'] . ' </span>' : '') . '';
-            if(isset($_SESSION['msg_erro'])) {
-                unset($_SESSION['msg_erro']);
-            }
-            $html .= '
-            
-
+        </form>
     
-        </div>
-    
-    </form>
     <div class="divider lg:divider-horizontal"></div>
             <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php' . '">
                 <input type="hidden" name="id_instituicao" value="' . $_SESSION['id_instituicao'] . '">
