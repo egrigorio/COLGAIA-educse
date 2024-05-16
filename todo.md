@@ -15,7 +15,7 @@
 - [X] corrigir erro da tabela dos professores não estar sendo gerada corretamente;
 - [X] adicionar a tabela de vista de professores da turma para o diretor de turma
 - [X] criar instituição, isto é, criar conta como dono da instituição em questão, e permitir a criação de disciplinas para os cursos, bem como convite de diretores de cursos e um pequeno painel para visualização dos cursos disponíveis na instituição; <!-- não tão chato -->
-- [ ] criar a vista do aluno <!-- tranquilo -->
+- [X] criar a vista do aluno <!-- tranquilo -->
 - [ ] criar visualização da conta do utilizador, e permitir alterações de informações como foto de perfil por exemplo; <!-- fácil -->
 - [ ] implementar as notificações; <!-- um pouco chato -->
 - [ ] criar um frontoffice? <!-- logo se vê -->
@@ -24,16 +24,7 @@
 
 
 <!-- o que estive fazendo até agora foram correções de erros, tenho que:
-
-    !! mudar a designação do turno 0 de todos para alguma outra coisa, perguntar ao stor nuno ou assim !!
-            
+    !! mudar a designação do turno 0 de todos para alguma outra coisa, perguntar ao stor nuno ou assim !!        
  -->
-
- <!-- 
- 
- tabela turno diretor de turma verificar turnos, e professor não aparece se não estiver nenhum turno acho
- tabela professores curso, não aparece o próprio user quaando ele é professor
-
-  -->
 
 
