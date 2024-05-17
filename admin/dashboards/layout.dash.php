@@ -62,12 +62,12 @@ function navbar($arr_items) {
         </div>
         <div class="navbar-end">   
             <span class="text text-xs badge badge-primary">' . $ano_letivo . '</span>  <!-- adicionar aqui uma tooltip -->
-            <button class="btn btn-ghost btn-circle">
+            <!-- <button class="btn btn-ghost btn-circle">
                 <div class="indicator">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                     <span class="badge badge-xs badge-primary indicator-item"></span>
-                </div>
-            </button>
+                </div> 
+            </button> -->
 
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
@@ -77,14 +77,14 @@ function navbar($arr_items) {
                 </div>
                 
                     <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        <li>
+                        <!-- <li>
                         <a class="justify-between">
                             Profile
                             <span class="badge">New</span>
                         </a>
                         </li>                        
                         <li><a>Settings</a></li>
-                        
+                        -->
                         '; 
                         
                         $sql = "SELECT * FROM curso WHERE id_diretor_curso = " . $_SESSION['id'];
@@ -1138,13 +1138,7 @@ function gerar_detalhes_evento($id_evento) {
                 </div>
                 <input type="text" placeholder="Type here" value="' . substr($res[0]['comeco'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
             </label>                 
-        
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">Fim da atividade</span>                        
-                </div>
-                <input type="text" placeholder="Type here" value="' . substr($res[0]['fim'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
-            </label>                             
+                                             
             <label class="form-control w-full max-w-xs">
                 <div class="label">
                     <span class="label-text">Criado em</span>                        
@@ -1367,9 +1361,16 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
             '; 
             
             if($flag_turmas_2anos) {
+                $aletivo = get_proximo_ano_letivo(get_ano_letivo());
+                $sql = "SELECT * FROM turma WHERE ano_letivo = '$proximo_ano_letivo' AND id_curso = " . $_SESSION['id_curso'];
+                $res = my_query($sql);
+                $atualizar_turmas_flag = true;
+                if(count($res) > 0) {
+                    $atualizar_turmas_flag = false;
+                }
                 $html .= '
                 
-                <a class="btn btn-ghost" disabled>'; $html .= ($flag_tem_turmas ? 'Atualizar turmas' : 'Gerar turmas'); $html .= '</a>
+                <a class="btn btn-ghost" disabled>'; $html .= ($flag_tem_turmas ? ($atualizar_turmas_flag ? 'Atualizar turmas' : '') : 'Gerar turmas'); $html .= '</a>
                 
                 ';
             } else {
@@ -1419,7 +1420,17 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
 
                     
                 });
-            " class="btn btn-ghost">'; $html .= ($flag_tem_turmas ? 'Atualizar turmas' : 'Gerar turmas'); $html .= '</a>
+            " class="btn btn-ghost">';
+            
+            $aletivo = get_proximo_ano_letivo(get_ano_letivo());
+            $sql = "SELECT * FROM turma WHERE ano_letivo = '$proximo_ano_letivo' AND id_curso = " . $_SESSION['id_curso'];
+            $res = my_query($sql);
+            $atualizar_turmas_flag = true;
+            if(count($res) > 0) {
+                $atualizar_turmas_flag = false;
+            }
+
+            $html .= ($flag_tem_turmas ? ($atualizar_turmas_flag ? 'Atualizar turmas' : '') : 'Gerar turmas'); $html .= '</a>
                 
                 ';
             }
@@ -2260,8 +2271,15 @@ function tabela_cursos_instituicao() {
                     <button class="btn w-full">' . ($editar ? 'Editar' : 'Criar') . '</button>
                 </label>
                 
-                ' . (isset($_SESSION['msg_erro']) ? '<span class="text-xs text-red-500">Erro: ' . $_SESSION['msg_erro'] . ' </span>' : '') . '';
+                ';                
                 if(isset($_SESSION['msg_erro'])) {
+                    $html .= '<script>Swal.fire({
+                        title: "Erro",
+                        text: "' . $_SESSION['msg_erro'] . '",
+                        icon: "error",
+                        timer: 2000,
+                        
+                    })</script>';
                     unset($_SESSION['msg_erro']);
                 }
                 $html .= '

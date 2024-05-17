@@ -21,11 +21,7 @@ $html = '
                 <input type="hidden" name="cargo" value="alunos">
                 <thead>
                     <tr>
-                        <th>
-                            <label>
-                            <input type="checkbox" class="checkbox" />
-                            </label>
-                        </th>
+                        
                         <th>Nome</th>
                         <th>Turma</th>
                         <th>Turno</th>
@@ -49,11 +45,7 @@ foreach ($res as $aluno) {
 
     $html .= '
                         <tr>
-                            <th>
-                                <label>
-                                <input type="checkbox" class="checkbox" />
-                                </label>
-                            </th>
+                            
                             <td>
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
@@ -147,14 +139,7 @@ $html .= '
 
                 <!-- body -->
                 <!-- foot -->
-                <tfoot>
-                    <tr>
-                        <th> </th>
-                        <th>Nome</th>
-                        <th>Turma</th>
-                        <th>Opções</th>
-                    </tr>
-                </tfoot>
+                
 
                 <!-- foot -->
                 ';

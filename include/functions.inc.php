@@ -285,6 +285,8 @@ function buscar_turmas_curso($id_curso) {
             $arr_turmas[] = $v;
         }
     }
+    /* pr($arr_turmas);
+    die; */
     return $arr_turmas;
 }
 
@@ -333,7 +335,8 @@ function gerar_items_navbar($id) {
     $flag_diretor_curso = false;
     $curso = buscar_cursos_diretor($id); /* pego o curso, se for diretor de curso */ 
     $turmas = buscar_todas_turmas_que_participa();
-    if(isset($curso) && count($curso) > 0) {        
+    if(isset($curso) && count($curso) > 0) {    
+            
         $turmas = buscar_turmas_curso($curso[0]['id']); /* pego as turmas todas do curso, se for diretor de curso */
         $flag_diretor_curso = true;
     }             
@@ -351,16 +354,31 @@ function gerar_items_navbar($id) {
     } else {
         $turmas = buscar_todas_turmas_que_participa();
         $turmas = buscar_turmas_diretor($id, $turmas); /* pego as direções de turma */
-        $turmas = array_merge($curso, $turmas);   
-
-        
+        $turmas = array_merge($curso, $turmas);                         
     }
+
     //remover turmas repetidas
     $turmas = array_map("unserialize", array_unique(array_map("serialize", $turmas)));
-    return $turmas;
+    $ano_letivo = '';
+    $ano_letivo = (isset($_GET['al']) ? get_proximo_ano_letivo(get_ano_letivo()) : get_ano_letivo());
+    // filtrar pelo ano letivo
+    /* $ano_letivo = '2024/25'; */
+    /* $ano_letivo = get_ano_letivo(); */
+    /* pr($turmas); */
+    /* $sql = "SELECT * FROM curso WHERE id_diretor_curso = $id";
+    $res = my_query($sql); */
     
-    
-
+    if($flag_diretor_curso) {
+        $arr_turmas[] = $turmas[0];
+        foreach($turmas as $k => $v) {
+            if(isset($v['ano_letivo']) && $v['ano_letivo'] == $ano_letivo) {                
+                $arr_turmas[] = $v;
+            }
+        }
+        return $arr_turmas;
+    } else {
+        return $turmas;
+    }            
 }
 
 function gerar_tabelas($modulo, &$chave,$filtro) {

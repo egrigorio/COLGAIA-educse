@@ -6,8 +6,6 @@ $id_user_diretor_curso = $_SESSION['id'];
 $sql = "SELECT * FROM view_user_curso 
         WHERE cargo = 'professor' AND id_diretor_curso = $id_user_diretor_curso";
 
-
-
 $res = my_query($sql);
 
 
@@ -23,9 +21,7 @@ switch ($valor) {
                 <thead>
                     <tr>
                         <th>
-                            <label>
-                            <input type="checkbox" class="checkbox" />
-                            </label>
+                            
                         </th>
                         <th>Nome</th>
                         <th>Disciplinas</th>
@@ -64,9 +60,7 @@ if ($professor['estado'] == '1') {
                     
                     <tr>
                         <th>
-                            <label>
-                            <input type="checkbox" class="checkbox" />
-                            </label>
+                            
                         </th>
                         <td>
                             <div class="flex items-center gap-3">
@@ -146,16 +140,7 @@ $html .= '
 
                 <!-- body -->
                 <!-- foot -->
-                <tfoot>
-                    <tr>
-                        <th> </th>
-                        <th>Nome</th>
-                        <th>Disciplinas</th>
-                        <th>Turmas</th>
-                        <th>Direção de Turma</th>
-                        <th>Opções</th>
-                    </tr>
-                </tfoot>
+                
                 <!-- foot -->
                 ';
         echo $html;

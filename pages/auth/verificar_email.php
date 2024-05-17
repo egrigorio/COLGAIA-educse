@@ -7,20 +7,27 @@ if(isset($_SESSION['id'])){
     header('Location: ' . $arrConfig['url_paginas'] . 'auth/registar.php');
     exit;
 }
+include '../../header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
 <body>
-    <form action="../../modules/trata_verifconta.mod.php" method="post">
-        <label for="codigo">Código que recebeu no email</label>
-        <input type="number" name="codigo" id="codigo">
-        <input type="submit" value="Verificar">
+    <form class="flex flex-col justify-center items-center h-screen" action="../../modules/trata_verifconta.mod.php" method="post">
+        <div class="flex card lg:w-6/12  shadow-xl bg-primary items-center">
+        <div class="w-9/12 mt-4 mb-4 gap-4">
+            <div class="w-full text-center">
+                <div class="label">
+                    <span class="label-text">Código de 5 digitos que recebeu no email</span>
+                </div>
+                <label class="input input-bordered flex items-center gap-2 w-full">
+                    
+                    <input type="number" min="10000" max="99999" class="grow" name="codigo" id="codigo" placeholder="12345" />
+                </label>
+                <input class="btn btn-ghost w-full" type="submit" value="Verificar">    
+            </div>    
+
+        </div>    
+        <!-- <label for="codigo">Código que recebeu no email</label>
+        <input type="number" name="codigo" id="codigo"> -->
     </form>
     
 </body>

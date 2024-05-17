@@ -23,12 +23,7 @@ switch ($valor) {
         $html = '
                 <!-- head -->
                 <thead>
-                    <tr>
-                        <th>
-                            <label>
-                            <input type="checkbox" class="checkbox" />
-                            </label>
-                        </th>
+                    <tr>                        
                         <th>Nome</th>                        
                         <th>Turma</th>                        
                         <th>Opções</th>
@@ -47,12 +42,7 @@ foreach ($res as $aluno) {
         /* pr($aluno); */ 
         $html .= '
                         
-                        <tr>
-                            <th>
-                                <label>
-                                <input type="checkbox" class="checkbox" />
-                                </label>
-                            </th>
+                        <tr>                            
                             <td>
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
@@ -168,15 +158,7 @@ $html .= '
                 </tbody>                    
 
                 <!-- body -->
-                <!-- foot -->
-                <tfoot>
-                    <tr>
-                        <th> </th>
-                        <th>Nome</th>
-                        <th>Turma</th>
-                        <th>Opções</th>
-                    </tr>
-                </tfoot>
+                <!-- foot -->                
                 <!-- foot -->
                 ';
         echo $html;

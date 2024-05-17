@@ -57,10 +57,10 @@ if(count($res) == 0) {
 
             }
         }
-        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id, $id_curso, 'professor', '1')";
+        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, estado) VALUES ($id, $id_curso, '1')";
         my_query($sql);
     } else {
-        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id, $id_curso, '$cargo', '1')";
+        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, estado) VALUES ($id, $id_curso, '1')";
         echo $sql;
         my_query($sql);
     }

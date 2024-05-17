@@ -6,7 +6,8 @@ $items = gerar_items_navbar($_SESSION['id']);
 ?>
 <?php include '../header.php'; ?>
 <header>
-    <?php navbar($items); ?>
+    <?php
+    navbar($items); ?>
 </header>
 <body>
 <?php curso(); ?>

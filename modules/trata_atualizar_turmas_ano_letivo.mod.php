@@ -59,7 +59,7 @@ if($tem_turma) {
             $id_user = $rel['id_user'];             // nesse foreach, o que faço é pegar o id do user, e inserir ele na nova turma
                                                     // também tenho que atualizar as relações associadas ao turno dele, isto é, atualizar o id_turma para o id da nova turma
                                                     // no rel_user_turno, e assim, o turno dele será atualizado e a nova turma receberá os turnos da turma antiga
-            $sql = "SELECT id FROM rel_user_turma WHERE id_user = $id_user AND id_turma = $id_turma_antiga";
+            $sql = "SELECT id FROM rel_turma_user WHERE id_user = $id_user AND id_turma = $id_turma_antiga";
             $res_id_rel_user_turma = my_query($sql);
             $sql = "SELECT id_turno FROM rel_turno_user WHERE id_rel_turma_user = {$res_id_rel_user_turma[0]['id']}";
             $res_id_turno = my_query($sql);     

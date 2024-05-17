@@ -18,7 +18,8 @@ if($_POST['tipo'] == "1") {
         $_SESSION['email_user_recuperar_pass'] = $email;
         $url = $arrConfig['url_paginas'] . "auth/recuperar_senha.php?token=$token";
         recuperar_senha($email, $res[0]['username'], $url);
-        echo 'Email enviado com sucesso';
+        $_SESSION['msg_sucesso'] = "Email enviado com sucesso";
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
     
@@ -39,7 +40,9 @@ if($_POST['tipo'] == "1") {
         $sql = "UPDATE users SET password = '$pass' WHERE email = '$email'";
         my_query($sql);
         echo "Password alterada com sucesso";
-
+        $_SESSION['msg_sucesso'] = "Password alterada com sucesso";
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit;
     } else {
         
         echo "Token inválido";

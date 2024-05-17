@@ -5,8 +5,11 @@ if(isset($_SESSION['id'])){
     exit;
 }
 ?>
+<?php
+$_SESSION['cor'] = true;
+include '../../header.php';
 
-<?php include '../../header.php';
+
 
 if(isset($_SESSION['id_curso'])) {
     $action = 'trata_login_convite.mod.php';
@@ -21,10 +24,10 @@ if(isset($_SESSION['id_curso'])) {
         
 
         <div class="card lg:w-6/12 shadow-xl py-10 bg-primary">
-        <h2 class="card-title justify-center font-bold text-2xl">Login</h2>
+        
             <div class="card-body flex flex-col lg:flex-row items-center">
                 <div class="flex flex-col justify-center items-center  w-full lg:w-7/12 ">
-                    
+                <h2 class="card-title justify-center font-bold text-2xl">Login</h2>
                     <div class="w-9/12 text-center pt-5">
                         <label class="input input-bordered flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" /></svg>
@@ -38,7 +41,11 @@ if(isset($_SESSION['id_curso'])) {
                             
                         </label>
                     </div>
-                    <span class="justify-start text-sm mt-2"> Esqueceu sua senha? <a href="<?php echo $arrConfig['url_site'] . '/pages/auth/email_recuperar_senha.php' ?>">Recuperar.</a></span>
+                    
+                    <span class="justify-start text-sm mt-2"> Esqueceu sua senha? <a href="<?php echo $arrConfig['url_site'] . '/pages/auth/email_recuperar_senha.php' ?>"><u>Recuperar</u>.</a></span>                    
+                    <div class="flex justify-center mt-4">
+                        <button class="btn bg-base-100">Login</button>
+                    </div>
                     
                 </div>
                 <div class="divider lg:divider-horizontal my-8 lg:my-0"></div>
@@ -46,14 +53,17 @@ if(isset($_SESSION['id_curso'])) {
                     educse
                 </div>
             </div>
-            <div class="flex justify-center mt-4">
-                <button class="btn bg-base-100">Login</button>
+            
+            <div class="flex justify-center mt-4">                
+                <?php 
+                if(isset($_SESSION['erro'])) {
+                    echo '<script>Swal.fire({icon: "error", title: "Oops...", text: "' . $_SESSION['erro'] . '"});</script>';
+                    unset($_SESSION['erro']);
+                }
+                ?>
             </div>
             <div class="flex justify-center mt-4">                
-                <?php echo isset($_SESSION['erro']) ? $_SESSION['erro'] : ''; ?>
-            </div>
-            <div class="flex justify-center mt-4">                
-                <span class="text-sm">Ainda não tem conta? <a href="<?php echo $arrConfig['url_site'] . '/pages/auth/registo.php' ?>">Crie sua conta. </a></span> 
+                <span class="text-sm">Ainda não tem conta? <a href="<?php echo $arrConfig['url_site'] . '/pages/auth/registo.php' ?>"><u>Crie sua conta.</u></a></span> 
             </div>
             
         </div>

@@ -2,7 +2,18 @@
 pr($_POST);
 
 $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : '';
-
+$sql = "SELECT id FROM users WHERE email = '{$_POST['diretor_curso']}'";
+$res = my_query($sql);
+if(count($res) > 0) {
+    $sql = "SELECT email FROM users WHERE id = {$_SESSION['id']}";
+    $res = my_query($sql);
+    $email = $res[0]['email'];
+    if($email == $_POST['diretor_curso']) {
+        $_SESSION['msg_erro'] = 'Você não pode ser diretor de curso.';
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit();
+    }
+}
 switch ($tipo) {
     case 'editar':
         $sql = "SELECT * FROM curso WHERE id = {$_POST['id_curso']}";

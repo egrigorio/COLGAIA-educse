@@ -24,7 +24,7 @@
 
 
 <!-- o que estive fazendo até agora foram correções de erros, tenho que:
-    !! mudar a designação do turno 0 de todos para alguma outra coisa, perguntar ao stor nuno ou assim !!        
+    adicionar validações para os urls, tipo se digitar curso.php ou instituicao.php e coisas assim, não deixar 'entrar'
  -->
 
 

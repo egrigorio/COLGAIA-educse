@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'mytheme'; ?>" class="bg-primary selection:text-accent" lang="en" lang="en">
+<html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'mytheme'; ?>" class="<?php (isset($_SESSION['cor']) ? 'bg-base-100' : 'bg-primary') ?> selection:text-accent" lang="en" lang="en">
+<?php if(isset($_SESSION['cor'])) {
+    unset($_SESSION['cor']);
+} ?>
 <head>
     <?php setlocale(LC_TIME, 'pt_BR'); ?>
     <meta charset="UTF-8">
@@ -16,7 +19,7 @@
 </head>
 <script>
     $(document).ready(function(){
-    var themes = ['nocas', 'mytheme'];
+    var themes = ['nocas', 'mytheme', 'black'];
     var currentThemeIndex = localStorage.getItem('currentThemeIndex') || 0;
 
     $('input[type=radio][name=theme-radios]').change(function() {
@@ -35,6 +38,7 @@
 
     $(document).keydown(function(e) {        
         if(e.key == 'j' && e.metaKey) {
+            
             e.preventDefault();
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
             localStorage.setItem('currentThemeIndex', currentThemeIndex);

@@ -47,7 +47,7 @@ if(isset($_SESSION['id'])) {
         $sql = "SELECT * FROM rel_user_curso WHERE id_user = $id_user AND id_curso = $id_curso";
         $res = my_query($sql);
         if(count($res) == 0) {
-            $sql = "INSERT INTO rel_user_curso (id_user, id_curso, cargo, estado) VALUES ($id_user, $id_curso, '$cargo', '1')";
+            $sql = "INSERT INTO rel_user_curso (id_user, id_curso, estado) VALUES ($id_user, $id_curso, '1')";
             my_query($sql);
         } else {
             $sql = "UPDATE rel_user_curso SET estado = '1' WHERE id_user = $id_user AND id_curso = $id_curso";
