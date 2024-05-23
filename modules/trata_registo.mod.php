@@ -9,6 +9,12 @@ $confirmar_pass = $_POST['confirmar_pass'];
 $cargo = $_POST['cargo'];
 $pfp = 'e.png';
 
+if(trim($email) == '' || trim($user) == '' || trim($pass) == '' || trim($confirmar_pass) == '' || trim($cargo) == '') { /* validar campos */
+    $_SESSION['erro'] = 'Preencha todos os campos';
+    header('Location: ' . $arrConfig['url_site'] . '/pages/auth/registo.php');
+    exit;
+}
+
 if($pass != $confirmar_pass) { /* validar pass e confirmar */
     $_SESSION['erro'] = 'As passwords não coincidem';
     header('Location: ' . $arrConfig['url_site'] . '/pages/auth/registo.php');

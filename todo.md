@@ -20,11 +20,16 @@
 - [ ] implementar as notificações; <!-- um pouco chato -->
 - [ ] criar um frontoffice? <!-- logo se vê -->
 
-
-
-
 <!-- o que estive fazendo até agora foram correções de erros, tenho que:
-    adicionar validações para os urls, tipo se digitar curso.php ou instituicao.php e coisas assim, não deixar 'entrar'
+    
+    mostrar ao prof. nuno o presset da api do chatgpt no playground
+
+    perguntar sobre o 'capítulo pra layouts', ver se cabe adicionar por exemplo a questão dos layouts antigos de quando a aplicação ainda era js e tal
+
+    perguntar sobre desenvolvimentos futuros
+
+    perguntar sobre como abordar a mudança das tecnologias usadas na aplicação
+
  -->
 
 

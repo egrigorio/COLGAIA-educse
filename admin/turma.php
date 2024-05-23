@@ -1,9 +1,21 @@
 <?php 
 include '../include/config.inc.php';
 /* include 'dashboards/layout.dash.php'; */
+/* pr($_SESSION);
+die; */
 if(!isset($_SESSION['id'])){
-    header('Location: ../index.php');
+    header('Location: ../pages/auth/login.php');
     exit;
+}
+if(isset($_SESSION['cargo'])) {
+    if(strtolower($_SESSION['cargo']) != 'professor' && strtolower($_SESSION['cargo']) != 'aluno'){
+        header('Location: index.php');
+        exit;
+    }
+} else {
+    header('Location: ../pages/auth/login.php');
+    exit;
+
 }
 ?>
 <?php include '../header.php';?>

@@ -6,6 +6,11 @@ $convite = $_GET['convite'];
 $sql = "SELECT * FROM conf_convite WHERE id = $convite";
 $res = my_query($sql);
 
+if(isset($_SESSION['id'])) {
+    header('Location: ' . $arrConfig['url_admin'] . 'index.php');
+    exit;
+}
+
 if(count($res) > 0) {
     $email = $res[0]['email'];
     $id_curso = $res[0]['id_curso'];

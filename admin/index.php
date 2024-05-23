@@ -8,6 +8,7 @@ if(!isset($_SESSION['id'])){
 
 ?>
 <?php include '../header.php'; 
+
 if($_SESSION['cargo'] == 'instituicao') {
     $sql = "SELECT * FROM instituicao WHERE id_dono = {$_SESSION['id']}";
     $res = my_query($sql);
@@ -24,8 +25,8 @@ if($_SESSION['cargo'] == 'instituicao') {
                                         <h1 class="text-5xl font-bold"><?php echo "Olá, " . $_SESSION['user']  ?></h1>
                                         <h3 class="py-3">bem vindo(a) de volta a educse, seu último acesso foi em: <?php echo $_SESSION['ultimo_login']; ?></h3>
                                         <div class="gap-1 flex justify-center items-center w-full">
-                                            <a class="btn btn-secondary">Dashboard</a>                                        
-                                            <div class="divider divider-horizontal"></div>
+                                            <!-- <a class="btn btn-secondary">Dashboard</a>                                        
+                                            <div class="divider divider-horizontal"></div> -->
                                             <a href="<?php echo $arrConfig['url_admin'] . 'instituicao.php' ?>" class="btn btn-secondary">Gestão</a>
                                             <div class="divider divider-horizontal"></div>
                                             <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary">Logout</a>
@@ -45,7 +46,7 @@ if($_SESSION['cargo'] == 'instituicao') {
                                         echo '<kbd class="kbd kbd-sm">Ctrl</kbd>';
                                     } else {
                                         // Code for other platforms
-                                        echo '<kbd class="kbd kbd-sm">⌘</kbd>';
+                                        /* echo '<kbd class="kbd kbd-sm">⌘</kbd>'; */
                                     }
                                     ?>                 
                                     <kbd class="kbd kbd-sm">j</kbd>
@@ -109,16 +110,16 @@ if($_SESSION['cargo'] == 'instituicao') {
                                     <h1 class="text-5xl font-bold"><?php echo "Olá, " . $_SESSION['user']  ?></h1>
                                     <h3 class="py-3">bem vindo(a) de volta a educse, seu último acesso foi em: <?php echo $_SESSION['ultimo_login']; ?></h3>
                                     <div class="gap-1 flex justify-center items-center w-full">
-                                        <a class="btn btn-secondary">Configurações</a>
-                                        <div class="divider divider-horizontal"></div>
+                                        <!-- <a class="btn btn-secondary">Configurações</a>
+                                        <div class="divider divider-horizontal"></div> -->
                                         <?php if($_SESSION['cargo'] == 'professor'){ ?>
                                             <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-secondary">Turmas</a>
                                         <?php } else { ?>
                                             <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-secondary">Turma</a>
                                         <?php } ?>
                                         <div class="divider divider-horizontal"></div>
-                                        <a class="btn btn-secondary">Conta</a>
-                                        <div class="divider divider-horizontal"></div>
+                                        <!-- <a class="btn btn-secondary">Conta</a>
+                                        <div class="divider divider-horizontal"></div> -->
                                         <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary">Logout</a>
                                     </div>
                                 </p>
@@ -126,22 +127,25 @@ if($_SESSION['cargo'] == 'instituicao') {
                             </div>                                     
                             <div class="">     
                                 <?php
-                                $agent = $_SERVER['HTTP_USER_AGENT'];                                
+                                $flag_agent = true;
+                                $agent = $_SERVER['HTTP_USER_AGENT'];
+                                
                                 if (strpos($agent, 'Mac') !== false) {
                                     // Code for macOS
                                     echo '<kbd class="kbd kbd-sm">⌘</kbd>';
+                                    $flag_agent = false;
                                 } elseif (strpos($agent, 'Windows') !== false) {
                                     // Code for Windows
                                     echo '<kbd class="kbd kbd-sm">Ctrl</kbd>';
-                                } else {
-                                    // Code for other platforms
-                                    echo '<kbd class="kbd kbd-sm">⌘</kbd>';
+                                    $flag_agent = false;
+                                }                                
+                                if(!$flag_agent) {                                    
+                                    echo '<kbd class="kbd kbd-sm">j</kbd>';
+                                    echo '<span class="text-sm">‎ para mudar de tema</span>';
+                                } else {                                    
+                                    echo '<span class="text-sm">aperte <u id="troca_tema" style="cursor:pointer;" >aqui</u> para mudar de tema</span>';
                                 }
                                 ?>
-                                
-                                
-                                    <kbd class="kbd kbd-sm">j</kbd>
-                                    <span class="text-sm">‎ para mudar de tema</span>
                                 
                                 
                                 <!-- <input type="radio" id="theme-black" name="theme-radios" class="radio bg-black theme-controller" value="black"/>

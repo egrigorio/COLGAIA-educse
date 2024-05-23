@@ -9765,6 +9765,22 @@ html:has(.drawer-open.drawer-open){
   bottom: var(--tooltip-offset);
 }
 
+.tooltip-bottom:before{
+  transform: translateX(-50%);
+  top: var(--tooltip-offset);
+  left: 50%;
+  right: auto;
+  bottom: auto;
+}
+
+.tooltip-left:before{
+  transform: translateY(-50%);
+  top: 50%;
+  left: auto;
+  right: var(--tooltip-offset);
+  bottom: auto;
+}
+
 .artboard-demo{
   border-radius: var(--rounded-box, 1rem);
   --tw-bg-opacity: 1;
@@ -10272,6 +10288,24 @@ html:has(.drawer-open.drawer-open){
   bottom: var(--tooltip-tail-offset);
 }
 
+.tooltip-bottom:after{
+  transform: translateX(-50%);
+  border-color: transparent transparent var(--tooltip-color) transparent;
+  top: var(--tooltip-tail-offset);
+  left: 50%;
+  right: auto;
+  bottom: auto;
+}
+
+.tooltip-left:after{
+  transform: translateY(-50%);
+  border-color: transparent transparent transparent var(--tooltip-color);
+  top: 50%;
+  left: auto;
+  right: calc(var(--tooltip-tail-offset) + 0.0625rem);
+  bottom: auto;
+}
+
 .tooltip-primary{
   --tooltip-color: var(--fallback-p,oklch(var(--p)/1));
   --tooltip-text-color: var(--fallback-pc,oklch(var(--pc)/1));
@@ -10758,6 +10792,10 @@ html:has(.drawer-open.drawer-open){
   transform: none;
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
+
 .touch-auto{
   touch-action: auto;
 }
@@ -11236,10 +11274,6 @@ html:has(.drawer-open.drawer-open){
   gap: 1rem;
 }
 
-.gap-5{
-  gap: 1.25rem;
-}
-
 .gap-6{
   gap: 1.5rem;
 }
@@ -11670,6 +11704,10 @@ html:has(.drawer-open.drawer-open){
 
 .border-r{
   border-right-width: 1px;
+}
+
+.border-r-8{
+  border-right-width: 8px;
 }
 
 .border-s{
@@ -12613,6 +12651,16 @@ html:has(.drawer-open.drawer-open){
   }
 }
 
+.selection\:bg-accent *::-moz-selection{
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
+}
+
+.selection\:bg-accent *::selection{
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
+}
+
 .selection\:text-accent *::-moz-selection{
   --tw-text-opacity: 1;
   color: var(--fallback-a,oklch(var(--a)/var(--tw-text-opacity)));
@@ -12621,6 +12669,16 @@ html:has(.drawer-open.drawer-open){
 .selection\:text-accent *::selection{
   --tw-text-opacity: 1;
   color: var(--fallback-a,oklch(var(--a)/var(--tw-text-opacity)));
+}
+
+.selection\:bg-accent::-moz-selection{
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
+}
+
+.selection\:bg-accent::selection{
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
 }
 
 .selection\:text-accent::-moz-selection{

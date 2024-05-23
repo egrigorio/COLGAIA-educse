@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'mytheme'; ?>" class="<?php (isset($_SESSION['cor']) ? 'bg-base-100' : 'bg-primary') ?> selection:text-accent" lang="en" lang="en">
-<?php if(isset($_SESSION['cor'])) {
+<html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'mytheme'; ?>" class="<?php echo (isset($_SESSION['cor']) ? 'bg-base-100' : 'bg-primary') ?> selection:bg-accent" lang="en" lang="en">
+<?php 
+if(isset($_SESSION['cor'])) {
     unset($_SESSION['cor']);
-} ?>
+} 
+
+?>
 <head>
     <?php setlocale(LC_TIME, 'pt_BR'); ?>
     <meta charset="UTF-8">
@@ -18,28 +21,48 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <script>
+    
     $(document).ready(function(){
-    var themes = ['nocas', 'mytheme', 'black'];
-    var currentThemeIndex = localStorage.getItem('currentThemeIndex') || 0;
+        
+        var themes = ['nocas', 'mytheme', 'black'];
+        var currentThemeIndex = localStorage.getItem('currentThemeIndex') || 0;
 
-    $('input[type=radio][name=theme-radios]').change(function() {
-        var theme = this.value;
-        currentThemeIndex = themes.indexOf(theme);
-        localStorage.setItem('currentThemeIndex', currentThemeIndex);
-        $.ajax({
-            url: '<?php echo $arrConfig['url_modules'] . 'trata_mudar_tema.mod.php' ?>',
-            type: 'post',
-            data: {theme: theme},
-            success: function(response){
-                location.reload(); 
+        $('input[type=radio][name=theme-radios]').change(function() {
+            var theme = this.value;
+            currentThemeIndex = themes.indexOf(theme);
+            localStorage.setItem('currentThemeIndex', currentThemeIndex);
+            $.ajax({
+                url: '<?php echo $arrConfig['url_modules'] . 'trata_mudar_tema.mod.php' ?>',
+                type: 'post',
+                data: {theme: theme},
+                success: function(response){
+                    location.reload(); 
+                }
+            });
+        });
+        
+
+        $(document).keydown(function(e) {        
+            if(e.key == 'j' && e.metaKey) {
+                
+                e.preventDefault();
+                setTheme();
+                /* currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                localStorage.setItem('currentThemeIndex', currentThemeIndex);
+                var theme = themes[currentThemeIndex];
+                $.ajax({
+                    url: '<?php /* echo $arrConfig['url_modules'] . 'trata_mudar_tema.mod.php' */ ?>',
+                    type: 'post',
+                    data: {theme: theme},
+                    success: function(response){
+                        location.reload(); 
+                    }
+                }); */
             }
         });
-    });
 
-    $(document).keydown(function(e) {        
-        if(e.key == 'j' && e.metaKey) {
+        function setTheme() {
             
-            e.preventDefault();
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
             localStorage.setItem('currentThemeIndex', currentThemeIndex);
             var theme = themes[currentThemeIndex];
@@ -52,6 +75,9 @@
                 }
             });
         }
-    });
+        $("#troca_tema").click(function(){
+            setTheme();
+        });
+
 });    
 </script>

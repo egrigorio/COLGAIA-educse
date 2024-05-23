@@ -256,29 +256,29 @@ function def_config_adm($modulo, &$arr_config)
                     break;
                 case 'tabs_aluno': 
                     $arr_config = array(
-                        /* 'tab1' => array(
-                            'label' => 'Customização',
-                            'content' => 'Tab content 1',
+                        'tab1' => array(
+                            'label' => 'Assistente',
+                            'content' => 'AI assistente do aluno',
                             'checked' => 0,
-                            'name' => 'tabs_turma'
-                        ), */
+                            'name' => 'tabs_aluno'
+                        ),
                         'tab2' => array(
                             'label' => 'Professores',
                             'content' => tabela_vista_professores_turma(),
                             'checked' => 0,
-                            'name' => 'tabs_turma'
+                            'name' => 'tabs_aluno'
                         ),
                         'tab3' => array(
                             'label' => 'Alunos',
                             'content' => tabela_vista_alunos_turma(),
                             'checked' => 0,
-                            'name' => 'tabs_turma'
+                            'name' => 'tabs_aluno'
                         ),                        
                         'tab5' => array(
                             'label' => 'Agenda',
                             'content' => agenda_turma(),
                             'checked' => 1,
-                            'name' => 'tabs_turma'
+                            'name' => 'tabs_aluno'
                         ),   
                     );
                     break;

@@ -14,7 +14,20 @@ $id_professor = $_SESSION['id'];
 $id_evento = $_POST['id_evento'];
 
 if($comeco > $fim){
-    echo "Data de início não pode ser maior que a data de fim";
+    $_SESSION['erro'] = "Data de início não pode ser maior que a data de fim";
+    header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma);
+    exit;
+} else if($comeco == $fim) {
+    $_SESSION['erro'] = "Data de início não pode ser igual a data de fim";
+    header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma);
+    exit;
+} else if($comeco < date('Y-m-d')) {
+    $_SESSION['erro'] = "Data de início não pode ser menor que a data atual";
+    header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma);
+    exit;
+} else if($fim < date('Y-m-d')) {
+    $_SESSION['erro'] = "Data de fim não pode ser menor que a data atual";
+    header('Location: ' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $id_turma);
     exit;
 }
 

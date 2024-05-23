@@ -61,7 +61,10 @@ function navbar($arr_items) {
             
         </div>
         <div class="navbar-end">   
-            <span class="text text-xs badge badge-primary">' . $ano_letivo . '</span>  <!-- adicionar aqui uma tooltip -->
+
+            <div class="tooltip tooltip-left" data-tip="Indica o ano letivo da vista das turmas">
+                <span class="text text-xs badge badge-primary">' . $ano_letivo . '</span>  <!-- adicionar aqui uma tooltip -->
+            </div>
             <!-- <button class="btn btn-ghost btn-circle">
                 <div class="indicator">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
@@ -114,7 +117,7 @@ function turma($arr_turma, &$flag_direcao_turma, $aluno = false) {
     echo '
     
     <div class="bg-primary flex justify-center w-full h-52 text-center">
-        <b>
+        <b>            
             <h1 class="bold mt-20 text-4xl">' . $arr_turma[0]['nome_turma'] . '</h1>';
     echo $flag_direcao_turma ? '<span class="flex items-center justify-center">diretor de turma</span>' : '';
     echo '
@@ -808,7 +811,23 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
     global $arrConfig;
     $id_user = $_SESSION['id'];
     
-    $html = '
+    $html = '';
+    if(isset($_SESSION['erro'])) {
+        $html .= '
+            <script>
+                Swal.fire({
+                    title: "Erro",
+                    text: "' . $_SESSION['erro'] . '",
+                    icon: "error",
+                    timer: 7000,
+                    
+                })
+            </script>
+        ';
+        unset($_SESSION['erro']);
+    }
+
+    $html .= '
     ' . ($valores_ja_inseridos ? '<h1 class="text-center text-xl font-bold">Editando evento</h1>' : '') . '
     <div class="flex flex-row max-w-full">
         <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_' . ($valores_ja_inseridos ? 'editar' : 'criar') . '_atividade_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">

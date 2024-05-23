@@ -22,7 +22,12 @@ if(count($arrResultado) == 0) {
     $_SESSION['ultimo_login'] = $arrResultado[0]['ultimo_login'];
     $_SESSION['id'] = $arrResultado[0]['id'];
     if($email != '') {
-        $_SESSION['user'] = $email;
+        $sql = "SELECT username FROM users WHERE email = '$email'";
+        $res = my_query($sql);
+        $username = $res[0]['username'];
+        $_SESSION['user'] = $username;
+
+
     } else {
         $_SESSION['user'] = $user;
     }
