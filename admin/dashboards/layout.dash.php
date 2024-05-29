@@ -2,7 +2,7 @@
 /* include '../../include/config.inc.php'; */
 include_once $arrConfig['dir_admin'] . 'dashboards/gerar_calendario_atividades.php';
 include_once $arrConfig['dir_admin'] . 'configuracoes.adm.php';
-
+require_once $arrConfig['dir_site'] . '/vendor/autoload.php';
 
 if(isset($_GET['id_turma'])) {
     $id_turma = $_GET['id_turma'];
@@ -2396,6 +2396,130 @@ function tabela_cursos_instituicao() {
             </form>
         </div>
     </div>
+    ';
+    return $html;
+}
+
+function ai_assistente_aluno() {
+    global $arrConfig;
+    $id_turma = $_GET['id_turma'];
+    $dotenv = Dotenv\Dotenv::createImmutable($arrConfig['dir_site']);
+    $dotenv->load();
+    $codigo_unico = $_ENV['CHAVE_ENVIAR'];
+    $html = '
+    
+    <div class="w-8/12 mx-auto p-4">
+        <div class="bg-base-200 rounded-lg shadow p-4">
+            <div class="chat-container space-y-4 mb-4 max-h-96 overflow-y-auto" id="chatContainer">
+                <div class="chat chat-start">                    
+                    <div class="chat-image avatar">
+                        <div class="w-10 rounded-full">
+                            <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                        </div>
+                    </div>
+                    <div class="chat-header">
+                        CancelA.I.
+                        <time class="text-xs opacity-50"></time> <!-- hora da mensagem -->
+                    </div>
+                    <div class="chat-bubble">Olá, como posso te ajudar hoje?</div>
+                    <br>
+                </div>                
+            </div>
+            <form id="chatForm" class="flex">
+                <input type="text" id="chatInput" class="input input-bordered w-full max-w-full" placeholder="Escreva sua mensagem..." autocomplete="off" required>
+                <button type="submit" class="btn btn-ghost">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById(\'chatForm\').addEventListener(\'submit\', function(event) {
+            event.preventDefault();
+            
+            const chatContainer = document.getElementById(\'chatContainer\');
+            const chatInput = document.getElementById(\'chatInput\');
+            const message = chatInput.value.trim();
+            const currentTime = new Date().toLocaleTimeString([], { hour: \'2-digit\', minute: \'2-digit\' });
+
+            if (message !== \'\') {
+                const chatMessage = `
+                    <div class="chat chat-end">
+                        <div class="chat-image avatar">
+                            <div class="w-10 rounded-full">
+                                <img alt="User" src="' . $arrConfig['url_pfp'] . 'e.png' . '" />
+                            </div>
+                        </div>
+                        <div class="chat-header">
+                            You
+                            <time class="text-xs opacity-50">${currentTime}</time>
+                        </div>
+                        <div class="chat-bubble bg-primary">${message}</div>                        
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                chatInput.value = \'\';
+            }
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            const mensagem_carregando = `
+            <div id="mensagem-carregando">
+                <div class="chat chat-start">
+                    <div class="chat-image avatar">
+                        <div class="w-10 rounded-full">
+                            <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                        </div>
+                    </div>
+                    <div class="chat-header">
+                        CancelA.I.
+                        <time class="text-xs opacity-50">12:45</time> <!-- hora da mensagem -->
+                    </div>
+                    <div class="chat-bubble"><span class="loading loading-dots loading-sm"></span></div>
+                </div>
+            </div>
+            `;
+            chatContainer.insertAdjacentHTML(\'beforeend\', mensagem_carregando);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatInput.value = \'\';
+            console.log(chatContainer.innerHTML);
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "' . $arrConfig['url_admin'] . '/dashboards/' . 'chamar_api_openai.php", true);
+            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xmlhttp.onreadystatechange = function() {
+
+                if (this.readyState == 4 && this.status == 200) {
+                    // A solicitação foi bem-sucedida, você pode processar a resposta aqui
+                    console.log(this.responseText);
+                    chatContainer.removeChild(document.getElementById(\'mensagem-carregando\'));
+                    var decodedResponse = decodeURIComponent(this.responseText);
+                    console.log(decodedResponse);
+                    const tempo_resposta = new Date().toLocaleTimeString([], { hour: \'2-digit\', minute: \'2-digit\' });
+                    const chatMessage = `
+                    
+                        <div class="chat chat-start">                    
+                        <div class="chat-image avatar">
+                            <div class="w-10 rounded-full">
+                                <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                            </div>
+                        </div>
+                        <div class="chat-header">
+                            CancelA.I.
+                            <time class="text-xs opacity-50">${tempo_resposta}</time> <!-- hora da mensagem -->
+                        </div>
+                            <div class="chat-bubble">${decodedResponse}</div>                 
+                        </div>
+
+                    `;
+                    chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    chatInput.value = \'\';
+                }
+            };
+            xmlhttp.send("message=" + encodeURIComponent(message) + "&outro=' . $codigo_unico . '" + "&user=' . $_SESSION['id'] . '" + "&id_turma=' . $id_turma . '");
+
+        });
+    </script>
+        
+
     ';
     return $html;
 }

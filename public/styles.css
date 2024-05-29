@@ -2529,7 +2529,7 @@ html{
 
 [data-theme=mytheme]{
   --p: 88.2343% 0.057057 254.128381;
-  --b3: 82.0579% 0.053063 254.128381;
+  --b3: 91.6146% 0 0;
   --in: 72.06% 0.191 231.6;
   --bc: 20% 0 0;
   --pc: 17.6469% 0.011411 254.128381;
@@ -2547,7 +2547,7 @@ html{
   --er: 51.9752% 0.176858 142.495339;
   --n: 100% 0 0;
   --b1: 100% 0 0;
-  --b2: 88.2343% 0.057057 254.128381;
+  --b2: 98.5104% 0 0;
   font-family: Poppins, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -2562,7 +2562,7 @@ html{
 
 :root:has(input.theme-controller[value=mytheme]:checked){
   --p: 88.2343% 0.057057 254.128381;
-  --b3: 82.0579% 0.053063 254.128381;
+  --b3: 91.6146% 0 0;
   --in: 72.06% 0.191 231.6;
   --bc: 20% 0 0;
   --pc: 17.6469% 0.011411 254.128381;
@@ -2580,7 +2580,7 @@ html{
   --er: 51.9752% 0.176858 142.495339;
   --n: 100% 0 0;
   --b1: 100% 0 0;
-  --b2: 88.2343% 0.057057 254.128381;
+  --b2: 98.5104% 0 0;
   font-family: Poppins, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -2595,9 +2595,9 @@ html{
 
 [data-theme=nocas]{
   --p: 89.1993% 0.062113 358.105745;
-  --b3: 82.9553% 0.057765 358.105745;
+  --b3: 91.6146% 0 0;
   --in: 72.06% 0.191 231.6;
-  --bc: 18.741% 0 0;
+  --bc: 19.6925% 0.000341 247.838921;
   --pc: 17.8399% 0.012423 358.105745;
   --sc: 20% 0 0;
   --ac: 14.2478% 0.038948 351.456687;
@@ -2612,8 +2612,8 @@ html{
   --a: 71.2389% 0.19474 351.456687;
   --er: 81.4817% 0.081916 225.753653;
   --n: 100% 0 0;
-  --b1: 93.7049% 0 0;
-  --b2: 89.1993% 0.062113 358.105745;
+  --b1: 98.4625% 0.001706 247.838921;
+  --b2: 98.5104% 0 0;
   font-family: cralika, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -2628,9 +2628,9 @@ html{
 
 :root:has(input.theme-controller[value=nocas]:checked){
   --p: 89.1993% 0.062113 358.105745;
-  --b3: 82.9553% 0.057765 358.105745;
+  --b3: 91.6146% 0 0;
   --in: 72.06% 0.191 231.6;
-  --bc: 18.741% 0 0;
+  --bc: 19.6925% 0.000341 247.838921;
   --pc: 17.8399% 0.012423 358.105745;
   --sc: 20% 0 0;
   --ac: 14.2478% 0.038948 351.456687;
@@ -2645,8 +2645,8 @@ html{
   --a: 71.2389% 0.19474 351.456687;
   --er: 81.4817% 0.081916 225.753653;
   --n: 100% 0 0;
-  --b1: 93.7049% 0 0;
-  --b2: 89.1993% 0.062113 358.105745;
+  --b1: 98.4625% 0.001706 247.838921;
+  --b2: 98.5104% 0 0;
   font-family: cralika, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -10395,20 +10395,8 @@ html:has(.drawer-open.drawer-open){
   inset: -0.25rem;
 }
 
-.inset-0{
-  inset: 0px;
-}
-
 .end-1{
   inset-inline-end: 0.25rem;
-}
-
-.left-2\/4{
-  left: 50%;
-}
-
-.top-2\/4{
-  top: 50%;
 }
 
 .isolate{
@@ -10421,10 +10409,6 @@ html:has(.drawer-open.drawer-open){
 
 .z-\[1\]{
   z-index: 1;
-}
-
-.z-50{
-  z-index: 50;
 }
 
 .float-start{
@@ -10469,6 +10453,11 @@ html:has(.drawer-open.drawer-open){
 
 .clear-none{
   clear: none;
+}
+
+.mx-auto{
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .my-8{
@@ -10643,18 +10632,6 @@ html:has(.drawer-open.drawer-open){
   height: 100vh;
 }
 
-.h-10{
-  height: 2.5rem;
-}
-
-.max-h-10{
-  max-height: 2.5rem;
-}
-
-.max-h-52{
-  max-height: 13rem;
-}
-
 .max-h-96{
   max-height: 24rem;
 }
@@ -10789,16 +10766,6 @@ html:has(.drawer-open.drawer-open){
 
 .border-separate{
   border-collapse: separate;
-}
-
-.translate-x-1\/2{
-  --tw-translate-x: 50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.translate-y-1\/2{
-  --tw-translate-y: 50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .\!transform{
@@ -11317,6 +11284,12 @@ html:has(.drawer-open.drawer-open){
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.space-y-4 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
 .space-y-reverse > :not([hidden]) ~ :not([hidden]){
   --tw-space-y-reverse: 1;
 }
@@ -11713,10 +11686,6 @@ html:has(.drawer-open.drawer-open){
   border-width: 1px;
 }
 
-.border-4{
-  border-width: 4px;
-}
-
 .border-x{
   border-left-width: 1px;
   border-right-width: 1px;
@@ -11755,10 +11724,6 @@ html:has(.drawer-open.drawer-open){
   border-top-width: 1px;
 }
 
-.border-t-4{
-  border-top-width: 4px;
-}
-
 .border-solid{
   border-style: solid;
 }
@@ -11786,11 +11751,6 @@ html:has(.drawer-open.drawer-open){
 .border-base-300{
   --tw-border-opacity: 1;
   border-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-border-opacity)));
-}
-
-.border-gray-200{
-  --tw-border-opacity: 1;
-  border-color: rgb(229 231 235 / var(--tw-border-opacity));
 }
 
 .bg-\[rgb\(255\2c 0\2c 0\)\]{
@@ -11838,11 +11798,6 @@ html:has(.drawer-open.drawer-open){
   background-color: rgb(192 132 252 / var(--tw-bg-opacity));
 }
 
-.bg-red-200{
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
-}
-
 .bg-red-400{
   --tw-bg-opacity: 1;
   background-color: rgb(248 113 113 / var(--tw-bg-opacity));
@@ -11868,18 +11823,9 @@ html:has(.drawer-open.drawer-open){
   background-color: rgb(253 224 71 / var(--tw-bg-opacity));
 }
 
-.bg-slate-500{
+.bg-blue-200{
   --tw-bg-opacity: 1;
-  background-color: rgb(100 116 139 / var(--tw-bg-opacity));
-}
-
-.bg-gray-800{
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-}
-
-.bg-opacity-50{
-  --tw-bg-opacity: 0.5;
+  background-color: rgb(191 219 254 / var(--tw-bg-opacity));
 }
 
 .decoration-slice{
@@ -11996,16 +11942,12 @@ html:has(.drawer-open.drawer-open){
   padding: 0.5rem;
 }
 
+.p-4{
+  padding: 1rem;
+}
+
 .p-6{
   padding: 1.5rem;
-}
-
-.p-20{
-  padding: 5rem;
-}
-
-.p-10{
-  padding: 2.5rem;
 }
 
 .px-2{
@@ -12552,10 +12494,6 @@ html:has(.drawer-open.drawer-open){
 
 .ease-out{
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-}
-
-.ease-linear{
-  transition-timing-function: linear;
 }
 
 .contain-none{

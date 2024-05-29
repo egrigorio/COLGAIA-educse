@@ -30,6 +30,7 @@ $arrConfig['email_token'] = 'aajbajkh%/rcKI!ª~uaca76';
 $arrConfig['key_jwt'] = 'r/FqiRRE';
 $arrConfig['encode_jwt'] = 'IJt3d80e';
 
+$arrConfig['url_public'] = $arrConfig['url_site'] . '/public/';
 $arrConfig['url_pfp'] = $arrConfig['url_site'] . '/public/pfp/';
 $arrConfig['dir_uploads'] = $arrConfig['dir_site'] . '/uploads/';
 $arrConfig['url_uploads'] = $arrConfig['url_site'] . '/uploads/';

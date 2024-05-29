@@ -258,8 +258,8 @@ function def_config_adm($modulo, &$arr_config)
                     $arr_config = array(
                         'tab1' => array(
                             'label' => 'Assistente',
-                            'content' => 'AI assistente do aluno',
-                            'checked' => 0,
+                            'content' => ai_assistente_aluno(),
+                            'checked' => 1,
                             'name' => 'tabs_aluno'
                         ),
                         'tab2' => array(
@@ -277,7 +277,7 @@ function def_config_adm($modulo, &$arr_config)
                         'tab5' => array(
                             'label' => 'Agenda',
                             'content' => agenda_turma(),
-                            'checked' => 1,
+                            'checked' => 0,
                             'name' => 'tabs_aluno'
                         ),   
                     );

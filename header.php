@@ -10,7 +10,8 @@ if(isset($_SESSION['cor'])) {
     <?php setlocale(LC_TIME, 'pt_BR'); ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>educse</title>
+    <link rel="icon" type="image/x-icon" href="<?php echo $arrConfig['url_public'] . 'icone.ico'; ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.js"></script>
     <link rel="stylesheet" href="<?php echo $arrConfig['url_site'] . '/public/calendario.css' ?>">
