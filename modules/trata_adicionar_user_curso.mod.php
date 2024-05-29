@@ -114,7 +114,5 @@ function def_redirect($cargo) {
 }
 
 $redirect = def_redirect($cargo);
-echo $redirect;
-
 
 header('Location:' . $arrConfig['url_admin'] . $redirect);
