@@ -159,12 +159,7 @@ $html .= '
         $html = '
                 <!-- head -->
                 <thead>
-                    <tr>
-                        <th>
-                            <label>
-                            <input type="checkbox" class="checkbox" />
-                            </label>
-                        </th>
+                    <tr>                        
                         <th>Nome</th>
                         <th>Estado</th>
                         <th>Opções</th>
@@ -182,12 +177,7 @@ $html .= '
 
             if($professor['estado'] !== '1') {
                 $html .= '
-                        <tr>
-                            <th>
-                                <label>
-                                <input type="checkbox" class="checkbox" />
-                                </label>
-                            </th>
+                        <tr>                            
                             <td>
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
@@ -238,12 +228,7 @@ $html .= '
         }
         foreach($res_emails_convidados_nao_registados as $email) {
             $html .= '
-                        <tr>
-                            <th>
-                                <label>
-                                <input type="checkbox" class="checkbox" />
-                                </label>
-                            </th>
+                        <tr>                            
                             <td>
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">

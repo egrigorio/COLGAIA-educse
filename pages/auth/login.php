@@ -23,7 +23,7 @@ if(isset($_SESSION['id_curso'])) {
     <form class="flex flex-col justify-center items-center h-screen" action="<?php echo $arrConfig['url_modules'] . $action ?>" method="post">
         
 
-        <div class="card lg:w-6/12 shadow-xl py-10 bg-primary">
+        <div class="lg:w-6/12 shadow-xl py-10 bg-primary">
         
             <div class="card-body flex flex-col lg:flex-row items-center">
                 <div class="flex flex-col justify-center items-center  w-full lg:w-7/12 ">
@@ -69,6 +69,18 @@ if(isset($_SESSION['id_curso'])) {
         </div>
                                       
     </form>
+    <!-- <div class="flex flex-row">
+        <div class="w-5/12 bg-primary h-screen">
+            <div class="text-center py-36">
+                <h1 class="text text-4xl font-bold">educse</h1>
+                <span class="text text-lg mt-10">crie turmas, gerencie cursos, entenda <br> a carga horária de seus alunos.</span>
+                <img src="" alt="">
+            </div>
+        </div>
+        <div>
+            login formulário
+        </div>
+    </div> -->
     
 </body>
 </html>

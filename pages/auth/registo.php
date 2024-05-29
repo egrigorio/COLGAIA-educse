@@ -14,12 +14,15 @@ if(isset($_SESSION['id_curso'])) {
 
 ?>
 
-<?php include '../../header.php'; ?>
+<?php 
+$_SESSION['cor'] = true;
+include '../../header.php'; 
+?>
 <body>
     <form class="flex flex-col justify-center items-center h-screen" action="<?php echo $action ?>" method="post">
         
 
-        <div class="card w-full lg:w-6/12 shadow-xl px-2 py-12 bg-primary">
+        <div class="w-full lg:w-6/12 shadow-xl px-2 py-12 bg-primary">
         
             <div class="card-body flex flex-col lg:flex-row items-center">
                 <div class="flex flex-col justify-center items-center  w-full lg:w-7/12 ">

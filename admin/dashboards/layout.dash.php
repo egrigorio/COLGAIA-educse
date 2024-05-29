@@ -253,7 +253,7 @@ function professores_tabs_cursos() {
     <div class="flex justify-around">
         <div class="w-auto text-center pt-5">
             <h2 class=" text-lg mb-4 ">Adicionar professores ao curso</h2>
-            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=professor&id_curso=' . $id_curso . '" id="emailForm">
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=professor&id_curso=' . $id_curso . '" id="emailForm" enctype="multipart/form-data" >
                 <div class="flex mb-4 gap-2">
                     <label class="input input-bordered flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" /><path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" /></svg>
@@ -262,11 +262,18 @@ function professores_tabs_cursos() {
                     <button type="button" id="add-email" class="btn btn-ghost text-xs py-1 px-2">
                         Adicionar
                     </button>
-                    <button type="submit" class="btn btn-ghost text-xs py-1 px-2">
+                    <button type="submit" id="submit_form_prof" class="btn btn-ghost text-xs py-1 px-2">
                         Submeter
                     </button>
+                    <button type="button" id="import-csv-prof" class="btn btn-ghost text-xs py-1 px-2">
+                        Importar CSV
+                    </button>
+                    <input type="file" name="csv" id="abrir-dialog-csv-prof" accept=".csv" style="display: none;"  />
                 </div>
                 <div id="email-list" class="mb-4">
+                    <div class="flex items-center bg-base-100 px-3 py-1 rounded shadow mb-1 text-xs">
+                        <span id="nome-arquivo-prof" class="flex-auto"></span>
+                    </div>
                     <!-- Os itens de e-mail serão inseridos aqui -->
                 </div>
             </form>
@@ -283,15 +290,30 @@ function professores_tabs_cursos() {
                 </select>
                 
             </label>
-            <div class="overflow-x-auto">
-                <table class="table" id="tabela_professores">                                                                
-                
+            <div class="overflow-x-auto max-h-96">
+                <table class="table table-sm" id="tabela_professores">                                                                
+                    
                 </table>                        
             </div>
             
         </div>
     </div>
         <script>
+            var btn_submit_prof = document.getElementById(\'submit_form_prof\');
+            btn_submit_prof.addEventListener(\'click\', function() {
+                document.getElementById(\'loading-overlay\').classList.remove(\'hidden\');
+            });
+
+            var input_csv = document.getElementById(\'abrir-dialog-csv-prof\');
+            input_csv.addEventListener(\'change\', function() {
+                var nome_arquivo = document.getElementById(\'nome-arquivo-prof\');
+                nome_arquivo.innerHTML = \'Nome do arquivo importado: \' + this.files[0].name;
+            });
+
+            var botao = document.getElementById(\'import-csv-prof\');
+            botao.addEventListener(\'click\', function() {
+                document.getElementById(\'abrir-dialog-csv-prof\').click();
+            });
             document.getElementById(\'select_tabelas\').addEventListener(\'change\', function() {
                 
                 var valorSelecionado = this.value;
@@ -380,7 +402,7 @@ function alunos_tabs_cursos() {
     <div class="flex justify-around">
         <div class="w-auto text-center pt-5">
             <h2 class=" text-lg mb-4 ">Adicionar alunos ao curso</h2>
-            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=aluno&id_curso=' . $id_curso . '" id="disciplinas_form">
+            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_user_curso.mod.php?cargo=aluno&id_curso=' . $id_curso . '" id="add-aluno_form" enctype="multipart/form-data" >
                 <div class="flex mb-4 gap-2">
                     <label class="input input-bordered flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" /><path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" /></svg>
@@ -389,11 +411,19 @@ function alunos_tabs_cursos() {
                     <button type="button" id="add-email_alunos" class="btn btn-ghost text-xs py-1 px-2">
                         Adicionar
                     </button>
-                    <button type="submit" class="btn btn-ghost text-xs py-1 px-2">
+                    <button id="submit-form-alunos" type="submit" class="btn btn-ghost text-xs py-1 px-2">
                         Submeter
                     </button>
+                    <button type="button" id="import-csv" class="btn btn-ghost text-xs py-1 px-2">
+                        Importar CSV
+                    </button>
+                    <input type="file" name="csv" id="abrir-dialog-csv" accept=".csv" style="display: none;"  />
                 </div>
+                    
                 <div id="email-list_alunos" class="mb-4">
+                    <div class="flex items-center bg-base-100 px-3 py-1 rounded shadow mb-1 text-xs">
+                        <span id="nome-arquivo" class="flex-auto"></span>
+                    </div>
                     <!-- Os itens de e-mail serão inseridos aqui -->
                     
                 </div>
@@ -412,9 +442,9 @@ function alunos_tabs_cursos() {
                 </select>
                 
             </label>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-96">
                 <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_inserir_aluno_turma.mod.php" id="form_edicao_alunos_curso">                    
-                        <table class="table" id="tabela_alunos">
+                        <table class="table table-sm" id="tabela_alunos">
                     
                         </table>
                 </form>
@@ -425,6 +455,23 @@ function alunos_tabs_cursos() {
     
 
     <script>
+
+        var btn_submit_alunos = document.getElementById(\'submit-form-alunos\');
+        btn_submit_alunos.addEventListener(\'click\', function() {
+            document.getElementById(\'loading-overlay\').classList.remove(\'hidden\');
+        });
+
+        var input_csv = document.getElementById(\'abrir-dialog-csv\');
+        input_csv.addEventListener(\'change\', function() {
+            var nome_arquivo = document.getElementById(\'nome-arquivo\');
+            nome_arquivo.innerHTML = \'Nome do arquivo importado: \' + this.files[0].name;
+        });
+
+        var botao = document.getElementById(\'import-csv\');
+        botao.addEventListener(\'click\', function() {
+            document.getElementById(\'abrir-dialog-csv\').click();
+        });
+
         document.getElementById(\'select_tabelas_alunos\').addEventListener(\'change\', function() {
             
             var valorSelecionado = this.value;
