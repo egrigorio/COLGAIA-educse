@@ -131,8 +131,7 @@ $html = '
                             <i class="fas fa-eye"></i>
                         </a>
                     </td>
-                </tr>
-                
+                </tr>                                
                 ';
             }
 

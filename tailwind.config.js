@@ -60,6 +60,7 @@ module.exports = {
           "neutral": "#ffffff",
           "base-100": "#ffffff",
           "base-200": "#fafafa",
+          "base-300": "#e2e8f0",
 
           fontFamily: 'Poppins, system-ui',
 
@@ -83,6 +84,7 @@ module.exports = {
           "neutral": "#ffffff",
           "base-100": "#f9fafb",
           "base-200": "#fafafa",
+          "base-300": "#e2e8f0",
 
           fontFamily: 'cralika, system-ui',
 

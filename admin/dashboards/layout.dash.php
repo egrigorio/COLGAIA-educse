@@ -601,7 +601,7 @@ function disciplinas_tabs_cursos() {
         <div class="divider lg:divider-horizontal">
         </div> 
         <div class="">
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-96">
                 <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_disciplina_curso.mod.php" id="form_disciplinas">
                     <table class="table" id="tabela_disciplinas">                                                                
                 
@@ -1196,15 +1196,8 @@ function gerar_detalhes_evento($id_evento) {
                 <div class="label">
                     <span class="label-text">Fim</span>                        
                 </div>
-                <input type="text" placeholder="Type here" value="' . $res[0]['descricao'] . '" class="input w-full max-w-xs" disabled />                    
-            </label>                             
-            <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">Criado em</span>                        
-                </div>
-                <input type="text" placeholder="Type here" value="' . substr($res[0]['comeco'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
-            </label>                 
-                                             
+                <input type="text" placeholder="Type here" value="' . substr($res[0]['fim'], 0, 10) . '" class="input w-full max-w-xs" disabled />                    
+            </label>                                             
             <label class="form-control w-full max-w-xs">
                 <div class="label">
                     <span class="label-text">Criado em</span>                        
@@ -1273,11 +1266,12 @@ function tabela_alunos_diretor_turma() {
                 </select>
             </label>
             <hr>
-            <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php">
-                <table class="table" id="tabela_alunos_diretor_turma">
-
-                </table>
-            </form>
+            <div class="overflow-x-auto max-h-96">
+                <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php">
+                    <table class="table" id="tabela_alunos_diretor_turma">
+                    </table>
+                </form>
+            </div>
         </div>
         <script>
             function trata_onchange_select_turno() {
@@ -1334,7 +1328,7 @@ function tabela_turnos_diretor_turma() {
             </form>
         </div>
         <div class="divider lg:divider-horizontal"></div> 
-        <div class="flex w-9/12">
+        <div class="flex w-9/12 overflow-x-auto max-h-96">
             <table class="table">
                 <!-- head -->
                 <thead>
@@ -1504,7 +1498,7 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
             $html .= '
         </form>
     </div>
-    <div id="tabela_turmas_diretor_curso"></div>
+    <div id="tabela_turmas_diretor_curso" class="overflow-x-auto max-h-96"></div>
     <script>
         function change_select_ano_letivo() {
             var select = document.getElementById("slc_ano_letivo");
@@ -1577,76 +1571,78 @@ function tabela_vista_professores_turma($dt = false) {
     
     $html = '
     
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto max-h-96">
         <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php' . '">
             <input type="hidden" name="id_turma" value="' . $id_turma . '">
             <input type="hidden" name="cargo" value="professores">
-            <table class="table">
-                <!-- head -->
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Disciplinas</th>
-                    <th>Turno</th>
-                    '; $html .= ($dt ? '<th>Editar</th>' : ''); $html .= '
-                </tr>
-                </thead>
-                <tbody>
-                ';    
-                foreach($res_turnos_condensados as $k => $v) {
-                    $cont++;
-                    $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $_SESSION['id_curso']);
-                    /* pr($arr_disciplinas); */
-                       
-                    $sql = "SELECT disciplinas.nome as nome_disciplina FROM disciplinas 
-                    INNER JOIN rel_disciplina_user ON rel_disciplina_user.id_disciplina = disciplinas.id
-                    WHERE rel_disciplina_user.id_user = " . $v['id_user'];
-                    $res_disciplinas = my_query($sql);  
-                    $res_turno = [];                  
-                    foreach($num_turnos as $id_user => $turnos) {
-                        if($id_user == $v['id_user']) {
-                            $res_turno = ['numero' => implode(', ', $turnos)];
+            <div class="">
+                <table class="table">
+                    <!-- head -->
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Disciplinas</th>
+                        <th>Turno</th>
+                        '; $html .= ($dt ? '<th>Editar</th>' : ''); $html .= '
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ';
+                    foreach($res_turnos_condensados as $k => $v) {
+                        $cont++;
+                        $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $_SESSION['id_curso']);
+                        /* pr($arr_disciplinas); */
+                
+                        $sql = "SELECT disciplinas.nome as nome_disciplina FROM disciplinas
+                        INNER JOIN rel_disciplina_user ON rel_disciplina_user.id_disciplina = disciplinas.id
+                        WHERE rel_disciplina_user.id_user = " . $v['id_user'];
+                        $res_disciplinas = my_query($sql);
+                        $res_turno = [];
+                        foreach($num_turnos as $id_user => $turnos) {
+                            if($id_user == $v['id_user']) {
+                                $res_turno = ['numero' => implode(', ', $turnos)];
+                            }
                         }
+                        $html .= '
+                        <tr class="hover">
+                            <td>' . ($k + 1) . '</td>
+                            <td>' . $v['username'] . '</td>
+                            <td>' . $v['email'] . '</td>
+                            <td>';
+                            foreach($arr_disciplinas as $disciplina) {
+                                $sql = "SELECT * FROM disciplinas
+                                INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
+                                WHERE disciplinas.id = " . $disciplina['id_disciplina'] . " AND rel_disciplina_turma.id_turma = " . $id_turma . " AND disciplinas.ativo = 1";
+                
+                                $res = my_query($sql);
+                
+                                if(count($res) > 0) {
+                                    for($i = 0; $i < count($res); $i++) {
+                                        $html .= $res[$i]['abreviatura'] . '<br>';
+                                    }
+                                } else {
+                                    $html .= 'Sem disciplinas<br>';
+                                }
+                            }
+                            $html .= '
+                            </td>
+                            '; $edicao = (isset($_GET['editar']) ? $_GET['editar'] : ''); $html .= ($dt ? ($edicao ?
+                            '<td>
+                            ' . gerar_options_turnos($id_turma, $res_turnos_condensados, $v['id_user'], $cont) . '
+                            </td>' :
+                            '<td>
+                            ' . gerar_options_turnos($id_turma,$res_turnos_condensados,$v['id_user'],$cont,true) . '
+                            </td>') : '<td>' . (count($res_turno) > 0 ? 'Turno: ' . $res_turno['numero'] : 'Sem turno' ) . '</td>');
+                            $html .= ($dt ? ($edicao ? '<td><button class="btn btn-ghost btn-xs" type="submit">Confirmar</button></td>' : '<td><a class="fa fa-edit" href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&editar=true&tab=professores"></a></td>') : ''); $html .= '
+                        </tr>                                        
+                        ';
                     }
                     $html .= '
-                    <tr class="hover">
-                        <td>' . ($k + 1) . '</td>
-                        <td>' . $v['username'] . '</td>
-                        <td>' . $v['email'] . '</td>
-                        <td>';
-                        foreach($arr_disciplinas as $disciplina) {
-                            $sql = "SELECT * FROM disciplinas 
-                            INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
-                            WHERE disciplinas.id = " . $disciplina['id_disciplina'] . " AND rel_disciplina_turma.id_turma = " . $id_turma . " AND disciplinas.ativo = 1";
-                                        
-                            $res = my_query($sql);        
-                            
-                            if(count($res) > 0) {  
-                                for($i = 0; $i < count($res); $i++) {
-                                    $html .= $res[$i]['abreviatura'] . '<br>';
-                                }                                
-                            } else {
-                                $html .= 'Sem disciplinas<br>';
-                            }
-                        }                        
-                        $html .= '
-                        </td>
-                        '; $edicao = (isset($_GET['editar']) ? $_GET['editar'] : ''); $html .= ($dt ? ($edicao ? 
-                        '<td>
-                        ' . gerar_options_turnos($id_turma, $res_turnos_condensados, $v['id_user'], $cont) . '                        
-                        </td>' : 
-                        '<td>
-                        ' . gerar_options_turnos($id_turma,$res_turnos_condensados,$v['id_user'],$cont,true) . '
-                        </td>') : '<td>' . (count($res_turno) > 0 ? 'Turno: ' . $res_turno['numero'] : 'Sem turno' ) . '</td>'); 
-                        $html .= ($dt ? ($edicao ? '<td><button class="btn btn-ghost btn-xs" type="submit">Confirmar</button></td>' : '<td><a class="fa fa-edit" href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&editar=true&tab=professores"></a></td>') : ''); $html .= '
-                    </tr>
-                    ';                                    
-                }
-                $html .= '
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </form>
     </div>
     ';
@@ -1737,7 +1733,7 @@ function tabela_vista_alunos_turma() {
     /* pr($res); */
     $html = '
     
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto max-h-96">
         <table class="table">
             <!-- head -->
             <thead>
@@ -2402,100 +2398,19 @@ function tabela_cursos_instituicao() {
 
 function ai_assistente_aluno() {
     global $arrConfig;
+    $rand = rand(1, 100000);
+    $id_user = $_SESSION['id'];
     $id_turma = $_GET['id_turma'];
     $dotenv = Dotenv\Dotenv::createImmutable($arrConfig['dir_site']);
     $dotenv->load();
     $codigo_unico = $_ENV['CHAVE_ENVIAR'];
     $html = '
     
-    <div class="w-8/12 mx-auto p-4">
-        <div class="bg-base-200 rounded-lg shadow p-4">
-            <div class="chat-container space-y-4 mb-4 max-h-96 overflow-y-auto" id="chatContainer">
-                <div class="chat chat-start">                    
-                    <div class="chat-image avatar">
-                        <div class="w-10 rounded-full">
-                            <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
-                        </div>
-                    </div>
-                    <div class="chat-header">
-                        CancelA.I.
-                        <time class="text-xs opacity-50"></time> <!-- hora da mensagem -->
-                    </div>
-                    <div class="chat-bubble">Olá, como posso te ajudar hoje?</div>
-                    <br>
-                </div>                
-            </div>
-            <form id="chatForm" class="flex">
-                <input type="text" id="chatInput" class="input input-bordered w-full max-w-full" placeholder="Escreva sua mensagem..." autocomplete="off" required>
-                <button type="submit" class="btn btn-ghost">Enviar</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById(\'chatForm\').addEventListener(\'submit\', function(event) {
-            event.preventDefault();
-            
-            const chatContainer = document.getElementById(\'chatContainer\');
-            const chatInput = document.getElementById(\'chatInput\');
-            const message = chatInput.value.trim();
-            const currentTime = new Date().toLocaleTimeString([], { hour: \'2-digit\', minute: \'2-digit\' });
-
-            if (message !== \'\') {
-                const chatMessage = `
-                    <div class="chat chat-end">
-                        <div class="chat-image avatar">
-                            <div class="w-10 rounded-full">
-                                <img alt="User" src="' . $arrConfig['url_pfp'] . 'e.png' . '" />
-                            </div>
-                        </div>
-                        <div class="chat-header">
-                            You
-                            <time class="text-xs opacity-50">${currentTime}</time>
-                        </div>
-                        <div class="chat-bubble bg-primary">${message}</div>                        
-                    </div>
-                `;
-                chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                chatInput.value = \'\';
-            }
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            const mensagem_carregando = `
-            <div id="mensagem-carregando">
-                <div class="chat chat-start">
-                    <div class="chat-image avatar">
-                        <div class="w-10 rounded-full">
-                            <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
-                        </div>
-                    </div>
-                    <div class="chat-header">
-                        CancelA.I.
-                        <time class="text-xs opacity-50">12:45</time> <!-- hora da mensagem -->
-                    </div>
-                    <div class="chat-bubble"><span class="loading loading-dots loading-sm"></span></div>
-                </div>
-            </div>
-            `;
-            chatContainer.insertAdjacentHTML(\'beforeend\', mensagem_carregando);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            chatInput.value = \'\';
-            console.log(chatContainer.innerHTML);
-            xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST", "' . $arrConfig['url_admin'] . '/dashboards/' . 'chamar_api_openai.php", true);
-            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xmlhttp.onreadystatechange = function() {
-
-                if (this.readyState == 4 && this.status == 200) {
-                    // A solicitação foi bem-sucedida, você pode processar a resposta aqui
-                    console.log(this.responseText);
-                    chatContainer.removeChild(document.getElementById(\'mensagem-carregando\'));
-                    var decodedResponse = decodeURIComponent(this.responseText);
-                    console.log(decodedResponse);
-                    const tempo_resposta = new Date().toLocaleTimeString([], { hour: \'2-digit\', minute: \'2-digit\' });
-                    const chatMessage = `
-                    
-                        <div class="chat chat-start">                    
+    <div class="flex gap-4">
+        <div class="w-6/12 mx-auto p-4">
+            <div class="bg-base-200 rounded-lg shadow p-4">
+                <div class="chat-container space-y-4 mb-4 max-h-96 overflow-y-auto" id="chatContainer">
+                    <div class="chat chat-start">
                         <div class="chat-image avatar">
                             <div class="w-10 rounded-full">
                                 <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
@@ -2503,20 +2418,193 @@ function ai_assistente_aluno() {
                         </div>
                         <div class="chat-header">
                             CancelA.I.
-                            <time class="text-xs opacity-50">${tempo_resposta}</time> <!-- hora da mensagem -->
+                            <time class="text-xs opacity-50"></time> <!-- hora da mensagem -->
                         </div>
-                            <div class="chat-bubble">${decodedResponse}</div>                 
-                        </div>
+                        <div class="chat-bubble">Olá, como posso ajudar te hoje?</div>
+                        <br>             
+                    </div>
+                </div>
+                <form id="chatForm" class="flex flex-col gap-3">
+                    <div id="caixa-sugestoes" class="flex justify-around ">
+                        <div onClick="submeterSugestao(\'Quais as próximas atividades?\')" class="badge badge-md bg-base-300 cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2">Quais as próximas atividades?</div>
+                        <div onClick="submeterSugestao(\'Com base nas minhas próximas atividades, organize meu calendário de uma maneira agradável.\')" class="badge badge-md bg-base-300 cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2">Organize meu calendário</div>
+                        <div onClick="submeterSugestao(\'Qual a minha disciplina com mais atividades?\')" class="badge badge-md bg-base-300 cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2">Qual a disciplina com mais atividades?</div>
+                    </div>
+                    <div class="flex">
+                        <input type="text" id="chatInput" class="input input-bordered w-full max-w-full" placeholder="Escreva sua mensagem..." autocomplete="off" required>
+                        <button type="submit" id="submitFormBtn" class="btn bg-base-300"><i class="fas fa-solid fa-arrow-up"></i></button>
+                    </div>
+                </form>
+            </div>
+            <span class="text-xs text-center text-gray-500 block mt-4">As funções associadas ao assistente A.I. estão em fase Beta, e são sucetíveis a erros.</span>
+        </div>
+        <div class="w-6/12">
+            <div id="render-calendar-here-ai">
+                <div id="ec' . $rand . '"></div>
+            </div>
+        </div>
+    </div>
 
-                    `;
-                    chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                    chatInput.value = \'\';
+    <script>
+    function submeterSugestao(texto) {        
+        document.getElementById(\'chatInput\').value = texto;
+        document.getElementById(\'submitFormBtn\').click();
+    }
+    let options = {
+        view: \'timeGridWeek\',        
+        customButtons: {
+            removerEventos: {
+                text: \'Remover eventos\',
+                click: function(info) {
+                    ec.destroy();
+                    createCalendar();
                 }
-            };
-            xmlhttp.send("message=" + encodeURIComponent(message) + "&outro=' . $codigo_unico . '" + "&user=' . $_SESSION['id'] . '" + "&id_turma=' . $id_turma . '");
+            },
+            guardarEventos: {
+                text: \'Guardar eventos\',
+                click: function() {
+                    
+                }
+            }
+        },
+        allDaySlot: false,
+        
+        headerToolbar: {start: \'removerEventos\', center: \'\', end: \'today, prev next\'}
+    }
+    
 
-        });
+    let ec;
+    function createCalendar() {
+        ec = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), options);
+    }
+    createCalendar();
+
+    document.getElementById(\'chatForm\').addEventListener(\'submit\', function(event) {
+        event.preventDefault();
+        const caixa_sugestoes = document.getElementById(\'caixa-sugestoes\');
+        caixa_sugestoes.style.display = \'none\';
+        const chatContainer = document.getElementById(\'chatContainer\');
+        const chatInput = document.getElementById(\'chatInput\');
+        const message = chatInput.value.trim();
+        const currentTime = new Date().toLocaleTimeString([], { hour: \'2-digit\', minute: \'2-digit\' });
+
+        if (message !== \'\') {
+            const chatMessage = `
+                <div class="chat chat-end">
+                    <div class="chat-image avatar">
+                        <div class="w-10 rounded-full">
+                            <img alt="User" src="' . $arrConfig['url_pfp'] . 'e.png' . '" />
+                        </div>
+                    </div>
+                    <div class="chat-header">
+                        Você
+                        <time class="text-xs opacity-50">${currentTime}</time>
+                    </div>
+                    <div class="chat-bubble bg-primary">${message}</div>                        
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatInput.value = \'\';
+        }
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        const mensagem_carregando = `
+        <div id="mensagem-carregando">
+            <div class="chat chat-start">
+                <div class="chat-image avatar">
+                    <div class="w-10 rounded-full">
+                        <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                    </div>
+                </div>
+                <div class="chat-header">
+                    CancelA.I.
+                    <time class="text-xs opacity-50">Carregando</time> <!-- hora da mensagem -->
+                </div>
+                <div class="chat-bubble"><span class="loading loading-dots loading-sm"></span></div>
+            </div>
+        </div>
+        `;
+        chatContainer.insertAdjacentHTML(\'beforeend\', mensagem_carregando);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        chatInput.value = \'\';
+        
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", "' . $arrConfig['url_admin'] . '/dashboards/' . 'chamar_api_openai.php", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.onreadystatechange = function() {
+
+            if (this.readyState == 4 && this.status == 200) {
+                // A solicitação foi bem-sucedida, você pode processar a resposta aqui
+                let flagEventos = false;
+                let resposta = this.responseText;
+                let jsonString = \'\';
+                let eventosJSON = \'\';
+                
+                if(resposta.includes(\'$$eventos$$\')) {
+                    flagEventos = true;
+                    console.log("aqui");
+                    const eventosPos = resposta.indexOf(\'$$eventos$$\');
+
+                    // Verificar se $$eventos$$ foi encontrado na string
+                    if (eventosPos !== -1) {
+
+                        // Extrair o JSON que está após $$eventos$$
+                        let stringEventos = \'$$eventos$$\';
+                        let eventosStr = resposta.substring(eventosPos + stringEventos.length).trim();
+
+                        eventosStr = eventosStr.replace(/\n\d+\.\s+/g, \'\').replace(/\n/g, \'\');
+                        eventosStr = \'[\' + eventosStr.replace(/}{/g, \'},{\') + \']\';
+                        try {
+                            const eventos = JSON.parse(eventosStr);
+                            for (let evento of eventos) {
+                                console.log(evento);
+                                ec.addEvent(evento);
+                                console.log(\'aqui\')
+                            }
+                        } catch (e) {
+                            console.log("Erro ao analisar JSON:", e.message);
+                        }
+                        
+                    } else {
+                        console.log("Tag $$eventos$$ não encontrada na string.");
+                    }
+                    console.log(resposta)
+                    resposta = resposta.split(\'$$eventos$$\')[0].trim();    
+                    resposta = resposta.replace(\'$$eventos$$\', \'\');
+                }
+                console.log(flagEventos);
+
+                console.log(resposta);
+                
+                console.log(this.responseText);
+                chatContainer.removeChild(document.getElementById(\'mensagem-carregando\'));
+                var decodedResponse = decodeURIComponent(this.responseText);
+                console.log(decodedResponse);
+                const tempo_resposta = new Date().toLocaleTimeString([], { hour: \'2-digit\', minute: \'2-digit\' });
+                const chatMessage = `
+                
+                    <div class="chat chat-start">
+                    <div class="chat-image avatar">
+                        <div class="w-10 rounded-full">
+                            <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                        </div>
+                    </div>
+                    <div class="chat-header">
+                        CancelA.I.
+                        <time class="text-xs opacity-50">${tempo_resposta}</time> <!-- hora da mensagem -->
+                    </div>
+                        <div class="chat-bubble">${resposta}</div>
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                chatInput.value = \'\';
+            }
+        };
+        xmlhttp.send("message=" + encodeURIComponent(message) + "&outro=' . $codigo_unico . '" + "&user=' . $_SESSION['id'] . '" + "&id_turma=' . $id_turma . '");
+
+    });
+    
     </script>
         
 

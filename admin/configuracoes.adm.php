@@ -262,6 +262,12 @@ function def_config_adm($modulo, &$arr_config)
                             'checked' => 1,
                             'name' => 'tabs_aluno'
                         ),
+                        'tab5' => array(
+                            'label' => 'Agenda',
+                            'content' => agenda_turma(),
+                            'checked' => 0,
+                            'name' => 'tabs_aluno'
+                        ),
                         'tab2' => array(
                             'label' => 'Professores',
                             'content' => tabela_vista_professores_turma(),
@@ -274,12 +280,7 @@ function def_config_adm($modulo, &$arr_config)
                             'checked' => 0,
                             'name' => 'tabs_aluno'
                         ),                        
-                        'tab5' => array(
-                            'label' => 'Agenda',
-                            'content' => agenda_turma(),
-                            'checked' => 0,
-                            'name' => 'tabs_aluno'
-                        ),   
+                        
                     );
                     break;
     }

@@ -26,12 +26,7 @@ switch ($valor) {
         $html = '
                 <!-- head -->
                 <thead>
-                    <tr>
-                        <th>
-                            <label>
-                            <input type="checkbox" class="checkbox" />
-                            </label>
-                        </th>
+                    <tr>                        
                         <th>ID</th>
                         <th>Nome</th>                        
                         
@@ -58,12 +53,7 @@ foreach ($res as $disciplina) {
     $editar = (isset($_GET['editar']) ? $_GET['editar'] : false);
     
     $html .= '
-                    <tr>
-                        <td>
-                            <label>
-                            <input type="checkbox" class="checkbox" />
-                            </label>
-                        </td>
+                    <tr>                        
                         <td>' . $disciplina['id'] . '</td>
                         <td>
                         ' . $disciplina['nome'] . '
@@ -116,7 +106,7 @@ foreach ($res as $disciplina) {
                         ' . ($editar ? 'Confirmar' : '<i class="fas fa-edit"></i>') . '
                     </a>
                         </td>
-                    </tr>
+                    </tr>                    
                     ';
 }
 
