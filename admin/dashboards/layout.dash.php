@@ -2446,18 +2446,47 @@ function ai_assistente_aluno() {
     </div>
 
     <script>
+    let eventos_carregados;
     function submeterSugestao(texto) {        
         document.getElementById(\'chatInput\').value = texto;
         document.getElementById(\'submitFormBtn\').click();
     }
+    
+    
     let options = {
         view: \'timeGridWeek\',        
         customButtons: {
             removerEventos: {
                 text: \'Remover eventos\',
                 click: function(info) {
-                    ec.destroy();
-                    createCalendar();
+                    Swal.fire({
+                        title: \'Tem certeza?\',
+                        text: "Você não poderá reverter isso!",
+                        icon: \'warning\',
+                        showCancelButton: true,
+                        confirmButtonColor: \'#3085d6\',
+                        cancelButtonColor: \'#d33\',
+                        confirmButtonText: \'Sim, remover!\',
+                        cancelButtonText: \'Cancelar\'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            ec.destroy();
+                            createCalendar();
+                            $.ajax({
+                                url: "' . $arrConfig['url_admin'] . 'dashboards/apagar_eventos_aluno.php",
+                                type: "DELETE",                                
+                                success: function(response) { 
+                                    // este código será executado se a requisição for bem-sucedida
+                                    Swal.fire(
+                                        \'Removido!\',
+                                        \'Os eventos foram removidos.\',
+                                        \'success\'
+                                    )
+                                }
+                            })                            
+                        }
+                    })
+                    
                 }
             },
             guardarEventos: {
@@ -2478,6 +2507,21 @@ function ai_assistente_aluno() {
         ec = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), options);
     }
     createCalendar();
+    $.ajax({
+        url: "' . $arrConfig['url_admin'] . 'dashboards/get_eventos_aluno.php",
+        type: "GET",        
+        success: function(response) {
+            // este código será executado se a requisição for bem-sucedida
+            eventos_carregados = JSON.parse(response);    
+            for (let evento of eventos_carregados) {
+                ec.addEvent(evento);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // este código será executado se ocorrer um erro na requisição
+            console.log(\'Erro ao carregar eventos:\', errorThrown);
+        }
+    })
 
     document.getElementById(\'chatForm\').addEventListener(\'submit\', function(event) {
         event.preventDefault();
@@ -2557,10 +2601,22 @@ function ai_assistente_aluno() {
                         try {
                             const eventos = JSON.parse(eventosStr);
                             for (let evento of eventos) {
-                                console.log(evento);
-                                ec.addEvent(evento);
-                                console.log(\'aqui\')
+                                ec.addEvent(evento);                                
                             }
+                            $.ajax({
+                                url: "' . $arrConfig['url_modules'] . 'trata_adicionar_eventos_ai.mod.php",
+                                type: "POST",
+                                data: { eventos: JSON.stringify(eventos) },
+                                success: function(response) {
+                                    // este código será executado se a requisição for bem-sucedida
+                                    console.log(response);
+                                    console.log(\'Eventos salvos com sucesso\');
+                                },
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    // este código será executado se ocorrer um erro na requisição
+                                    console.log(\'Erro ao salvar eventos:\', errorThrown);
+                                }
+                            })
                         } catch (e) {
                             console.log("Erro ao analisar JSON:", e.message);
                         }

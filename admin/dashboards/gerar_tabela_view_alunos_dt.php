@@ -44,7 +44,7 @@ foreach ($res as $aluno) {
     }
 
     $html .= '
-                        <tr>
+                         <tr>
                             
                             <td>
                                 <div class="flex items-center gap-3">
@@ -68,7 +68,7 @@ foreach ($res as $aluno) {
 
         $res_turma ? $nome_turma = $res_turma[0]['nome_turma'] : $nome_turma = 'Sem turma';        
         $html .= '
-                            <td>' . $nome_turma . '</td>                             
+                            <td>' . $nome_turma . '</td>
                             '; 
                             if(isset($_GET['editar']) && $_GET['editar'] == 'true') {   
                                 
