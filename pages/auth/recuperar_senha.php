@@ -6,7 +6,9 @@ if(isset($_SESSION['id'])){
 } 
 ?>
 
-<?php include '../../header.php'; ?>
+<?php 
+$_SESSION['cor'] = true;
+include '../../header.php'; ?>
 <body>
     <form class="flex flex-col justify-center items-center h-screen" action="../../modules/trata_recuperar_senha.mod.php" method="post">
         <div class="flex card lg:w-6/12 shadow-xl bg-primary items-center">

@@ -7,7 +7,9 @@ if(!isset($_SESSION['id'])){
 }
 
 ?>
-<?php include '../header.php'; 
+<?php
+$_SESSION['cor'] = true;
+include '../header.php'; 
 
 if($_SESSION['cargo'] == 'instituicao') {
     $sql = "SELECT * FROM instituicao WHERE id_dono = {$_SESSION['id']}";
@@ -43,7 +45,7 @@ if($_SESSION['cargo'] == 'instituicao') {
                                         echo '<kbd class="kbd kbd-sm">⌘</kbd>';
                                     } elseif (strpos($agent, 'Windows') !== false) {
                                         // Code for Windows
-                                        echo '<kbd class="kbd kbd-sm">Ctrl</kbd>';
+                                        echo '<kbd class="kbd kbd-sm">Alt</kbd>';
                                     } else {
                                         // Code for other platforms
                                         /* echo '<kbd class="kbd kbd-sm">⌘</kbd>'; */
@@ -61,36 +63,39 @@ if($_SESSION['cargo'] == 'instituicao') {
         <?php 
     } else {
         ?>
-            <div class="flex justify-center items-center mt-10">
-                <form method="post" class="bg-base-100 w-4/12 border-r-8" action="<?php echo $arrConfig['url_modules'] . 'trata_editar_instituicao.mod.php?tipo=' . (isset($_GET['editar']) ? 'editar' : 'criar') ; ?>">
-                    <div class="flex flex-col gap-6">
-                        <h1 class="text-xl text-center font-bold">
-                        <?php
-                            if (isset($_GET['editar'])) {
-                                $editar = true;
-                                echo 'Editar';
-                                $sql = "SELECT * FROM instituicao WHERE id = {$_GET['editar']}";
-                                $res = my_query($sql);
-                                echo '<input type="hidden" name="id_instituicao" value="' . $res['id'] . '" />';
-                            } else {
-                                $editar = false;
-                                echo 'Criar';
-                            }
-                        ?> instituição</h1>
-                            <input type="hidden" name="id_curso" value="<?php echo '$_GET[];'; ?>" />
-                            <div class="flex flex-row gap-8">
-                                <label class="form-control w-full max-w-xs">
-                                    <div class="label">
-                                        <span class="label-text">Nome da instituição</span>
-                                    </div>
-                                    <input name="nome" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="<?php ($editar ? $res[0]['nome'] : '' ) ?>" />
-                                    
-                                </label>
-                            </div>
-                            <button class="btn w-full"><?php echo 'Criar'; ?></button>
-                    </div>
-                </form>
-            </div>
+
+            
+                <div class="flex justify-center items-center h-screen">
+                    <form method="post" class="bg-primary card w-4/12 border-r-8" action="<?php echo $arrConfig['url_modules'] . 'trata_editar_instituicao.mod.php?tipo=' . (isset($_GET['editar']) ? 'editar' : 'criar') ; ?>">
+                        <div class="flex flex-col  gap-6">
+                            <h1 class="text-xl text-center mt-10 font-bold">
+                            <?php
+                                if (isset($_GET['editar'])) {
+                                    $editar = true;
+                                    echo 'Editar';
+                                    $sql = "SELECT * FROM instituicao WHERE id = {$_GET['editar']}";
+                                    $res = my_query($sql);
+                                    echo '<input type="hidden" name="id_instituicao" value="' . $res['id'] . '" />';
+                                } else {
+                                    $editar = false;
+                                    echo 'Criar';
+                                }
+                            ?> instituição</h1>
+                                <input type="hidden" name="id_curso" value="<?php echo '$_GET[];'; ?>" />
+                                <div class="flex justify-center flex-row gap-8">
+                                    <label class="form-control w-full max-w-xs mx-auto">
+                                        <div class="label">
+                                            <span class="label-text">Nome da instituição</span>
+                                        </div>
+                                        <input name="nome" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full" value="<?php ($editar ? $res[0]['nome'] : '' ) ?>" />
+                
+                                    </label>
+                                </div>
+                                <button class="btn self-center w-full max-w-xs mb-10 "><?php echo 'Criar'; ?></button>
+                        </div>
+                    </form>
+                </div>
+            
         <?php
     }
     ?>

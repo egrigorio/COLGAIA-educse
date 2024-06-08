@@ -15,7 +15,6 @@ pr($res);
 die; */
 
 
-
 $html = '
                 <!-- head -->
                 <input type="hidden" name="cargo" value="alunos">
@@ -33,8 +32,7 @@ $html = '
 
                 <tbody>
                 ';
-foreach ($res as $aluno) {
-    /* pr($res); */
+foreach ($res as $aluno) {    
     if($aluno['id_turno'] != -1) {
         $sql = "SELECT * FROM turno WHERE id = " . $aluno['id_turno'];
         $res_turno = my_query($sql);
@@ -43,7 +41,9 @@ foreach ($res as $aluno) {
         $aluno['num_turno'] = 0;
     }
 
-    $html .= '
+    if(isset($_GET['turno_numero'])) {
+        if($aluno['num_turno'] == $_GET['turno_numero'] || $_GET['turno_numero'] == 'all') {
+            $html .= '
                          <tr>
                             
                             <td>
@@ -130,6 +130,10 @@ foreach ($res as $aluno) {
                             
                             
                             }
+        }
+    } else {
+        
+    }    
 }                
 
 $html .= '

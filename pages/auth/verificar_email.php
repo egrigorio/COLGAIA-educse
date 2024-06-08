@@ -7,6 +7,7 @@ if(isset($_SESSION['id'])){
     header('Location: ' . $arrConfig['url_paginas'] . 'auth/registar.php');
     exit;
 }
+$_SESSION['cor'] = true;
 include '../../header.php';
 ?>
 

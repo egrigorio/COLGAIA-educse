@@ -49,9 +49,14 @@ $sql = "SELECT email FROM conf_convite WHERE id_curso = $id_curso";
 $res = my_query($sql); // me devolve os emails que já foram convidados
 
 foreach($res as $r) {
-    if(!in_array($r['email'], $emails)) { // 
-        $emails_separados[] = $r['email'];
+
+    if(!in_array(strtolower($r['email']), array_map('strtolower', $emails))) { 
+        $emails_separados[] = $r['email']; 
     }
+
+    /* if(!in_array($r['email'], $emails)) { //  
+        $emails_separados[] = $r['email']; 
+    } */
 }
 
 foreach($res as $r) {

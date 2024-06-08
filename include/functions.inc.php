@@ -40,6 +40,8 @@ function logs() {
 function gerar_formulario($tipo, $modulo, $action = null, $pkey = null, $pkey_valor = null) {
     global $arrConfig;
 
+    
+
     if(!$action) $action = $arrConfig['url_modules'] . 'trata_' . $tipo . '.mod.php?modulo=' . $modulo;
 
     echo "<h1>$tipo $modulo</h1>";
@@ -663,9 +665,10 @@ function gerar_dados_esforco_semanal_turma($id_turma, &$labels, &$data) {
                     if($esforco_turma['dia_' . ($dia_semana - 1)] == 1) {
                         $dias++;
                     }
-                }
-                
+                }                
                 $tempo_medio_diario = $atividade['tempo_sugerido'] / $dias;
+                
+                
             }
             $res[$i]['tempo_medio_diario'] = $tempo_medio_diario;
             
@@ -700,11 +703,7 @@ function gerar_dados_esforco_semanal_turma($id_turma, &$labels, &$data) {
             $eventos_esforco[$data] = $esforco_dia;
         }
         list($data, $labels) = agrupar_por_semana($eventos_esforco);         
-    } 
-    
-    
-    
-    
+    }    
 }
 
 function agrupar_por_semana($eventos_esforco) {
@@ -774,9 +773,14 @@ function gerar_dados_total_atividades_mes($id_turma, &$porcentagem, &$total, &$t
     }
 }
 
-function get_atividade_de_maior_duracao() {
+function get_atividade_de_maior_duracao($id_turma) {
     $mes_atual = date('m');
-    $sql = "SELECT eventos.titulo, atividades.tempo_sugerido FROM atividades INNER JOIN eventos on atividades.id_evento = eventos.id WHERE MONTH(eventos.comeco) = $mes_atual ORDER BY atividades.tempo_sugerido DESC LIMIT 1";
+    $sql = "SELECT eventos.titulo, atividades.tempo_sugerido 
+            FROM atividades 
+            INNER JOIN eventos ON atividades.id_evento = eventos.id 
+            INNER JOIN rel_atividades_turma ON rel_atividades_turma.id_atividade = atividades.id             
+            WHERE MONTH(eventos.comeco) = $mes_atual AND rel_atividades_turma.id_turma = $id_turma 
+            ORDER BY atividades.tempo_sugerido DESC LIMIT 1";    
     return my_query($sql);    
 }
 

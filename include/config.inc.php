@@ -24,6 +24,7 @@ $arrConfig['dir_modules'] = $arrConfig['dir_site'] . '/modules/';
 $arrConfig['url_admin'] = $arrConfig['url_site'] . '/admin/';
 $arrConfig['dir_admin'] = $arrConfig['dir_site'] . '/admin/';
 
+
 $arrConfig['dir_include'] = $arrConfig['dir_site'] . '/include/';
 
 $arrConfig['email_token'] = 'aajbajkh%/rcKI!ª~uaca76';

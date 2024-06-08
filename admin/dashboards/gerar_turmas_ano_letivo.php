@@ -11,6 +11,7 @@ if($ano_letivo == $ano_letivo_atual) {
 }    
 
 
+
 $html = '        
     <form method="post" action="' . $arrConfig['url_modules'] . 'trata_editar_turma_diretor_curso.mod.php' . '">
     <div class="overflow-x-auto">
@@ -115,7 +116,7 @@ $html = '
                             $html .= '
                         
                                     <td>
-                                        <a href="?editar=true" class="btn btn-ghost btn-xs">
+                                        <a href="?tab=turmas&editar=true" class="btn btn-ghost btn-xs">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>

@@ -4,6 +4,7 @@ if(isset($_SESSION['id'])){
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');
     exit;
 } 
+$_SESSION['cor'] = true;
 include '../../header.php';
 
 ?>

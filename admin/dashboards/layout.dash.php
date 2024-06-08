@@ -174,11 +174,12 @@ function instituicao($arr_instituicao) {
         
         def_config_adm('tabs_instituicao', $arr_config);
         foreach ($arr_config as $kCampos => $vCampos) {
-            if($flag_tab_get) {
+            if($flag_tab_get) {                
                 if(strtolower($vCampos['label']) == $_GET['tab']) {
                     $vCampos['checked'] = 1;
                     $flag_tabs = true;
                 } else {
+                    $vCampos['checked'] = 0;
                     $flag_tabs = false;
                 }
             }
@@ -347,7 +348,7 @@ function professores_tabs_cursos() {
                 var emailInput = document.getElementById("email-input");
                 var emailList = document.getElementById("email-list");
                 var email = emailInput.value.trim();
-                
+                email = email.toLowerCase();
                 var re = /\S+@\S+\.\S+/;
                 if(!re.test(email)) {
                     Swal.fire({
@@ -505,7 +506,7 @@ function alunos_tabs_cursos() {
             var emailInput = document.getElementById("email-input_alunos");
             var emailList = document.getElementById("email-list_alunos");
             var email = emailInput.value.trim();
-            
+            email = email.toLowerCase();
             var re = /\S+@\S+\.\S+/;
             if(!re.test(email)) {
                 Swal.fire({
@@ -592,9 +593,10 @@ function disciplinas_tabs_cursos() {
                         Submeter
                     </button>
                 </div>
-                <div id="disciplinas-list" class="mb-4">
-                    <!-- Os itens de e-mail serão inseridos aqui -->
-                    
+                <div class="overflow-x-auto">
+                    <div id="disciplinas-list" class="mb-4 h-56">
+                        <!-- Os itens de e-mail serão inseridos aqui -->                    
+                    </div>
                 </div>
             </form>
         </div>
@@ -751,26 +753,34 @@ function esforco_direcao_turma() {
         <input type="hidden" name="id_esforco" value="' . $res['id'] . '">
         <td>
             <label class="form-control w-full max-w-xs">                        
-                <input type="number" placeholder="0" name="limite" value="' . $res['limite'] . '" class="input w-14 max-w-xs" />
+                <div class="tooltip" data-tip="Esforço limite máximo, em horas, da turma">
+                    <input type="number" placeholder="0" name="limite" value="' . $res['limite'] . '" class="input w-14 max-w-xs" />
+                </div>
             </label>
         </td>
         <td>
-            <label class="form-control w-full max-w-xs">                            
-                <input type="number" placeholder="0" name="barreira" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" />
-            </label>
+            <div class="tooltip" data-tip="Valor inferior ao limite, para servir de alerta a criação de atividades">
+                <label class="form-control w-full max-w-xs">
+                    <input type="number" placeholder="0" name="barreira" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" />
+                </label>
+            </div>
         </td>
         ';
     } else {
         $html .= '                    
         <td>
-            <label class="form-control w-full max-w-xs">                        
-                <input type="number" placeholder="0" value="' . $res['limite'] . '" class="input w-14 max-w-xs" disabled />
-            </label>
+            <div class="tooltip tooltip-right" data-tip="Esforço limite máximo, em horas, da turma">
+                <label class="form-control w-full max-w-xs">                        
+                    <input type="number" placeholder="0" value="' . $res['limite'] . '" class="input w-14 max-w-xs" disabled />
+                </label>
+            </div>
         </td>
         <td>
-            <label class="form-control w-full max-w-xs">                            
-                <input type="number" placeholder="0" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" disabled />
-            </label>
+            <div class="tooltip tooltip-right" data-tip="Valor inferior ao limite, para servir de alerta a criação de atividades">
+                <label class="form-control w-full max-w-xs">                            
+                    <input type="number" placeholder="0" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" disabled />
+                </label>
+            </div>
         </td>
         ';
     }
@@ -791,7 +801,7 @@ function esforco_direcao_turma() {
             $html .= '
             <td>
                 <label class="form-control w-full max-w-xs">                            
-                    <input type="checkbox" class="toggle" ';  $html .= $v ? 'checked' : ''; $html .=  ' disabled />
+                    <input type="checkbox" class="toggle [--tglbg:'; $html .= $v ? 'green' : 'red'; $html .= ']" ';  $html .= $v ? ' checked' : ''; $html .=  ' disabled />
                 </label>
             </td>
             ';
@@ -856,8 +866,7 @@ function criar_atividade_turma($editar = false, $id_evento = null) {
 
 function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseridos = null) {
     global $arrConfig;
-    $id_user = $_SESSION['id'];
-    
+    $id_user = $_SESSION['id'];    
     $html = '';
     if(isset($_SESSION['erro'])) {
         $html .= '
@@ -872,7 +881,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
             </script>
         ';
         unset($_SESSION['erro']);
-    }
+    } 
 
     $html .= '
     ' . ($valores_ja_inseridos ? '<h1 class="text-center text-xl font-bold">Editando evento</h1>' : '') . '
@@ -915,12 +924,14 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                         </div>
                         <input type="text" required name="tipo" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value="' . $valores_ja_inseridos['tipo'] : "") . '" />
                     </label>
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Disciplina*</span>                            
-                        </div>
-                        <select name="disciplina" class="select select-bordered" required>
+                    
+                        <label class="form-control w-full max-w-xs">
                             
+                            <div class="label">
+                                <span class="label-text">Disciplina*</span>                            
+                            </div>
+                            
+                            <select name="disciplina" class="select select-bordered" required>                            
                             ';
 
     $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $id_curso);
@@ -937,8 +948,9 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
     }            
     $turno = isset($_GET['turno']) ? $_GET['turno'] : -1;
     $html .= '                                                        
-                        </select>                        
-                    </label>
+                            </select>
+                        </label>
+                    
                 </div>
                 <input type="hidden" name="id_turma" value="' . $id_turma . '">
                 <input type="hidden" name="id_professor" value="' . $_SESSION['id'] . '">
@@ -1131,7 +1143,9 @@ function agenda_turma() {
                 case 'id_disciplina': 
                     $sql = "SELECT nome FROM disciplinas WHERE id = " . $vProp;
                     $res = my_query($sql);
-                    $novo_evento['extendedProps']['disciplina'] = $res[0]['nome'];
+                    if(count($res) > 0) {
+                        $novo_evento['extendedProps']['disciplina'] = $res[0]['nome'];
+                    }
                     break;
 
                 
@@ -1374,8 +1388,24 @@ function tabela_turnos_diretor_turma() {
     return $html;
 }
 
-function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo, turma que tem mais atividades, turmas por ano letivo */
-    global $arrConfig;
+function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo, turma que tem mais atividades, turmas por ano letivo */    
+    global $arrConfig;    
+    if(isset($_SESSION['erro'])) {
+        echo '
+        <script>
+            Swal.fire({
+                title: "Erro",
+                text: "' . $_SESSION['erro'] . '",
+                icon: "error",
+                timer: 7000,
+                
+            })
+        </script>
+        ';
+        unset($_SESSION['erro']);
+    } else {
+        $html = '';
+    }    
     $sql = "SELECT * FROM turma WHERE id_curso = " . $_SESSION['id_curso'];
     $res = my_query($sql);
     $flag_tem_turmas = false;
@@ -1804,7 +1834,8 @@ function painel_direcao_turma() {
     $total_atividades_mes = 0;
     $texto_atividades_mes = '';
     gerar_dados_total_atividades_mes($id_turma, $porcentagem, $total_atividades_mes, $texto_atividades_mes);
-    $atividade_maior_duracao = get_atividade_de_maior_duracao();    
+    $atividade_maior_duracao = get_atividade_de_maior_duracao($id_turma);    
+    
     
     if(count($atividade_maior_duracao) == 0) {
         $texto_atividade_maior_duracao = '0';
@@ -1976,7 +2007,7 @@ function painel_direcao_turma() {
                     },
                     title: {
                         display: true,
-                        text: \'Total de atividades/disciplinas\'
+                        text: \'Total de atividades/disciplinas/mês\'
                     }
                 }
             },
@@ -2097,16 +2128,18 @@ function tabela_disciplinas_instituicao() {
                         Submeter
                     </button>
                 </div>
-                <div id="disciplinas-list" class="mb-4">
-                    <!-- Os itens de e-mail serão inseridos aqui -->
+                <div class="overflow-x-auto">
+                    <div id="disciplinas-list" class="mb-4 h-56">
+                        <!-- Os itens de e-mail serão inseridos aqui -->
                     
+                    </div>
                 </div>
             </form>
         </div>
         
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto max-h-72">
             
-            <table class="table">
+            <table class="table h-56">
                 <!-- head -->
                 <thead>
                 <tr>
@@ -2124,7 +2157,7 @@ function tabela_disciplinas_instituicao() {
                     <tr class="hover">
                         <td>' . $cont . '</td>
                         <td>' . $disciplina['nome'] . '</td>                    
-                        <td><a style="cursor: pointer;" class="fa fa-trash" href="' . $arrConfig['url_modules'] . 'trata_remover_disciplina_instituicao.mod.php?id_disciplina=' . $disciplina['id'] . '"></a></td>
+                        <td><a data-id="' . $disciplina['id'] . '" style="cursor: pointer;" class="fa fa-trash remove-disciplina"></a></td>
                     </tr>
                     ';
                 }
@@ -2134,7 +2167,25 @@ function tabela_disciplinas_instituicao() {
         </div>
     </div>
     <script>
-    
+                
+        $(document).ready(function() {
+            $(\'.remove-disciplina\').click(function(e) {
+                e.preventDefault();
+        
+                var id = $(this).data(\'id\');
+        
+                $.ajax({
+                    url: "' . $arrConfig['url_modules'] . 'trata_remover_disciplina_instituicao.mod.php",
+                    type: \'GET\',
+                    data: { id_disciplina: id },
+                    success: function(result) {
+                        // Atualize a página ou faça algo com o resultado
+                        location.reload();
+                    }
+                });
+            });
+        });
+
         document.addEventListener(\'DOMContentLoaded\', function() {                                                
             let insertedValues = [];
             document.getElementById("disciplinas-input").addEventListener("keypress", function(event) {
@@ -2413,11 +2464,11 @@ function ai_assistente_aluno() {
                     <div class="chat chat-start">
                         <div class="chat-image avatar">
                             <div class="w-10 rounded-full">
-                                <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                                <img alt="Obi-Wan Kenobi" src="' . $arrConfig['url_public'] . '/eve.png' . '" />
                             </div>
                         </div>
                         <div class="chat-header">
-                            CancelA.I.
+                            Educse I.A.
                             <time class="text-xs opacity-50"></time> <!-- hora da mensagem -->
                         </div>
                         <div class="chat-bubble">Olá, como posso ajudar te hoje?</div>
@@ -2557,11 +2608,11 @@ function ai_assistente_aluno() {
             <div class="chat chat-start">
                 <div class="chat-image avatar">
                     <div class="w-10 rounded-full">
-                        <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                        <img alt="Obi-Wan Kenobi" src="' . $arrConfig['url_public'] . '/eve.png' . '" />
                     </div>
                 </div>
                 <div class="chat-header">
-                    CancelA.I.
+                    Educse I.A.
                     <time class="text-xs opacity-50">Carregando</time> <!-- hora da mensagem -->
                 </div>
                 <div class="chat-bubble"><span class="loading loading-dots loading-sm"></span></div>
@@ -2642,11 +2693,11 @@ function ai_assistente_aluno() {
                     <div class="chat chat-start">
                     <div class="chat-image avatar">
                         <div class="w-10 rounded-full">
-                            <img alt="Obi-Wan Kenobi" src="https://www.zerozero.pt/img/jogadores/07/1050807__20230929170827_daniel_cancela.png" />
+                            <img alt="Obi-Wan Kenobi" src="' . $arrConfig['url_public'] . '/eve.png' . '" />
                         </div>
                     </div>
                     <div class="chat-header">
-                        CancelA.I.
+                        Educse I.A.
                         <time class="text-xs opacity-50">${tempo_resposta}</time> <!-- hora da mensagem -->
                     </div>
                         <div class="chat-bubble">${resposta}</div>

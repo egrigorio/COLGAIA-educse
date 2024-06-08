@@ -124,6 +124,7 @@ if(isset($_POST['outro']) && $_POST['outro']){
             $result = $client->chat()->create([
                 'model' => 'gpt-3.5-turbo-0125',
                 /* 'model' => 'gpt-4o', */
+                /* 'max_tokens' => 1, */
                 'messages' => [
                     ['role' => 'system',
                     'content' => $system_prompt],                    

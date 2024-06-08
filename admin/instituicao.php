@@ -33,6 +33,7 @@ $arrResultado = my_query($sql);
 $_SESSION['id_instituicao'] = $arrResultado[0]['id'];
 
 
+
 instituicao($arrResultado);
 
 ?>    
