@@ -2257,6 +2257,20 @@ function tabela_disciplinas_instituicao() {
 
     </script>
     ';
+    if(isset($_SESSION['msg_erro'])) {
+        $html .= '
+        <script>
+            Swal.fire({
+                title: "Erro",
+                text: "' . $_SESSION['msg_erro'] . '",
+                icon: "error",
+                timer: 2000,
+                
+            })
+        </script>
+        ';
+        unset($_SESSION['msg_erro']);
+    }
     return $html;
 }
 
@@ -2377,7 +2391,7 @@ function tabela_cursos_instituicao() {
                         <div class="label">
                             <span class="label-text">Diretor de curso</span>
                         </div>
-                        <input name="diretor_curso" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['email'] : '') . '"/>
+                        <input name="diretor_curso" required type="email" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" value="' . ($editar ? $res_editar['email'] : '') . '"/>
                     </label>
                 </div>                                                                                    
                 <label class="form-control mt-auto w-full">        
@@ -2403,6 +2417,9 @@ function tabela_cursos_instituicao() {
         </form>
     
     <div class="divider lg:divider-horizontal"></div>
+            '; 
+            if(count($res) > 0) {
+               $html .= '
             <form method="POST" action="' . $arrConfig['url_modules'] . 'trata_editar_turno_user.mod.php' . '">
                 <input type="hidden" name="id_instituicao" value="' . $_SESSION['id_instituicao'] . '">
             
@@ -2444,6 +2461,14 @@ function tabela_cursos_instituicao() {
         </div>
     </div>
     ';
+            } else {
+                $html .= '
+                <div class="flex justify-center">
+                    <span class="text-center text-gray-500">Ainda não há cursos associados a esta instituição.</span>
+                </div>
+                ';
+            }
+            
     return $html;
 }
 

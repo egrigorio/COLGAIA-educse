@@ -33,3 +33,18 @@ include '../../header.php';
     
 </body>
 </html>
+
+<?php
+if(isset($_SESSION['erro'])){    
+    echo '
+    <script>
+        Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: "' . $_SESSION['erro'] . '"
+        });
+    </script>
+    ';
+    unset($_SESSION['erro']);
+}
+?>

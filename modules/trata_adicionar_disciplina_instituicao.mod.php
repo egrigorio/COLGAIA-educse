@@ -3,6 +3,13 @@ pr($_POST);
 
 $disciplinas = $_POST['disciplinas'];
 
+if($_POST['disciplinas'] == '') {
+    $_SESSION['msg_erro'] = 'Adicione a disciplina antes de submeter.';
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    exit();
+}
+
+
 foreach($disciplinas as $disciplina) {
     // gerar abreviaturas, faz assim, se tiver espaço, então a abreviatura é as primeiras letras de cada palavra, se não, então é as duas primeiras letras 
 

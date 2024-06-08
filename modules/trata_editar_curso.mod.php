@@ -14,10 +14,27 @@ if(count($res) > 0) {
         exit();
     }
 }
+
+foreach($_POST as $key => $value) {
+    if(trim($value) == '') {
+        $_SESSION['msg_erro'] = 'Preencha todos os campos';
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit();
+    }
+}
+
 switch ($tipo) {
     case 'editar':
         $sql = "SELECT * FROM curso WHERE id = {$_POST['id_curso']}";
         $res1 = my_query($sql);
+        if($res1['ativo'] == 0) {
+            $sql = "SELECT * FROM conf_convite WHERE id_curso = {$_POST['id_curso']}";
+            $res = my_query($sql);
+            if(count($res) > 0) {
+                $sql = "DELETE FROM conf_convite WHERE id = {$res[0]['id']}";
+                my_query($sql);
+            }
+        }
         pr($_POST);
         $sql = "SELECT id FROM users WHERE users.email = '{$_POST['diretor_curso']}'";        
         $res_dc = my_query($sql);
@@ -43,35 +60,32 @@ switch ($tipo) {
             $id_inserido = my_query($sql);
             $url = $arrConfig['url_modules'] . 'trata_convite_user_plataforma_curso.mod.php?convite=' . $id_inserido;
             enviar_convite_plataforma($_POST['diretor_curso'], $url, 'Diretor de Curso', $_POST['nome_curso']);
-        }        
-        if($res_dc[0]['id'] == $res1[0]['id_diretor_curso']) {
-            
+        } else if($res_dc[0]['id'] == $res1[0]['id_diretor_curso']) {                
             $sql = "UPDATE curso SET nome_curso = '{$_POST['nome_curso']}', abreviatura = '{$_POST['abreviatura']}', duracao = {$_POST['duracao']} WHERE id = {$_POST['id_curso']}";
             my_query($sql);
             header('Location: ' . $arrConfig['url_admin'] . 'instituicao.php?tab=cursos');
             exit;
-        } else {            
-            // tá na plataforma mas não é o atual diretor de curso
-            $sql = "UPDATE curso SET ativo = 0 WHERE id = {$_POST['id_curso']}";
-            my_query($sql);
-            $sql = "SELECT * FROM turma WHERE id_diretor_turma = {$res1[0]['id_diretor_curso']}";
-            $res = my_query($sql);
-            if(count($res) > 0) {
-                $sql = "UPDATE turma SET id_diretor_turma = -1 WHERE id = {$res[0]['id']}";
+            } else {            
+                // tá na plataforma mas não é o atual diretor de curso
+                $sql = "UPDATE curso SET ativo = 0 WHERE id = {$_POST['id_curso']}";
                 my_query($sql);
-            }
-            $sql = "SELECT * FROM rel_turma_user WHERE id_user = {$res1[0]['id_diretor_curso']}";
-            $res = my_query($sql);
-            if(count($res) > 0) {
-                $sql = "DELETE FROM rel_turma_user WHERE id = {$res[0]['id']}";
-                my_query($sql);
-            }
-            $sql = "INSERT INTO conf_convite (email, id_curso, cargo) VALUES ('{$_POST['diretor_curso']}', {$_POST['id_curso']}, 'Diretor de Curso')";
-            $id_inserido = my_query($sql);
-            $url = $arrConfig['url_modules'] . 'trata_convite_user_curso.mod.php?convite=' . $id_inserido;
-            enviar_convite_curso($_POST['diretor_curso'], $url, 'Diretor de Curso', $_POST['nome_curso']);
-
-        }
+                $sql = "SELECT * FROM turma WHERE id_diretor_turma = {$res1[0]['id_diretor_curso']}";
+                $res = my_query($sql);
+                if(count($res) > 0) {
+                    $sql = "UPDATE turma SET id_diretor_turma = -1 WHERE id = {$res[0]['id']}";
+                    my_query($sql);
+                }
+                $sql = "SELECT * FROM rel_turma_user WHERE id_user = {$res1[0]['id_diretor_curso']}";
+                $res = my_query($sql);
+                if(count($res) > 0) {
+                    $sql = "DELETE FROM rel_turma_user WHERE id = {$res[0]['id']}";
+                    my_query($sql);
+                }
+                $sql = "INSERT INTO conf_convite (email, id_curso, cargo) VALUES ('{$_POST['diretor_curso']}', {$_POST['id_curso']}, 'Diretor de Curso')";
+                $id_inserido = my_query($sql);
+                $url = $arrConfig['url_modules'] . 'trata_convite_user_curso.mod.php?convite=' . $id_inserido;
+                enviar_convite_curso($_POST['diretor_curso'], $url, 'Diretor de Curso', $_POST['nome_curso']);
+            }     
         
         break;
     case 'criar':
