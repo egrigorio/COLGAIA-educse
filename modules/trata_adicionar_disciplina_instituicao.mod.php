@@ -2,10 +2,13 @@
 pr($_POST);
 
 $disciplinas = $_POST['disciplinas'];
+$redirect = $_SERVER['HTTP_REFERER'];
+$redirect = explode('?', $redirect);
+$redirect = $redirect[0];
 
 if($_POST['disciplinas'] == '') {
     $_SESSION['msg_erro'] = 'Adicione a disciplina antes de submeter.';
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    header('Location: ' . $redirect . '?tab=disciplinas');
     exit();
 }
 
@@ -51,8 +54,8 @@ foreach($disciplinas as $disciplina) {
     }
 }
 
-$redirect = $_SERVER['HTTP_REFERER'];
-$redirect = explode('?', $redirect);
-$redirect = $redirect[0];
+
+/* echo $redirect;
+die; */
 header('Location: ' . $redirect . '?tab=disciplinas');
 

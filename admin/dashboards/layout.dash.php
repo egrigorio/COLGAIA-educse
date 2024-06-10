@@ -754,14 +754,14 @@ function esforco_direcao_turma() {
         <td>
             <label class="form-control w-full max-w-xs">                        
                 <div class="tooltip" data-tip="Esforço limite máximo, em horas, da turma">
-                    <input type="number" placeholder="0" name="limite" value="' . $res['limite'] . '" class="input w-14 max-w-xs" />
+                    <input type="number" required placeholder="0" name="limite" value="' . $res['limite'] . '" class="input w-14 max-w-xs" />
                 </div>
             </label>
         </td>
         <td>
             <div class="tooltip" data-tip="Valor inferior ao limite, para servir de alerta a criação de atividades">
                 <label class="form-control w-full max-w-xs">
-                    <input type="number" placeholder="0" name="barreira" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" />
+                    <input type="number" required placeholder="0" name="barreira" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" />
                 </label>
             </div>
         </td>
@@ -882,231 +882,242 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
         ';
         unset($_SESSION['erro']);
     } 
-
-    $html .= '
-    ' . ($valores_ja_inseridos ? '<h1 class="text-center text-xl font-bold">Editando evento</h1>' : '') . '
-    <div class="flex flex-row max-w-full">
-        <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_' . ($valores_ja_inseridos ? 'editar' : 'criar') . '_atividade_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">
-            <div class="flex flex-col gap-6 ml-8">
-                ' . ($valores_ja_inseridos ? '<input type="hidden" name="id_evento" value=' . $valores_ja_inseridos['id_evento'] . '>' : '') . '
-                <div class="flex flex-row gap-8">
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Nome da atividade*</span>
-                        </div>
-                        <input name="titulo" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value="' . $valores_ja_inseridos['titulo'] : '') . '" />
-                    </label>
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Breve descrição*</span>
-                        </div>
-                        <input type="text" required name="descricao" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value="' . $valores_ja_inseridos['descricao'] : '') . '" />
-                    </label>
-                </div>
-                <div class="flex flex-row gap-8">
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Data de inicio*</span>
-                        </div>
-                        <input type="date" required name="comeco" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['comeco'] : '') . ' />
-                    </label>
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Data de conclusão*</span>
-                        </div>
-                        <input type="date" required name="fim" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['fim'] : "") . ' />
-                    </label>
-                </div>
-                <div class="flex flex-row gap-8">
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Tipo da atividade</span>
-                        </div>
-                        <input type="text" required name="tipo" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value="' . $valores_ja_inseridos['tipo'] : "") . '" />
-                    </label>
-                    
-                        <label class="form-control w-full max-w-xs">
-                            
-                            <div class="label">
-                                <span class="label-text">Disciplina*</span>                            
-                            </div>
-                            
-                            <select name="disciplina" class="select select-bordered" required>                            
-                            ';
-
     $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $id_curso);
-    /* pr($arr_disciplinas); */
-    foreach($arr_disciplinas as $disciplina) {
-        $sql = "SELECT * FROM disciplinas 
-        INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
-        WHERE disciplinas.id = " . $disciplina['id_disciplina'] . " AND rel_disciplina_turma.id_turma = " . $id_turma . " AND disciplinas.ativo = 1";
-                     
-        $res = my_query($sql);        
-        if(count($res) > 0) {                    
-        $html .= '<option value="' . $res[0]['id_disciplina'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
-        }
-    }            
-    $turno = isset($_GET['turno']) ? $_GET['turno'] : -1;
-    $html .= '                                                        
-                            </select>
-                        </label>
-                    
-                </div>
-                <input type="hidden" name="id_turma" value="' . $id_turma . '">
-                <input type="hidden" name="id_professor" value="' . $_SESSION['id'] . '">
-                <div class="flex flex-row gap-8">
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Tempo sugerido em horas*</span>
-                        </div>
-                        <input type="number" required name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['tempo_sugerido'] : '') . ' />
-                    </label>
-                    <label class="form-control w-full max-w-xs">
-                <div class="label">
-                    <span class="label-text">Filtre pelo turno</span>                    
-                </div>             
-                <select name="turno" onchange="trata_onchange_select_turno_criar_atv()" class="select select-bordered mb-5" id="select_turno_criar_atv">                    
-                    <option value="-1" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == -1 ? 'selected' : '') : '') . '>Turma toda</option>
-                    ';                    
-                    $sql = "SELECT DISTINCT num_turno, id_turno FROM view_user_turma_turno WHERE id_turma = $id_turma AND num_turno <> 0";
-    $res = my_query($sql);
-    
-    
-    foreach($res as $turno) {
-                 $html .= '<option value="' . $turno['id_turno'] . '" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == $turno['id_turno'] ? 'selected' : '') : '') . '>Turno ' . $turno['num_turno'] . '</option>';
-    }            
-    $html .= '                
-                </select>
-            </label>
-                    </div>
-                    <label class="form-control mt-auto w-full">        
-                        <button class="btn w-full">' . ($valores_ja_inseridos ? 'Editar' : 'Criar') . '</button>
-                    </label>
-        
+    if(!$arr_disciplinas) {
+        $html .= '
+            <div class="flex min-h-24">
+                <span class="text-center">Você não tem disciplinas associadas a essa turma para poder criar atividades.</span>
             </div>
-        
-        </form>
-        <div class="divider lg:divider-horizontal"></div>
-        <div id="render-calendar-here" class="max-w-full flex-grow ">
-            <div id="ec' . $rand . '"></div>
-        '; 
-        
+        ';
+        return $html;
+    } else {
+        $html .= '
+            ' . ($valores_ja_inseridos ? '<h1 class="text-center text-xl font-bold">Editando evento</h1>' : '') . '
+            <div class="flex flex-row max-w-full">
+                <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_' . ($valores_ja_inseridos ? 'editar' : 'criar') . '_atividade_turma.mod.php?id_turma=' . $id_turma . '" class="overflow-x-auto">
+                    <div class="flex flex-col gap-6 ml-8">
+                        ' . ($valores_ja_inseridos ? '<input type="hidden" name="id_evento" value=' . $valores_ja_inseridos['id_evento'] . '>' : '') . '
+                        <div class="flex flex-row gap-8">
+                            <label class="form-control w-full max-w-xs">
+                                <div class="label">
+                                    <span class="label-text">Nome da atividade*</span>
+                                </div>
+                                <input name="titulo" required type="text" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value="' . $valores_ja_inseridos['titulo'] : '') . '" />
+                            </label>
+                            <label class="form-control w-full max-w-xs">
+                                <div class="label">
+                                    <span class="label-text">Breve descrição*</span>
+                                </div>
+                                <input type="text" required name="descricao" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value="' . $valores_ja_inseridos['descricao'] : '') . '" />
+                            </label>
+                        </div>
+                        <div class="flex flex-row gap-8">
+                            <label class="form-control w-full max-w-xs">
+                                <div class="label">
+                                    <span class="label-text">Data de inicio*</span>
+                                </div>
+                                <input type="date" required name="comeco" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['comeco'] : '') . ' />
+                            </label>
+                            <label class="form-control w-full max-w-xs">
+                                <div class="label">
+                                    <span class="label-text">Data de conclusão*</span>
+                                </div>
+                                <input type="date" required name="fim" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['fim'] : "") . ' />
+                            </label>
+                        </div>
+                        <div class="flex flex-row gap-8">
+                            <label class="form-control w-full max-w-xs">
+                                <div class="label">
+                                    <span class="label-text">Tipo da atividade</span>
+                                </div>
+                                <input type="text" required name="tipo" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value="' . $valores_ja_inseridos['tipo'] : "") . '" />
+                            </label>
+                            
+                                <label class="form-control w-full max-w-xs">
+                                    
+                                    <div class="label">
+                                        <span class="label-text">Disciplina*</span>                            
+                                    </div>
+                                    
+                                    <select name="disciplina" class="select select-bordered" required>                            
+                                    ';
+
             
-            $html .= '
-        </div>
-    </div>
-    <script>
-        function gerar_calendario(eventos' . $rand . ' = null) {
-            /* eventos' . $rand . '.forEach(function(evento) {
-                if(evento.backgroundColor == \'#1E3A8A\') {
-                    evento.backgroundColor = \'red\';                                        
+            /* pr($arr_disciplinas); */
+            foreach($arr_disciplinas as $disciplina) {
+                $sql = "SELECT * FROM disciplinas 
+                INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
+                WHERE disciplinas.id = " . $disciplina['id_disciplina'] . " AND rel_disciplina_turma.id_turma = " . $id_turma . " AND disciplinas.ativo = 1";
+                            
+                $res = my_query($sql);        
+                if(count($res) > 0) {                    
+                $html .= '<option value="' . $res[0]['id_disciplina'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
                 }
-            }); */
-            var calendarElement = document.getElementById(\'ec' . $rand . '\');                        
-            if (calendarElement) {
-                calendarElement.innerHTML = "";
             }            
-            let ec' . $rand . ' = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), {
-                view: \'dayGridMonth\',
-                allDaySlot: false,
-                eventStartEditable: false,
-                eventClassNames: function(eventInfo) {
-                    console.log(eventInfo.event.extendedProps.esforco);
-                    
-                    switch(Number(eventInfo.event.extendedProps.esforco)) {
-                        case 1:
-                            console.log(\'aqui 1\')
-                            return [\'bg-red-400\'];
-                            break;
-                        case 2:
-                            console.log(\'aqui 2\')
-                            return [\'bg-yellow-200\'];
-                            break;
-                        case 3:
-                            console.log(\'aqui 3\')
-                            return [\'bg-green-400\'];
-                            break;                                             
-                    }
-                    
-                    
-
-                },
-                views: {
-                    listMonth: {                    
-                        eventContent: function (arg) {
-                        let arrayOfDomNodes = [];
-                        let title = document.createElement("t");
-                        title.innerHTML =
-                            arg.event.title +
-                            " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
-                            "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
-                            arg.event.extendedProps.disciplina +
-                            " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
-        
-                        arrayOfDomNodes.push(title);
-                        return { domNodes: arrayOfDomNodes };
-                        },
-                    },
-                    dayGridMonth: {
-                        eventContent: function (arg) {
-                        let arrayOfDomNodes = [];
-                        let title = document.createElement("t");
-                        title.innerHTML = arg.event.title;
-        
-                        arrayOfDomNodes.push(title);
-                        return { domNodes: arrayOfDomNodes };
-                        },
-                    },
-                },
-
+            $turno = isset($_GET['turno']) ? $_GET['turno'] : -1;
+            $html .= '                                                        
+                                    </select>
+                                </label>
+                            
+                        </div>
+                        <input type="hidden" name="id_turma" value="' . $id_turma . '">
+                        <input type="hidden" name="id_professor" value="' . $_SESSION['id'] . '">
+                        <div class="flex flex-row gap-8">
+                            <label class="form-control w-full max-w-xs">
+                                <div class="label">
+                                    <span class="label-text">Tempo sugerido em horas*</span>
+                                </div>
+                                <input type="number" required name="tempo_sugerido" placeholder="Escreva aqui." class="input input-bordered w-full max-w-xs" ' . ($valores_ja_inseridos ? 'value=' . $valores_ja_inseridos['tempo_sugerido'] : '') . ' />
+                            </label>
+                            <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Filtre pelo turno</span>                    
+                        </div>             
+                        <select name="turno" onchange="trata_onchange_select_turno_criar_atv()" class="select select-bordered mb-5" id="select_turno_criar_atv">                    
+                            <option value="-1" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == -1 ? 'selected' : '') : '') . '>Turma toda</option>
+                            ';                    
+                            $sql = "SELECT DISTINCT num_turno, id_turno FROM view_user_turma_turno WHERE id_turma = $id_turma AND num_turno <> 0";
+            $res = my_query($sql);
+            
+            
+            foreach($res as $turno) {
+                        $html .= '<option value="' . $turno['id_turno'] . '" ' . ($valores_ja_inseridos ? ($valores_ja_inseridos['id_turno'] == $turno['id_turno'] ? 'selected' : '') : '') . '>Turno ' . $turno['num_turno'] . '</option>';
+            }            
+            $html .= '                
+                        </select>
+                    </label>
+                            </div>
+                            <label class="form-control mt-auto w-full">        
+                                <button class="btn w-full">' . ($valores_ja_inseridos ? 'Editar' : 'Criar') . '</button>
+                            </label>
                 
-                events: eventos' . $rand . ',
-        });    
-       
-        console.log(eventos' . $rand . ');
-        }
-        function clique_editar_evento(id_atv) {
-            let url = window.location.href;
-            if (url.indexOf(\'?\') > -1){
-            url += \'&id_atividade=\' + id_atv;
-            
-
-            } else {
-            url += \'?id_atividade=\' + id_atv;
-            }
-            document.getElementById(\'my_modal_5\').dataset.idAtv = id_atv;
-            my_modal_5.showModal();
-            
-        }
-
-        function setCalendarEvents(turno) {
-            var xhr = new XMLHttpRequest();
-            var url = "' . $arrConfig['url_admin'] . 'dashboards/call_func_calendar.php?turno=" + turno + "&id_turma=' . $id_turma . '";
-            var params = "id_turno=" + turno;            
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");            
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
+                    </div>
+                
+                </form>
+                <div class="divider lg:divider-horizontal"></div>
+                <div id="render-calendar-here" class="max-w-full flex-grow ">
+                    <div id="ec' . $rand . '"></div>
+                '; 
+                
                     
-                    var eventos = JSON.parse(xhr.responseText);
-                    gerar_calendario(eventos);
-                }
-            };
-            
-            xhr.send(params);
-        }
+                    $html .= '
+                </div>
+            </div>
+            <script>
+                function gerar_calendario(eventos' . $rand . ' = null) {
+                    /* eventos' . $rand . '.forEach(function(evento) {
+                        if(evento.backgroundColor == \'#1E3A8A\') {
+                            evento.backgroundColor = \'red\';                                        
+                        }
+                    }); */
+                    var calendarElement = document.getElementById(\'ec' . $rand . '\');                        
+                    if (calendarElement) {
+                        calendarElement.innerHTML = "";
+                    }            
+                    let ec' . $rand . ' = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), {
+                        view: \'dayGridMonth\',
+                        allDaySlot: false,
+                        eventStartEditable: false,
+                        eventClassNames: function(eventInfo) {
+                            console.log(eventInfo.event.extendedProps.esforco);
+                            
+                            switch(Number(eventInfo.event.extendedProps.esforco)) {
+                                case 1:
+                                    console.log(\'aqui 1\')
+                                    return [\'bg-red-400\'];
+                                    break;
+                                case 2:
+                                    console.log(\'aqui 2\')
+                                    return [\'bg-yellow-200\'];
+                                    break;
+                                case 3:
+                                    console.log(\'aqui 3\')
+                                    return [\'bg-green-400\'];
+                                    break;                                             
+                            }
+                            
+                            
 
-        function trata_onchange_select_turno_criar_atv() {
+                        },
+                        views: {
+                            listMonth: {                    
+                                eventContent: function (arg) {
+                                let arrayOfDomNodes = [];
+                                let title = document.createElement("t");
+                                title.innerHTML =
+                                    arg.event.title +
+                                    " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
+                                    "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
+                                    arg.event.extendedProps.disciplina +
+                                    " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
+                
+                                arrayOfDomNodes.push(title);
+                                return { domNodes: arrayOfDomNodes };
+                                },
+                            },
+                            dayGridMonth: {
+                                eventContent: function (arg) {
+                                let arrayOfDomNodes = [];
+                                let title = document.createElement("t");
+                                title.innerHTML = arg.event.title;
+                
+                                arrayOfDomNodes.push(title);
+                                return { domNodes: arrayOfDomNodes };
+                                },
+                            },
+                        },
+
+                        
+                        events: eventos' . $rand . ',
+                });    
             
-            var turno = document.getElementById("select_turno_criar_atv").value;
-            
-            setCalendarEvents(turno);
-        }
-        var event = new Event(\'change\');
-        var select = document.getElementById(\'select_turno_criar_atv\');
-        select.dispatchEvent(event);
-    </script> 
-    ';
+                console.log(eventos' . $rand . ');
+                }
+                function clique_editar_evento(id_atv) {
+                    let url = window.location.href;
+                    if (url.indexOf(\'?\') > -1){
+                    url += \'&id_atividade=\' + id_atv;
+                    
+
+                    } else {
+                    url += \'?id_atividade=\' + id_atv;
+                    }
+                    document.getElementById(\'my_modal_5\').dataset.idAtv = id_atv;
+                    my_modal_5.showModal();
+                    
+                }
+
+                function setCalendarEvents(turno) {
+                    var xhr = new XMLHttpRequest();
+                    var url = "' . $arrConfig['url_admin'] . 'dashboards/call_func_calendar.php?turno=" + turno + "&id_turma=' . $id_turma . '";
+                    var params = "id_turno=" + turno;            
+                    xhr.open("POST", url, true);
+                    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");            
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            
+                            var eventos = JSON.parse(xhr.responseText);
+                            gerar_calendario(eventos);
+                        }
+                    };
+                    
+                    xhr.send(params);
+                }
+
+                function trata_onchange_select_turno_criar_atv() {
+                    
+                    var turno = document.getElementById("select_turno_criar_atv").value;
+                    
+                    setCalendarEvents(turno);
+                }
+                var event = new Event(\'change\');
+                var select = document.getElementById(\'select_turno_criar_atv\');
+                select.dispatchEvent(event);
+            </script> 
+            ';
+    }
+
+    
 
     return $html;
 }
@@ -1334,7 +1345,7 @@ function tabela_turnos_diretor_turma() {
                         </div>
                         <div class="flex">
                             <input name="id_turma" type="hidden" value="' . $id_turma . '">
-                            <input name="novo_turno" type="number" min=' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . ' max="' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . '" placeholder="Número do novo turno" class="input input-bordered w-full max-w-xs" />
+                            <input name="novo_turno" required type="number" min=' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . ' max="' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . '" placeholder="Número do novo turno" class="input input-bordered w-full max-w-xs" />
                             <button class="btn btn-ghost">Adicionar</button>
                         </div>
                     </label>
@@ -2169,20 +2180,34 @@ function tabela_disciplinas_instituicao() {
     <script>
                 
         $(document).ready(function() {
+            
             $(\'.remove-disciplina\').click(function(e) {
                 e.preventDefault();
-        
-                var id = $(this).data(\'id\');
-        
-                $.ajax({
-                    url: "' . $arrConfig['url_modules'] . 'trata_remover_disciplina_instituicao.mod.php",
-                    type: \'GET\',
-                    data: { id_disciplina: id },
-                    success: function(result) {
-                        // Atualize a página ou faça algo com o resultado
-                        location.reload();
+                Swal.fire({
+                    title: "Tem a certeza?",
+                    text: "Esta ação é irreversível",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Sim, remover",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {                                
+                        var id = $(this).data(\'id\');        
+                        $.ajax({
+                            url: "' . $arrConfig['url_modules'] . 'trata_remover_disciplina_instituicao.mod.php",
+                            type: \'GET\',
+                            data: { id_disciplina: id },
+                            success: function(result) {
+                                console.log(result);
+                                // Atualize a página ou faça algo com o resultado
+                                /* location.reload(); */
+                            }
+                        });
                     }
                 });
+                        
             });
         });
 
@@ -2333,14 +2358,10 @@ function tabela_cursos_instituicao() {
     $res = my_query($sql);
     $cont = 0;
     
-    if($editar) {
-        
-        $sql = "SELECT * FROM curso WHERE id = " . $_GET['id_curso'];
-        
+    if($editar) {        
+        $sql = "SELECT * FROM curso WHERE id = " . $_GET['id_curso'];        
         $res_editar = my_query($sql);
-        $res_editar = array_shift($res_editar);
-        
-
+        $res_editar = array_shift($res_editar);        
         if(isset($res_editar)) {
             if($res_editar['id_diretor_curso'] != -1) {
                 
@@ -2351,8 +2372,7 @@ function tabela_cursos_instituicao() {
                 $res_editar['email'] = '';
             }
         } else {
-            $editar = false;
-        
+            $editar = false;        
         }
     }
     
@@ -2361,7 +2381,7 @@ function tabela_cursos_instituicao() {
     <div class="overflow-x-auto">
         
         <div class="flex flex-row">
-        <form method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_editar_curso.mod.php' . ($editar ? '?tipo=editar' : '?tipo=criar' ) . '" class="overflow-x-auto">
+        <form id="form_criar_editar_curso" method="post" class="w-4/12" action="' . $arrConfig['url_modules'] . 'trata_editar_curso.mod.php' . ($editar ? '?tipo=editar' : '?tipo=criar' ) . '" class="overflow-x-auto">
         
             <div class="flex flex-col gap-6 ml-8">
             <h1 class="text-xl text-center font-bold">Criar curso</h1>
@@ -2395,7 +2415,7 @@ function tabela_cursos_instituicao() {
                     </label>
                 </div>                                                                                    
                 <label class="form-control mt-auto w-full">        
-                    <button class="btn w-full">' . ($editar ? 'Editar' : 'Criar') . '</button>
+                    <button id="submeter_form_curso" class="btn w-full">' . ($editar ? 'Editar' : 'Criar') . '</button>
                 </label>
                 
                 ';                
@@ -2415,6 +2435,12 @@ function tabela_cursos_instituicao() {
                 
             </div>
         </form>
+        <script>
+            form = document.getElementById("form_criar_editar_curso");
+            form.addEventListener("submit", function(e) {
+                document.getElementById(\'loading-overlay\').classList.remove(\'hidden\');
+            });
+        </script>
     
     <div class="divider lg:divider-horizontal"></div>
             '; 
@@ -2450,7 +2476,21 @@ function tabela_cursos_instituicao() {
                             <td>' . $v['duracao'] . '</td>
                             <td>' . ($v['ativo'] == 1 ? 'Ativo' : 'Pendente') . '</td>
                             <td><a class="fa fa-edit" href="' . $arrConfig['url_admin'] . 'instituicao.php?editar=true&id_curso=' . $v['id_curso'] . '"></a></td>
-                            <td><a class="fa fa-trash" href="' . $arrConfig['url_modules'] . 'trata_remover_curso_instituicao.mod.php?id_curso=' . $v['id_curso'] . '"></a></td>
+                            <td><a style="cursor:pointer;" class="fa fa-trash" onClick="Swal.fire({
+                                title: \'Tem certeza?\',
+                                text: \'Você não poderá reverter isso!\',
+                                icon: \'warning\',
+                                showCancelButton: true,
+                                confirmButtonColor: \'#3085d6\',
+                                cancelButtonColor: \'#d33\',
+                                confirmButtonText: \'Sim, remover!\',
+                                cancelButtonText: \'Cancelar\'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = \'' . $arrConfig['url_modules'] . 'trata_remover_curso_instituicao.mod.php?id_curso=' . $v['id_curso'] . '\';
+                                }
+                            })"></a></td>
+                            
                         </tr>
                         ';
                     }
@@ -2530,8 +2570,20 @@ function ai_assistente_aluno() {
     
     
     let options = {
-        view: \'timeGridWeek\',        
+        view: \'timeGridWeek\',
+        
+        
         customButtons: {
+            vista: {
+                text: \'Vista\',
+                click: function() {
+                    if (ec.view.type === \'timeGridWeek\') {
+                        ec.changeView(\'timeGridDay\');
+                    } else {
+                        ec.changeView(\'timeGridWeek\');
+                    }
+                }
+            },
             removerEventos: {
                 text: \'Remover eventos\',
                 click: function(info) {
@@ -2574,7 +2626,16 @@ function ai_assistente_aluno() {
         },
         allDaySlot: false,
         
-        headerToolbar: {start: \'removerEventos\', center: \'\', end: \'today, prev next\'}
+        headerToolbar: {start: \'removerEventos\', center: \'\', end: \'listWeek timeGridWeek today, prev next\'},
+        buttonText: {
+            today: \'Hoje\',
+            month: \'Mês\',
+            week: \'Semana\',
+            day: \'Dia\',
+            list: \'Lista\',
+            listWeek: \'Lista\',
+            timeGridWeek: \'Semana\',
+        },
     }
     
 

@@ -186,11 +186,20 @@ function gerar_calendario($eventos, $view, $rand) {
         let ec' . $rand . ' = new EventCalendar(document.getElementById(\'ec' . $rand . '\'), {
             view: \'' . $view . '\',
             allDaySlot: false,
-            eventStartEditable: false,            
+            eventStartEditable: false,    
+            noEventsContent: "Nenhuma atividade criada para mostrar",
+            buttonText: {
+                today: "Hoje",
+                month: "Mês",
+                week: "Semana",
+                day: "Dia",
+                list: "Lista"
+            },
+
             views: {
                 listMonth: {                    
                     eventContent: function (arg) {
-                        
+                    
                     let arrayOfDomNodes = [];
                     let title = document.createElement("t");
                     title.innerHTML =

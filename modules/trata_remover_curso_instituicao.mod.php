@@ -37,5 +37,8 @@ if(count($arrTurmas) > 0) {
         my_query($sql);     
     }
 }
+$redirect = $_SERVER['HTTP_REFERER'];
+$redirect = explode('?', $redirect);
+$redirect = $redirect[0];
 
-header('Location: ' . $_SERVER['HTTP_REFERER']);
+header('Location: ' . $redirect . '?tab=cursos');

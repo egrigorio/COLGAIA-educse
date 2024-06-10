@@ -10,6 +10,10 @@ $sql = "SELECT rel_disciplina_curso.id_disciplina, disciplinas.*
     WHERE rel_disciplina_curso.id_curso = " . $_SESSION['id_curso'] . " AND rel_instituicao_disciplinas.id_instituicao = $id_instituicao";
 $res = my_query($sql);
 
+if(count($res) == 0) {
+    echo '<tr><td colspan="5">Nenhuma disciplina cadastrada</td></tr>';
+    exit;
+}
 
 switch ($valor) {
     
@@ -37,7 +41,7 @@ switch ($valor) {
         }
                         
         $html .= '
-                        <th>Ativo</th>
+                        
                         <th>Opções</th>
                     </tr>
                 </thead>
@@ -80,7 +84,7 @@ foreach ($res as $disciplina) {
                         }
 
                         $html .= '
-                        <td>' . ($disciplina['ativo'] ? 'Sim' : 'Não') . '</td>
+                        
                         <td>                            
                         <a onClick="
                                 
@@ -122,9 +126,7 @@ $html .= '
                 
                 <th> </th>
                 <th>ID</th>
-                <th>Nome</th>                
-                
-                <th>Ativo</th>
+                <th>Nome</th>                                
                 <th>Opções</th>
             </tr>
                 </tfoot>

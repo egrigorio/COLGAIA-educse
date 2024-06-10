@@ -13,6 +13,15 @@ $res = my_query($sql);
 /* echo $sql;
 pr($res);
 die; */
+$redirect = $_SERVER['HTTP_REFERER'];
+$redirect = explode('?', $redirect);
+$redirect = $redirect[0];
+$flag_tem_turno = true;
+$sql = "SELECT * FROM view_turno_turma WHERE id_turma = $id_turma";
+$res_turno = my_query($sql);
+if(count($res_turno) == 0) {    
+    $flag_tem_turno = false;
+}
 
 
 $html = '
@@ -24,7 +33,21 @@ $html = '
                         <th>Nome</th>
                         <th>Turma</th>
                         <th>Turno</th>
-                        <th>Opções</th>
+                        ';
+                        if(isset($_GET['editar'])) {
+                            if($flag_tem_turno) {
+                                $html .= '
+                                <th>Opções</th>
+                                ';
+                            }
+                        } else {
+                            if($flag_tem_turno) {
+                                $html .= '
+                                <th>Opções</th>
+                                ';
+                            }
+                        }
+                        $html .= '
                     </tr>
                 </thead>
                 <!-- head -->
@@ -110,25 +133,24 @@ foreach ($res as $aluno) {
                                 ';
                             }
                             if(isset($_GET['editar'])) {
-                                $html .= '
-                                <td>
-                                    <input type="submit" class="btn btn-ghost btn-xs" value="Confirmar">
+                                if($flag_tem_turno) {
+                                    $html .= '
+                                    <td>
+                                        <input type="submit" class="btn btn-ghost btn-xs" value="Confirmar">                                        
+                                    </td>
                                     
-                                </td>
-                                
-                                ';
+                                    ';
+                                }
                             } else {
-                                $html .= '
-                            
+                                if($flag_tem_turno) {
+                                    $html .= '                            
                                         <td>
                                             <a href="?id_turma=' . $_GET['id_turma'] . '&editar=true&tab=alunos " class="btn btn-ghost btn-xs">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                        </td>
-                            
+                                        </td>                            
                             ';
-                            
-                            
+                                }                            
                             }
         }
     } else {
