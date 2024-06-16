@@ -44,8 +44,8 @@ if($_POST['tipo'] == "1") {
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     } else {
-        
-        echo "Token inválido";
+        $_SESSION['erro'] = "Token inválido";
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 
 

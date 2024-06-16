@@ -2,6 +2,10 @@
 pr($_POST);
 $arr_ids_turmas = array();
 foreach($_POST as $key => $value) {
+    if($value == 'Sem turmas') {
+        $_SESSION['error'] = 'Selecione uma turma';
+        header('Location: ' . $arrConfig['url_admin'] . 'curso.php?tab=alunos');
+    }
     $newKey = explode('%', $key);
     $arr_ids_turmas[] = array(
         'id_aluno' => $newKey[1],

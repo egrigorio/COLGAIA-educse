@@ -547,6 +547,20 @@ function alunos_tabs_cursos() {
 
     ';
 
+    if(isset($_SESSION['error']) && $_SESSION['error'] != '') {
+        $html .= '
+        <script>
+            Swal.fire({
+                title: "Erro",
+                text: "' . $_SESSION['error'] . '",
+                icon: "error",
+                timer: 2000,
+                
+            })
+        </script>
+        ';
+        unset($_SESSION['error']);
+    }
     return $html;
 
 }
@@ -1345,7 +1359,8 @@ function tabela_turnos_diretor_turma() {
                         </div>
                         <div class="flex">
                             <input name="id_turma" type="hidden" value="' . $id_turma . '">
-                            <input name="novo_turno" required type="number" min=' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . ' max="' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . '" placeholder="Número do novo turno" class="input input-bordered w-full max-w-xs" />
+                            <input name="novo_turno" required type="number" min="1" placeholder="Número do novo turno" class="input input-bordered w-full max-w-xs" />
+                            <!-- min=' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . ' max="' . ($res ? ($res[count($res) - 1]['numero'] + 1) : '1') . '" -->
                             <button class="btn btn-ghost">Adicionar</button>
                         </div>
                     </label>
@@ -2571,6 +2586,7 @@ function ai_assistente_aluno() {
     
     let options = {
         view: \'timeGridWeek\',
+        
         
         
         customButtons: {

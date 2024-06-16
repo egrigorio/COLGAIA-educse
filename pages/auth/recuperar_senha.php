@@ -17,9 +17,8 @@ include '../../header.php'; ?>
                         <div class="label">
                             <span class="label-text">Nova password</span>
                         </div>
-                        <label class="input input-bordered flex items-center gap-2 w-full">
-                            
-                            <input type="password" class="grow" name="password" id="password" placeholder="*********" />
+                        <label class="input input-bordered flex items-center gap-2 w-full">                        
+                            <input type="password" class="grow" name="password" id="password" required placeholder="*********" />
                         </label>
                     
                 </div>
@@ -29,12 +28,12 @@ include '../../header.php'; ?>
                         </div>
                         <label class="input input-bordered flex items-center gap-2 w-full">
                             
-                            <input type="password" class="grow" name="password2" id="password2" placeholder="*********" />
+                            <input type="password" class="grow" name="password2" id="password2" required placeholder="*********" />
                         </label>
                     
                 </div>
                 <input type="hidden" name="tipo" id="tipo" value="2">
-                <input type="hidden" name="token" value="<?php echo $_GET['token']; ?>">
+                <input type="hidden" name="token" value="<?php echo $_GET['token']; ?>">             
                 <input class="btn btn-ghost w-full" type="submit" value="Verificar">
             </div>
         </div>
@@ -53,3 +52,10 @@ include '../../header.php'; ?>
     
 </body>
 </html>
+
+<?php 
+if(isset($_SESSION['erro'])) {
+    echo '<script>Swal.fire({icon: "error", title: "Erro", text: "' . $_SESSION['erro'] . '"});</script>';
+    unset($_SESSION['erro']);
+}
+?>
