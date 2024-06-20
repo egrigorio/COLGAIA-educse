@@ -1667,6 +1667,7 @@ function tabela_vista_professores_turma($dt = false) {
                             <td>' . $v['username'] . '</td>
                             <td>' . $v['email'] . '</td>
                             <td>';
+                            $flag_tem_disciplinas = false;
                             foreach($arr_disciplinas as $disciplina) {
                                 $sql = "SELECT * FROM disciplinas
                                 INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
@@ -1678,9 +1679,11 @@ function tabela_vista_professores_turma($dt = false) {
                                     for($i = 0; $i < count($res); $i++) {
                                         $html .= $res[$i]['abreviatura'] . '<br>';
                                     }
-                                } else {
-                                    $html .= 'Sem disciplinas<br>';
+                                    $flag_tem_disciplinas = true;
                                 }
+                            }
+                            if(!$flag_tem_disciplinas) {
+                                $html .= 'Sem disciplinas';
                             }
                             $html .= '
                             </td>
@@ -1974,7 +1977,7 @@ function painel_direcao_turma() {
             }]
         };
         const config_esforco_semanal = {
-            type: \'bar\',
+            type: \'line\',
             data: data_esforco_semanas,
             options: {
               responsive: true,
