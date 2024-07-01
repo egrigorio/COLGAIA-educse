@@ -2614,6 +2614,7 @@ html{
   --b1: 98.4625% 0.001706 247.838921;
   --b2: 98.5104% 0 0;
   --b3: 92.8761% 0.012619 255.507846;
+  base-400: black;
   font-family: cralika, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -2647,6 +2648,7 @@ html{
   --b1: 98.4625% 0.001706 247.838921;
   --b2: 98.5104% 0 0;
   --b3: 92.8761% 0.012619 255.507846;
+  base-400: black;
   font-family: cralika, system-ui;
   --rounded-box: 1rem;
   --rounded-btn: 0.5rem;
@@ -11842,6 +11844,11 @@ html:has(.drawer-open.drawer-open){
   background-color: rgb(74 222 128 / var(--tw-bg-opacity));
 }
 
+.bg-orange-400{
+  --tw-bg-opacity: 1;
+  background-color: rgb(251 146 60 / var(--tw-bg-opacity));
+}
+
 .bg-primary{
   --tw-bg-opacity: 1;
   background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
@@ -11865,11 +11872,6 @@ html:has(.drawer-open.drawer-open){
 .bg-slate-300{
   --tw-bg-opacity: 1;
   background-color: rgb(203 213 225 / var(--tw-bg-opacity));
-}
-
-.bg-yellow-200{
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 240 138 / var(--tw-bg-opacity));
 }
 
 .bg-yellow-300{
@@ -12227,6 +12229,11 @@ html:has(.drawer-open.drawer-open){
 .text-white{
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-secondary{
+  --tw-text-opacity: 1;
+  color: var(--fallback-s,oklch(var(--s)/var(--tw-text-opacity)));
 }
 
 .underline{

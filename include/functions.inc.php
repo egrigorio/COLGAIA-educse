@@ -742,7 +742,7 @@ function gerar_dados_total_atividades_mes($id_turma, &$porcentagem, &$total, &$t
     $sql = "SELECT COUNT(*) FROM rel_atividades_turma 
         INNER JOIN atividades ON atividades.id = rel_atividades_turma.id_atividade 
         INNER JOIN eventos ON eventos.id = atividades.id_evento
-        WHERE rel_atividades_turma.id_turma = $id_turma AND MONTH(eventos.comeco) = MONTH(CURRENT_DATE())";
+        WHERE rel_atividades_turma.id_turma = $id_turma AND (MONTH(eventos.comeco) = MONTH(CURRENT_DATE()) OR MONTH(eventos.fim) = MONTH(CURRENT_DATE()))";
     $res = my_query($sql);
     $total = $res[0]['COUNT(*)'];
     
@@ -779,7 +779,7 @@ function get_atividade_de_maior_duracao($id_turma) {
             FROM atividades 
             INNER JOIN eventos ON atividades.id_evento = eventos.id 
             INNER JOIN rel_atividades_turma ON rel_atividades_turma.id_atividade = atividades.id             
-            WHERE MONTH(eventos.comeco) = $mes_atual AND rel_atividades_turma.id_turma = $id_turma 
+            WHERE (MONTH(eventos.comeco) = $mes_atual OR MONTH(eventos.fim) = $mes_atual) AND rel_atividades_turma.id_turma = $id_turma 
             ORDER BY atividades.tempo_sugerido DESC LIMIT 1";    
     return my_query($sql);    
 }
@@ -791,7 +791,7 @@ function get_esforco_medio_diario_mes($id_turma, $mes) {
     $sql = "SELECT eventos.*, atividades.tempo_sugerido FROM atividades 
     INNER JOIN rel_atividades_turma ON atividades.id = rel_atividades_turma.id_atividade 
     INNER JOIN eventos ON eventos.id = atividades.id_evento
-    WHERE rel_atividades_turma.id_turma = $id_turma AND MONTH(eventos.comeco) = $mes";            
+    WHERE rel_atividades_turma.id_turma = $id_turma AND (MONTH(eventos.comeco) = $mes OR MONTH(eventos.fim) = $mes)";            
         
     $res = my_query($sql);    
     

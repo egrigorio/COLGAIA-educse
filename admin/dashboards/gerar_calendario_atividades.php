@@ -31,10 +31,12 @@ function calcular_esforco_turma($turno) {
     global $arrConfig;
     $id_turma = $_GET['id_turma'];
     $filtro_turno = ($turno != -1 ? "AND atividades.id_turno = $turno" : "AND atividades.id_turno = -1" );
+    
     $sql = "SELECT eventos.*, atividades.tempo_sugerido FROM atividades 
     INNER JOIN rel_atividades_turma ON atividades.id = rel_atividades_turma.id_atividade 
     INNER JOIN eventos ON eventos.id = atividades.id_evento
     WHERE rel_atividades_turma.id_turma = $id_turma $filtro_turno";     
+    
             
     $res = my_query($sql);    
 
@@ -42,7 +44,8 @@ function calcular_esforco_turma($turno) {
         $sql = "SELECT eventos.*, atividades.tempo_sugerido FROM atividades 
                 INNER JOIN rel_atividades_turma ON atividades.id = rel_atividades_turma.id_atividade 
                 INNER JOIN eventos ON eventos.id = atividades.id_evento
-                WHERE rel_atividades_turma.id_turma = $id_turma AND atividades.id_turno <> $turno";
+                WHERE rel_atividades_turma.id_turma = $id_turma AND atividades.id_turno = -1";
+                
         $res_eventos_turma_todas = my_query($sql);
     }
 

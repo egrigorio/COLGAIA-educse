@@ -43,4 +43,4 @@ include_once $arrConfig['dir_include'] . 'db.inc.php';
 include_once $arrConfig['dir_site'] . '/metodos/mail.met.php';
 include_once $arrConfig['dir_admin'] . 'dashboards/layout.dash.php';
 
-logs();
+/* logs(); */

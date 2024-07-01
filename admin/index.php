@@ -29,9 +29,9 @@ if($_SESSION['cargo'] == 'instituicao') {
                                         <div class="gap-1 flex justify-center items-center w-full">
                                             <!-- <a class="btn btn-secondary">Dashboard</a>                                        
                                             <div class="divider divider-horizontal"></div> -->
-                                            <a href="<?php echo $arrConfig['url_admin'] . 'instituicao.php' ?>" class="btn btn-secondary">Gestão</a>
+                                            <a href="<?php echo $arrConfig['url_admin'] . 'instituicao.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Gestão</a>
                                             <div class="divider divider-horizontal"></div>
-                                            <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary">Logout</a>
+                                            <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Logout</a>
                                         </div>
                                     </p>
                                     
@@ -118,14 +118,14 @@ if($_SESSION['cargo'] == 'instituicao') {
                                         <!-- <a class="btn btn-secondary">Configurações</a>
                                         <div class="divider divider-horizontal"></div> -->
                                         <?php if($_SESSION['cargo'] == 'professor'){ ?>
-                                            <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-secondary">Turmas</a>
+                                            <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Turmas</a>
                                         <?php } else { ?>
-                                            <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-secondary">Turma</a>
+                                            <a href="<?php echo $arrConfig['url_admin'] . 'turma.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Turma</a>
                                         <?php } ?>
                                         <div class="divider divider-horizontal"></div>
                                         <!-- <a class="btn btn-secondary">Conta</a>
                                         <div class="divider divider-horizontal"></div> -->
-                                        <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary">Logout</a>
+                                        <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Logout</a>
                                     </div>
                                 </p>
                                 

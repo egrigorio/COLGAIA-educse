@@ -119,7 +119,7 @@ function turma($arr_turma, &$flag_direcao_turma, $aluno = false) {
     <div class="bg-primary flex justify-center w-full h-52 text-center">
         <b>            
             <h1 class="bold mt-20 text-4xl">' . $arr_turma[0]['nome_turma'] . '</h1>';
-    echo $flag_direcao_turma ? '<span class="flex items-center justify-center">diretor de turma</span>' : '';
+    echo $flag_direcao_turma ? '<span class="flex items-center justify-center">diretor de turma</span>' : ($aluno ? '<span class="flex items-center justify-center">aluno</span>' : '<span class="flex items-center justify-center">professor</span>');
     echo '
         </b>
     </div>
@@ -215,7 +215,7 @@ function curso() {
     <div class="bg-primary flex justify-center w-full h-52 ">
         <b>
             <h1 class="bold mt-20 text-4xl">' . $res[0]['nome_curso'] . '</h1> 
-            <span class="flex items-center justify-center">' . $res[0]['abreviatura'] . '</span>   
+            <span class="flex items-center justify-center">' . $res[0]['abreviatura'] . ' | diretor de curso</span>   
         </b>
     </div>
     <div role="tablist" class="bg-primary tabs tabs-lifted">
@@ -585,7 +585,7 @@ function disciplinas_tabs_cursos() {
             <h2 class=" text-lg mb-4 ">Adicionar Disciplinas ao curso</h2>
             <form method="post" action="' . $arrConfig['url_modules'] . 'trata_adicionar_disciplina_curso.mod.php?id_curso=' . $id_curso . '" id="disciplinas_form">
                 <div class="flex mb-4 gap-2">
-                    <label class="input input-bordered flex items-center gap-2">
+                    <label class="flex items-center gap-2">
                         <i class="fa fa-book"></i>
                         <select class="select select-bordered w-full max-w-xs" id="disciplinas-input">
                             <option value="">Escolha a disciplina</option>
@@ -767,13 +767,13 @@ function esforco_direcao_turma() {
         <input type="hidden" name="id_esforco" value="' . $res['id'] . '">
         <td>
             <label class="form-control w-full max-w-xs">                        
-                <div class="tooltip" data-tip="Esforço limite máximo, em horas, da turma">
+                <div class="tooltip tooltip-right" data-tip="Esforço limite máximo, em horas, da turma">
                     <input type="number" required placeholder="0" name="limite" value="' . $res['limite'] . '" class="input w-14 max-w-xs" />
                 </div>
             </label>
         </td>
         <td>
-            <div class="tooltip" data-tip="Valor inferior ao limite, para servir de alerta a criação de atividades">
+            <div class="tooltip tooltip-right" data-tip="Valor inferior ao limite, para servir de alerta a criação de atividades">
                 <label class="form-control w-full max-w-xs">
                     <input type="number" required placeholder="0" name="barreira" value="' . $res['barreira'] . '" class="input w-14 max-w-xs" />
                 </label>
@@ -1037,12 +1037,12 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                             
                             switch(Number(eventInfo.event.extendedProps.esforco)) {
                                 case 1:
-                                    console.log(\'aqui 1\')
+                                    
                                     return [\'bg-red-400\'];
                                     break;
                                 case 2:
-                                    console.log(\'aqui 2\')
-                                    return [\'bg-yellow-200\'];
+                                    
+                                    return [\'bg-orange-400\'];
                                     break;
                                 case 3:
                                     console.log(\'aqui 3\')
@@ -1052,6 +1052,15 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                             
                             
 
+                        },
+                        buttonText: {
+                            today: \'Hoje\',
+                            month: \'Mês\',
+                            week: \'Semana\',
+                            day: \'Dia\',
+                            list: \'Lista\',
+                            listWeek: \'Lista\',
+                            timeGridWeek: \'Semana\',
                         },
                         views: {
                             listMonth: {                    
@@ -1121,7 +1130,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                 function trata_onchange_select_turno_criar_atv() {
                     
                     var turno = document.getElementById("select_turno_criar_atv").value;
-                    
+                    console.log(turno);
                     setCalendarEvents(turno);
                 }
                 var event = new Event(\'change\');
@@ -1637,7 +1646,7 @@ function tabela_vista_professores_turma($dt = false) {
                     <thead>
                     <tr>
                         <th></th>
-                        <th>Username</th>
+                        
                         <th>Email</th>
                         <th>Disciplinas</th>
                         <th>Turno</th>
@@ -1646,9 +1655,10 @@ function tabela_vista_professores_turma($dt = false) {
                     </thead>
                     <tbody>
                     ';
+                    
                     foreach($res_turnos_condensados as $k => $v) {
                         $cont++;
-                        $arr_disciplinas = buscar_disciplinas_cargo($_SESSION['id'], 'professor', $_SESSION['id_curso']);
+                        $arr_disciplinas = buscar_disciplinas_cargo($v['id_user'], 'professor', $_SESSION['id_curso']);
                         /* pr($arr_disciplinas); */
                 
                         $sql = "SELECT disciplinas.nome as nome_disciplina FROM disciplinas
@@ -1664,10 +1674,11 @@ function tabela_vista_professores_turma($dt = false) {
                         $html .= '
                         <tr class="hover">
                             <td>' . ($k + 1) . '</td>
-                            <td>' . $v['username'] . '</td>
+                            
                             <td>' . $v['email'] . '</td>
                             <td>';
                             $flag_tem_disciplinas = false;
+                            
                             foreach($arr_disciplinas as $disciplina) {
                                 $sql = "SELECT * FROM disciplinas
                                 INNER JOIN rel_disciplina_turma ON disciplinas.id = rel_disciplina_turma.id_disciplina
@@ -1798,7 +1809,7 @@ function tabela_vista_alunos_turma() {
             <thead>
             <tr>
                 <th></th>
-                <th>Username</th>
+                
                 <th>Email</th>
                 <th>Turno</th>
                 
@@ -1819,7 +1830,7 @@ function tabela_vista_alunos_turma() {
                 $html .= '
                 <tr class="hover">
                     <td>' . ($k + 1) . '</td>
-                    <td>' . $v['username'] . '</td>
+                    
                     <td>' . $v['email'] . '</td>
                     <td>Turno: ' . $res_turno['numero'] . '</td>
                 </tr>
@@ -2570,7 +2581,7 @@ function ai_assistente_aluno() {
                     </div>
                 </form>
             </div>
-            <span class="text-xs text-center text-gray-500 block mt-4">As funções associadas ao assistente A.I. estão em fase Beta, e são sucetíveis a erros.</span>
+            <span class="text-xs text-center text-gray-500 block mt-4">As funções associadas ao assistente A.I. estão em fase Beta, e são suscetíveis a erros.</span>
         </div>
         <div class="w-6/12">
             <div id="render-calendar-here-ai">
