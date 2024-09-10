@@ -1,6 +1,8 @@
 ## **educse** 
 
-**educse** é uma plataforma online para gestão de esforço estudantil, desenvolvido no âmbito da PAP (Prova de Aptidão Profissional)
+**educse** é uma plataforma online para gestão de esforço estudantil e atividades escolares uma espécie de LMS, desenvolvido no âmbito da PAP (Prova de Aptidão Profissional)
+utiliza tecnologias como PHP e seu universo de ferramentas além de contar com algumas bibliotecas em javascript e a implementação de uma funcionalidade de marcação de atividades a partir de um chat
+utilizando de inteligência artificial consumindo a API da OpenAI
 
 **
 
