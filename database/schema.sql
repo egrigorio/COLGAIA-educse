@@ -129,6 +129,9 @@ CREATE TABLE conf_convite (
     email VARCHAR(254) NOT NULL,
     id_curso INT NOT NULL,
     cargo VARCHAR(40) NOT NULL,
+    token_hash CHAR(64) NULL,
+    expira_em DATETIME NULL,
+    UNIQUE KEY uq_convite_token (token_hash),
     criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_convite_curso (id_curso)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

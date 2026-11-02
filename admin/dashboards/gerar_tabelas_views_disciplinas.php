@@ -1,6 +1,7 @@
 <?php
 
 include __DIR__ . '/../../include/config.inc.php';
+Educse\Http\ReadAccess::require('course');
 $valor = $_GET['valor'];
 $id_instituicao = $_SESSION['id_instituicao'];
 $sql = "SELECT rel_disciplina_curso.id_disciplina, disciplinas.*
@@ -60,9 +61,9 @@ foreach ($res as $disciplina) {
                     <tr>                        
                         <td>' . $disciplina['id'] . '</td>
                         <td>
-                        ' . $disciplina['nome'] . '
+                        ' . e($disciplina['nome']) . '
                         <br>
-                        <span class="badge badge-ghost badge-sm">' . $disciplina['abreviatura'] . '</span>
+                        <span class="badge badge-ghost badge-sm">' . e($disciplina['abreviatura']) . '</span>
                         </td>
                         
                         '; 
@@ -99,7 +100,7 @@ foreach ($res as $disciplina) {
                             confirmButtonText: \'Sim, remover!\'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_disciplina_curso.mod.php?id_disc=' . $disciplina['id'] . '\';
+                                educsePost(\'' . $arrConfig['url_modules'] . 'trata_excluir_disciplina_curso.mod.php?id_disc=' . $disciplina['id'] . '\', {id_curso: ' . (int) $_SESSION['id_curso'] . '});
                                 
                                 
                             }

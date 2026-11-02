@@ -7,6 +7,9 @@ use PHPMailer\PHPMailer\Exception;
 require_once $arrConfig['dir_site'] . '/vendor/autoload.php';
 
 function enviar_convite_curso($to, $url, $cargo, $curso) {
+    $url = e($url);
+    $cargo = e($cargo);
+    $curso = e($curso);
     $html = '<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -27,6 +30,9 @@ function enviar_convite_curso($to, $url, $cargo, $curso) {
 }
 
 function enviar_convite_plataforma($to, $url, $cargo, $curso) {
+    $url = e($url);
+    $cargo = e($cargo);
+    $curso = e($curso);
     $html = '<!DOCTYPE html>
     <html lang="en">
     <head>

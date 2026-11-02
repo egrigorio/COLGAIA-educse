@@ -62,6 +62,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: composer db:install
+      - run: composer db:migrate
+      - run: composer db:migrate
       - name: Páginas públicas e dados demonstrativos
         shell: bash
         run: |

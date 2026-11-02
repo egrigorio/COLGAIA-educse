@@ -25,6 +25,7 @@
         "lint": "php scripts/lint.php",
         "test": "php tests/run.php",
         "db:install": "php scripts/database.php",
-        "db:seed-demo": "php scripts/seed-demo.php"
+        "db:seed-demo": "php scripts/seed-demo.php",
+        "db:migrate": "php scripts/migrate.php"
     }
 }

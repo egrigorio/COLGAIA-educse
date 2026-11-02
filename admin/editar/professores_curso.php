@@ -1,5 +1,6 @@
 <?php
 include __DIR__ . '/../../include/config.inc.php';
+Educse\Http\ReadAccess::require('course');
 
 $id_user = $_GET['id_user'];
 
@@ -37,6 +38,8 @@ if(count($res) !== 0) { /* garantir que o user que esotu alterando informações
     <body class="h-screen">
         
         <form method="post" class="mt-10" action="<?php echo $arrConfig['url_modules'] . 'trata_editar_user_curso.mod.php' ?>">
+        <?= csrf_field() ?>
+        <input type="hidden" name="id_curso" value="<?= (int) $_SESSION['id_curso'] ?>">
             <input type="hidden" name="id_user" value="<?php echo $id_user ?>">
             <div class="flex justify-around">
                 <div class="card w-8/12 bg-primary shadow-xl">

@@ -1,3 +1,4 @@
+<?php csrf_field(); ?>
 <!DOCTYPE html>
 <html data-theme="<?php echo isset($_SESSION['theme']) ? $_SESSION['theme'] : 'mytheme'; ?>" class="<?php echo (isset($_SESSION['cor']) ? 'bg-base-100' : 'bg-primary') ?> selection:bg-accent" lang="pt">
 <?php 
@@ -20,6 +21,13 @@ include __DIR__ . '/loading.php';
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+    <script src="<?= $arrConfig['url_public'] ?>management.js"></script>
+    <script>educseSetupAjax(window.jQuery);</script>
+<?php if (isset($_SESSION['management_success'])): ?>
+    <script>document.addEventListener('DOMContentLoaded', function () { Swal.fire({icon: 'success', text: <?= json_encode($_SESSION['management_success'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>}); });</script>
+    <?php unset($_SESSION['management_success']); ?>
+<?php endif; ?>
 </head>
 
 <script>

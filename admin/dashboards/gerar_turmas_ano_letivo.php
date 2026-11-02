@@ -1,4 +1,5 @@
 <?php include __DIR__ . '/../../include/config.inc.php';
+Educse\Http\ReadAccess::require('course');
 
 $ano_letivo = $_GET['ano_letivo'];
 $sql = "SELECT * FROM turma WHERE id_curso = " . $_SESSION['id_curso'] . " AND ano_letivo = '$ano_letivo'";
@@ -61,7 +62,7 @@ $html = '
                 
                 <tr class="hover">            
                     <td>' . $turma['id'] . '</td>
-                    <td>' . $turma['nome_turma'] . '</td>
+                    <td>' . e($turma['nome_turma']) . '</td>
                     <td>' . $turma['ano_letivo'] . '</td>
                     ';
                     if(isset($_GET['editar'])) {                                                
@@ -74,7 +75,7 @@ $html = '
                                 ';
                         
                                 foreach($res_professores as $professor) {
-                                    $html .= '<option value="' . $professor['id'] . '">' . $professor['username'] . '</option>';
+                                    $html .= '<option value="' . $professor['id'] . '">' . e($professor['username']) . '</option>';
                                 }
                                 $html .= '
                                     ' . ($user_dt ? '<option value="-1">Sem diretor de turma</option>' : '') . '
@@ -144,5 +145,5 @@ $html = '
     ';
 
 
-echo $html;
+echo csrf_forms($html);
 

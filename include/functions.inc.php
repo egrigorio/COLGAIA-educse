@@ -648,28 +648,7 @@ function gerar_dados_esforco_semanal_turma($id_turma, &$labels, &$data) {
         //calcular tempo médio diario da atividade        
         for($i = 0; $i < count($res); $i++) {
             $atividade = $res[$i];
-            $tempo_medio_diario = 0;
-            $comeco = new DateTime($atividade['comeco']);
-            $fim = new DateTime($atividade['fim']);
-            if($comeco == $fim) {
-                $tempo_medio_diario = $atividade['tempo_sugerido'];
-            } else {
-                $fim->modify('+1 day');
-                /* $dias = $comeco->diff($fim)->days; */
-                $dias = 0;
-                // saber quantos dias eu verdadeiramente tenho, percorrer os dias entre o comeco e o fim, e ver se é dia de trabalho
-                $tempo_medio_diario = 0;
-                for($j = $comeco; $j < $fim; $j->modify('+1 day')) {
-                    $dia_semana = $j->format('N');
-                    if($esforco_turma['dia_' . ($dia_semana - 1)] == 1) {
-                        $dias++;
-                    }
-                }                
-                $tempo_medio_diario = $atividade['tempo_sugerido'] / $dias;
-                
-                
-            }
-            $res[$i]['tempo_medio_diario'] = $tempo_medio_diario;
+            $res[$i]['tempo_medio_diario'] = Educse\Services\WorkloadService::dailyAverage($atividade, $esforco_turma);
             
         }
         // fim do calculo, agora cada atividade tem o tempo médio diario

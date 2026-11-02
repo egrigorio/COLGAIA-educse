@@ -1,6 +1,7 @@
 <?php
 
-require_once dirname(__DIR__) . '/include/config.inc.php';
+require_once dirname(__DIR__) . '/bootstrap/management.php';
+require_form_post();
 $_SESSION = [];
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();

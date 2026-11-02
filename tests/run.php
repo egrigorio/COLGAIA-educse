@@ -38,6 +38,8 @@ foreach ([
 $first = csrf_field();
 check($first === csrf_field(), 'O token deve manter-se entre formulários da mesma sessão');
 check(strlen($_SESSION['csrf_token']) === 64, 'O token deve conter 32 bytes aleatórios');
+$form = csrf_forms('<form method="POST"><button>Guardar</button></form>');
+check(substr_count(csrf_forms($form), 'name="csrf_token"') === 1, 'Adicionar CSRF sem duplicar campos em vistas compostas');
 $_POST = ['field' => ['array'], 'valid' => 'valor'];
 check(post_string('field') === '' && post_string('missing') === '' && post_string('valid') === 'valor', 'Entrada de formulário inválida');
 $auth = new Educse\Services\AuthService();
@@ -81,6 +83,7 @@ if (getenv('EDUCSE_TEST_DATABASE') === '1') {
         passthru(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__DIR__ . '/auth_endpoints.php') . ' ' . escapeshellarg($scenario), $status);
         check($status === 0, 'O fluxo falhou: ' . $scenario);
     }
+    require __DIR__ . '/management.php';
 } else {
     echo "Integração MySQL não executada (defina EDUCSE_TEST_DATABASE=1 e DB_*).\n";
 }

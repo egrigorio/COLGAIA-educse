@@ -18,7 +18,10 @@ if(isset($_SESSION['cargo'])) {
 
 }
 ?>
-<?php include __DIR__ . '/../header.php';?>
+<?php
+if (isset($_GET['id_turma'])) { Educse\Http\ReadAccess::require('classroom'); }
+include __DIR__ . '/../header.php';
+?>
 <body>
 <?php
 if(isset($_GET['id_turma']) && $_GET['id_turma']) {

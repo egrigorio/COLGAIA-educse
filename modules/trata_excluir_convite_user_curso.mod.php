@@ -1,12 +1,4 @@
-<?php 
-include __DIR__ . '/../include/config.inc.php';
-echo 'aqui';
-pr($_GET);
+<?php
 
-$id = $_GET['id_user'];
-
-$sql = "DELETE FROM conf_convite WHERE id = $id";
-my_query($sql);
-
-header ('Location: ' . $arrConfig['url_admin'] . 'curso.php');
-
+require_once dirname(__DIR__) . '/bootstrap/management.php';
+Educse\Http\ManagementController::run('excluir_convite_user_curso');

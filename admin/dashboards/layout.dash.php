@@ -4,14 +4,6 @@ include_once $arrConfig['dir_admin'] . 'dashboards/gerar_calendario_atividades.p
 include_once $arrConfig['dir_admin'] . 'configuracoes.adm.php';
 require_once $arrConfig['dir_site'] . '/vendor/autoload.php';
 
-if(isset($_GET['id_turma'])) {
-    $id_turma = $_GET['id_turma'];
-    $sql = "SELECT curso.id FROM curso 
-        INNER JOIN turma ON curso.id = turma.id_curso
-        WHERE turma.id = " . $id_turma;
-        $res = my_query($sql);
-    $_SESSION['id_curso'] = $res[0]['id'];
-}
 
 function navbar($arr_items) {
     global $arrConfig;
@@ -37,21 +29,21 @@ function navbar($arr_items) {
         if (isset($item['nome_curso'])) {
             if ($query == '') {
                 echo '
-                    <a href="' . $arrConfig['url_admin'] . 'curso.php?' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm btn-active">' . $item['abreviatura'] . '</a>
+                    <a href="' . $arrConfig['url_admin'] . 'curso.php?' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm btn-active">' . e($item['abreviatura']) . '</a>
                     ';
             } else {
                 echo '
-                    <a href="' . $arrConfig['url_admin'] . 'curso.php?' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm">' . $item['abreviatura'] . '</a>
+                    <a href="' . $arrConfig['url_admin'] . 'curso.php?' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm">' . e($item['abreviatura']) . '</a>
                     ';
             }
         } else {
             if ($query == 'id_turma=' . $item['id']) {
                 echo '
-                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm btn-active">' . $item['nome_turma'] . '</a>
+                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm btn-active">' . e($item['nome_turma']) . '</a>
                 ';
             } else {
                 echo '
-                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm">' . $item['nome_turma'] . '</a>
+                <a href="' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $item['id'] . '' . (isset($_GET['al']) ? '&al=true' : '') . '" class="btn btn-ghost text-sm">' . e($item['nome_turma']) . '</a>
                 ';
             }
         }
@@ -75,7 +67,7 @@ function navbar($arr_items) {
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                     <div class="w-10 rounded-full">
-                        <img alt="Tailwind CSS Navbar component" src="' . $arrConfig['url_pfp'] . $_SESSION['pfp'] . '" />
+                        <img alt="Tailwind CSS Navbar component" src="' . $arrConfig['url_pfp'] . e($_SESSION['pfp']) . '" />
                     </div>
                 </div>
                 
@@ -97,7 +89,7 @@ function navbar($arr_items) {
                         }
 
                         echo '
-                        <li><a href="' . $arrConfig['url_modules'] . 'trata_logout.mod.php' . '">Logout</a></li>
+                        <li><a data-post href="' . $arrConfig['url_modules'] . 'trata_logout.mod.php' . '">Logout</a></li>
                     </ul>
                     
                 </div>
@@ -118,7 +110,7 @@ function turma($arr_turma, &$flag_direcao_turma, $aluno = false) {
     
     <div class="bg-primary flex justify-center w-full h-52 text-center">
         <b>            
-            <h1 class="bold mt-20 text-4xl">' . $arr_turma[0]['nome_turma'] . '</h1>';
+            <h1 class="bold mt-20 text-4xl">' . e($arr_turma[0]['nome_turma']) . '</h1>';
     echo $flag_direcao_turma ? '<span class="flex items-center justify-center">diretor de turma</span>' : ($aluno ? '<span class="flex items-center justify-center">aluno</span>' : '<span class="flex items-center justify-center">professor</span>');
     echo '
         </b>
@@ -162,7 +154,7 @@ function instituicao($arr_instituicao) {
     
     <div class="bg-primary flex justify-center w-full h-52 text-center">
         <b>
-            <h1 class="bold mt-20 text-4xl">' . $arr_instituicao[0]['nome'] . '</h1>';
+            <h1 class="bold mt-20 text-4xl">' . e($arr_instituicao[0]['nome']) . '</h1>';
     
     echo '
         </b>
@@ -214,8 +206,8 @@ function curso() {
     
     <div class="bg-primary flex justify-center w-full h-52 ">
         <b>
-            <h1 class="bold mt-20 text-4xl">' . $res[0]['nome_curso'] . '</h1> 
-            <span class="flex items-center justify-center">' . $res[0]['abreviatura'] . ' | diretor de curso</span>   
+            <h1 class="bold mt-20 text-4xl">' . e($res[0]['nome_curso']) . '</h1>
+            <span class="flex items-center justify-center">' . e($res[0]['abreviatura']) . ' | diretor de curso</span>
         </b>
     </div>
     <div role="tablist" class="bg-primary tabs tabs-lifted">
@@ -390,7 +382,7 @@ function professores_tabs_cursos() {
         
         ';
 
-    return $html;
+    return csrf_forms($html);
 }
 
 function alunos_tabs_cursos() {
@@ -561,7 +553,7 @@ function alunos_tabs_cursos() {
         ';
         unset($_SESSION['error']);
     }
-    return $html;
+    return csrf_forms($html);
 
 }
 
@@ -593,7 +585,7 @@ function disciplinas_tabs_cursos() {
                             
     foreach($arr_disciplinas as $disciplina) {
 
-        $html .= '<option value="' . $disciplina['id_disc'] . '">' . $disciplina['abreviatura'] . ' - ' . $disciplina['nome'] . '</option>';
+        $html .= '<option value="' . $disciplina['id_disc'] . '">' . e($disciplina['abreviatura']) . ' - ' . e($disciplina['nome']) . '</option>';
     }
 
     $html .= '
@@ -713,7 +705,7 @@ function disciplinas_tabs_cursos() {
 
     ';
 
-    return $html;
+    return csrf_forms($html);
 
 }
 
@@ -848,7 +840,7 @@ function esforco_direcao_turma() {
     ';
     $html .= '</form>';
 
-    return $html;
+    return csrf_forms($html);
 }
 
 function criar_atividade_turma($editar = false, $id_evento = null) {
@@ -869,11 +861,11 @@ function criar_atividade_turma($editar = false, $id_evento = null) {
         } 
         $rand = rand(8999, 8990);
         $html = gerar_formulario_edicao($id_turma, $id_curso, $rand, $res);
-        return $html;                    
+        return csrf_forms($html);
     } else {        
         $rand = rand(9999, 9990);
         $html = gerar_formulario_edicao($id_turma, $id_curso, $rand);
-        return $html;
+        return csrf_forms($html);
     }
     
 }
@@ -903,7 +895,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                 <span class="text-center">Você não tem disciplinas associadas a essa turma para poder criar atividades.</span>
             </div>
         ';
-        return $html;
+        return csrf_forms($html);
     } else {
         $html .= '
             ' . ($valores_ja_inseridos ? '<h1 class="text-center text-xl font-bold">Editando evento</h1>' : '') . '
@@ -965,7 +957,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                             
                 $res = my_query($sql);        
                 if(count($res) > 0) {                    
-                $html .= '<option value="' . $res[0]['id_disciplina'] . '">' . $res[0]['abreviatura'] . ' - ' . $res[0]['nome'] . '</option>';
+                $html .= '<option value="' . $res[0]['id_disciplina'] . '">' . e($res[0]['abreviatura']) . ' - ' . e($res[0]['nome']) . '</option>';
                 }
             }            
             $turno = isset($_GET['turno']) ? $_GET['turno'] : -1;
@@ -1068,11 +1060,11 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                                 let arrayOfDomNodes = [];
                                 let title = document.createElement("t");
                                 title.innerHTML =
-                                    arg.event.title +
+                                    educseEscape(arg.event.title) +
                                     " - " + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&id_evento=" + arg.event.extendedProps.id_evento + "\'>editar</a>)(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)" : "(<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'>detalhes</a>)") +                        
                                     "<br><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
-                                    arg.event.extendedProps.disciplina +
-                                    " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
+                                    educseEscape(arg.event.extendedProps.disciplina) +
+                                    " | Tipo: " +  educseEscape(arg.event.extendedProps.tipo) + " </span>";
                 
                                 arrayOfDomNodes.push(title);
                                 return { domNodes: arrayOfDomNodes };
@@ -1082,7 +1074,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                                 eventContent: function (arg) {
                                 let arrayOfDomNodes = [];
                                 let title = document.createElement("t");
-                                title.innerHTML = arg.event.title;
+                                title.innerHTML = educseEscape(arg.event.title);
                 
                                 arrayOfDomNodes.push(title);
                                 return { domNodes: arrayOfDomNodes };
@@ -1114,7 +1106,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                     var xhr = new XMLHttpRequest();
                     var url = "' . $arrConfig['url_admin'] . 'dashboards/call_func_calendar.php?turno=" + turno + "&id_turma=' . $id_turma . '";
                     var params = "id_turno=" + turno;            
-                    xhr.open("POST", url, true);
+                    xhr.open("GET", url, true);
                     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");            
                     xhr.onreadystatechange = function() {
                         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -1124,7 +1116,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
                         }
                     };
                     
-                    xhr.send(params);
+                    xhr.send();
                 }
 
                 function trata_onchange_select_turno_criar_atv() {
@@ -1142,7 +1134,7 @@ function gerar_formulario_edicao($id_turma, $id_curso, $rand, $valores_ja_inseri
 
     
 
-    return $html;
+    return csrf_forms($html);
 }
 
 
@@ -1208,7 +1200,7 @@ function agenda_turma() {
     }
             
 
-    return $html;
+    return csrf_forms($html);
 }
 
 function gerar_detalhes_evento($id_evento) {
@@ -1224,14 +1216,14 @@ function gerar_detalhes_evento($id_evento) {
     
     <div class="flex w-full flex-col h-full gap-8">
 
-        <h1 class="text-center text-lg font-bold">' . $res[0]['titulo'] . '</h1>
+        <h1 class="text-center text-lg font-bold">' . e($res[0]['titulo']) . '</h1>
         
         <div class="flex gap-8">
             <label class="form-control w-full max-w-xs">
                 <div class="label">
                     <span class="label-text">Descrição</span>                        
                 </div>
-                <input type="text" placeholder="Type here" value="' . $res[0]['descricao'] . '" class="input w-full max-w-xs" disabled />                    
+                <input type="text" placeholder="Type here" value="' . e($res[0]['descricao']) . '" class="input w-full max-w-xs" disabled />
             </label>                             
             <label class="form-control w-full max-w-xs">
                 <div class="label">
@@ -1263,7 +1255,7 @@ function gerar_detalhes_evento($id_evento) {
                 <div class="label">
                     <span class="label-text">Tipo</span>                        
                 </div>
-                <input type="text" placeholder="Type here" value="' . $res[0]['tipo'] . '" class="input w-full max-w-xs" disabled />                    
+                <input type="text" placeholder="Type here" value="' . e($res[0]['tipo']) . '" class="input w-full max-w-xs" disabled />
             </label>      
             <label class="form-control w-full max-w-xs">
                 <div class="label">
@@ -1279,7 +1271,7 @@ function gerar_detalhes_evento($id_evento) {
     </div>
     
     ';
-    return $html;                            
+    return csrf_forms($html);
 
 }
 
@@ -1345,7 +1337,7 @@ function tabela_alunos_diretor_turma() {
 
     ';
 
-    return $html;
+    return csrf_forms($html);
 
 }
 
@@ -1420,7 +1412,7 @@ function tabela_turnos_diretor_turma() {
     
 
     ';
-    return $html;
+    return csrf_forms($html);
 }
 
 function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo, turma que tem mais atividades, turmas por ano letivo */    
@@ -1584,7 +1576,7 @@ function painel_gestao_turmas_diretor_curso() { /* adicionar filtros aqui, tipo,
         ';
 
 
-    return $html;
+    return csrf_forms($html);
 }
 
 function tabela_vista_professores_turma($dt = false) {    
@@ -1675,7 +1667,7 @@ function tabela_vista_professores_turma($dt = false) {
                         <tr class="hover">
                             <td>' . ($k + 1) . '</td>
                             
-                            <td>' . $v['email'] . '</td>
+                            <td>' . e($v['email']) . '</td>
                             <td>';
                             $flag_tem_disciplinas = false;
                             
@@ -1716,7 +1708,7 @@ function tabela_vista_professores_turma($dt = false) {
         </form>
     </div>
     ';
-    return $html;
+    return csrf_forms($html);
 
 }
 
@@ -1787,7 +1779,7 @@ function gerar_options_turnos($id_turma, $turnos_pertence, $id_user, &$cont ,$di
         }                
     }
     
-    return $html;
+    return csrf_forms($html);
 }
 
 
@@ -1831,7 +1823,7 @@ function tabela_vista_alunos_turma() {
                 <tr class="hover">
                     <td>' . ($k + 1) . '</td>
                     
-                    <td>' . $v['email'] . '</td>
+                    <td>' . e($v['email']) . '</td>
                     <td>Turno: ' . $res_turno['numero'] . '</td>
                 </tr>
                 ';
@@ -1843,7 +1835,7 @@ function tabela_vista_alunos_turma() {
     </div>
     
     ';
-    return $html;
+    return csrf_forms($html);
 }
 
 
@@ -2141,7 +2133,7 @@ function painel_direcao_turma() {
 
     ';
 
-    return $html;
+    return csrf_forms($html);
 }
 
 
@@ -2196,7 +2188,7 @@ function tabela_disciplinas_instituicao() {
                     $html .= '
                     <tr class="hover">
                         <td>' . $cont . '</td>
-                        <td>' . $disciplina['nome'] . '</td>                    
+                        <td>' . e($disciplina['nome']) . '</td>
                         <td><a data-id="' . $disciplina['id'] . '" style="cursor: pointer;" class="fa fa-trash remove-disciplina"></a></td>
                     </tr>
                     ';
@@ -2226,12 +2218,12 @@ function tabela_disciplinas_instituicao() {
                         var id = $(this).data(\'id\');        
                         $.ajax({
                             url: "' . $arrConfig['url_modules'] . 'trata_remover_disciplina_instituicao.mod.php",
-                            type: \'GET\',
+                            type: \'POST\',
                             data: { id_disciplina: id },
                             success: function(result) {
                                 console.log(result);
                                 // Atualize a página ou faça algo com o resultado
-                                /* location.reload(); */
+                                location.reload();
                             }
                         });
                     }
@@ -2325,7 +2317,7 @@ function tabela_disciplinas_instituicao() {
         ';
         unset($_SESSION['msg_erro']);
     }
-    return $html;
+    return csrf_forms($html);
 }
 
 function tabela_diretores_curso_instituicao() {
@@ -2361,9 +2353,9 @@ function tabela_diretores_curso_instituicao() {
                     $html .= '
                     <tr class="hover">
                         <td>' . ($k + 1) . '</td>
-                        <td>' . $v['username'] . '</td>
-                        <td>' . $v['email'] . '</td>
-                        <td>' . $v['nome_curso'] . '</td>
+                        <td>' . e($v['username']) . '</td>
+                        <td>' . e($v['email']) . '</td>
+                        <td>' . e($v['nome_curso']) . '</td>
                         
                     </tr>
                     ';                                    
@@ -2374,7 +2366,7 @@ function tabela_diretores_curso_instituicao() {
         </form>
     </div>
     ';
-    return $html;
+    return csrf_forms($html);
 }
 
 function tabela_cursos_instituicao() {
@@ -2500,8 +2492,8 @@ function tabela_cursos_instituicao() {
                         $html .= '
                         <tr class="hover">
                             <td>' . ($k + 1) . '</td>
-                            <td>' . $v['nome_curso'] . '</td>
-                            <td>' . $v['abreviatura'] . '</td>
+                            <td>' . e($v['nome_curso']) . '</td>
+                            <td>' . e($v['abreviatura']) . '</td>
                             <td>' . $v['duracao'] . '</td>
                             <td>' . ($v['ativo'] == 1 ? 'Ativo' : 'Pendente') . '</td>
                             <td><a class="fa fa-edit" href="' . $arrConfig['url_admin'] . 'instituicao.php?editar=true&id_curso=' . $v['id_curso'] . '"></a></td>
@@ -2516,7 +2508,7 @@ function tabela_cursos_instituicao() {
                                 cancelButtonText: \'Cancelar\'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    window.location.href = \'' . $arrConfig['url_modules'] . 'trata_remover_curso_instituicao.mod.php?id_curso=' . $v['id_curso'] . '\';
+                                    educsePost(\'' . $arrConfig['url_modules'] . 'trata_remover_curso_instituicao.mod.php?id_curso=' . $v['id_curso'] . '\');
                                 }
                             })"></a></td>
                             
@@ -2538,7 +2530,7 @@ function tabela_cursos_instituicao() {
                 ';
             }
             
-    return $html;
+    return csrf_forms($html);
 }
 
 function ai_assistente_aluno() {
@@ -2546,7 +2538,6 @@ function ai_assistente_aluno() {
     $rand = rand(1, 100000);
     $id_user = $_SESSION['id'];
     $id_turma = $_GET['id_turma'];
-    $codigo_unico = (string) env_value('CHAVE_ENVIAR', '');
     $html = '
     
     <div class="flex gap-4">
@@ -2677,7 +2668,7 @@ function ai_assistente_aluno() {
         type: "GET",        
         success: function(response) {
             // este código será executado se a requisição for bem-sucedida
-            eventos_carregados = JSON.parse(response);    
+            eventos_carregados = typeof response === "string" ? JSON.parse(response) : response;
             for (let evento of eventos_carregados) {
                 ec.addEvent(evento);
             }
@@ -2709,7 +2700,7 @@ function ai_assistente_aluno() {
                         Você
                         <time class="text-xs opacity-50">${currentTime}</time>
                     </div>
-                    <div class="chat-bubble bg-primary">${message}</div>                        
+                    <div class="chat-bubble bg-primary">${educseEscape(message)}</div>
                 </div>
             `;
             chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
@@ -2741,6 +2732,12 @@ function ai_assistente_aluno() {
         xmlhttp.open("POST", "' . $arrConfig['url_admin'] . '/dashboards/' . 'chamar_api_openai.php", true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status !== 200) {
+                const loadingMessage = document.getElementById(\'mensagem-carregando\');
+                if (loadingMessage) loadingMessage.remove();
+                Swal.fire({icon: "error", text: this.responseText || "O assistente está indisponível."});
+                return;
+            }
 
             if (this.readyState == 4 && this.status == 200) {
                 // A solicitação foi bem-sucedida, você pode processar a resposta aqui
@@ -2765,9 +2762,6 @@ function ai_assistente_aluno() {
                         eventosStr = \'[\' + eventosStr.replace(/}{/g, \'},{\') + \']\';
                         try {
                             const eventos = JSON.parse(eventosStr);
-                            for (let evento of eventos) {
-                                ec.addEvent(evento);                                
-                            }
                             $.ajax({
                                 url: "' . $arrConfig['url_modules'] . 'trata_adicionar_eventos_ai.mod.php",
                                 type: "POST",
@@ -2775,7 +2769,7 @@ function ai_assistente_aluno() {
                                 success: function(response) {
                                     // este código será executado se a requisição for bem-sucedida
                                     console.log(response);
-                                    console.log(\'Eventos salvos com sucesso\');
+                                    for (let evento of eventos) { ec.addEvent(evento); }
                                 },
                                 error: function(jqXHR, textStatus, errorThrown) {
                                     // este código será executado se ocorrer um erro na requisição
@@ -2797,10 +2791,7 @@ function ai_assistente_aluno() {
 
                 console.log(resposta);
                 
-                console.log(this.responseText);
                 chatContainer.removeChild(document.getElementById(\'mensagem-carregando\'));
-                var decodedResponse = decodeURIComponent(this.responseText);
-                console.log(decodedResponse);
                 const tempo_resposta = new Date().toLocaleTimeString([], { hour: \'2-digit\', minute: \'2-digit\' });
                 const chatMessage = `
                 
@@ -2814,7 +2805,7 @@ function ai_assistente_aluno() {
                         Educse I.A.
                         <time class="text-xs opacity-50">${tempo_resposta}</time> <!-- hora da mensagem -->
                     </div>
-                        <div class="chat-bubble">${resposta}</div>
+                        <div class="chat-bubble">${educseEscape(resposta)}</div>
                     </div>
                 `;
                 chatContainer.insertAdjacentHTML(\'beforeend\', chatMessage);
@@ -2822,7 +2813,8 @@ function ai_assistente_aluno() {
                 chatInput.value = \'\';
             }
         };
-        xmlhttp.send("message=" + encodeURIComponent(message) + "&outro=' . $codigo_unico . '" + "&user=' . $_SESSION['id'] . '" + "&id_turma=' . $id_turma . '");
+        xmlhttp.setRequestHeader("X-CSRF-Token", document.querySelector(\'meta[name="csrf-token"]\').content);
+        xmlhttp.send("message=" + encodeURIComponent(message) + "&id_turma=' . $id_turma . '");
 
     });
     
@@ -2830,5 +2822,5 @@ function ai_assistente_aluno() {
         
 
     ';
-    return $html;
+    return csrf_forms($html);
 }
