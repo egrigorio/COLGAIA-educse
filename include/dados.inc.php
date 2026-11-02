@@ -485,16 +485,6 @@ function def_arrCampos($modulo, &$arrCampos)
                     'required' => 1
                 ),
                 'dia_0' => array(
-                    'legenda' => 'Domingo',
-                    'tipo' => 'int',
-                    'chave' => 0,
-                    'listagem' => 0,
-                    'inserir' => 1,
-                    'editar' => 1,
-                    'largura' => 100,
-                    'required' => 0
-                ),
-                'dia_1' => array(
                     'legenda' => 'Segunda-feira',
                     'tipo' => 'int',
                     'chave' => 0,
@@ -504,7 +494,7 @@ function def_arrCampos($modulo, &$arrCampos)
                     'largura' => 100,
                     'required' => 0
                 ),
-                'dia_2' => array(
+                'dia_1' => array(
                     'legenda' => 'Terça-feira',
                     'tipo' => 'int',
                     'chave' => 0,
@@ -514,7 +504,7 @@ function def_arrCampos($modulo, &$arrCampos)
                     'largura' => 100,
                     'required' => 0
                 ),
-                'dia_3' => array(
+                'dia_2' => array(
                     'legenda' => 'Quarta-feira',
                     'tipo' => 'int',
                     'chave' => 0,
@@ -524,7 +514,7 @@ function def_arrCampos($modulo, &$arrCampos)
                     'largura' => 100,
                     'required' => 0
                 ),
-                'dia_4' => array(
+                'dia_3' => array(
                     'legenda' => 'Quinta-feira',
                     'tipo' => 'int',
                     'chave' => 0,
@@ -534,7 +524,7 @@ function def_arrCampos($modulo, &$arrCampos)
                     'largura' => 100,
                     'required' => 0
                 ),
-                'dia_5' => array(
+                'dia_4' => array(
                     'legenda' => 'Sexta-feira',
                     'tipo' => 'int',
                     'chave' => 0,
@@ -544,8 +534,18 @@ function def_arrCampos($modulo, &$arrCampos)
                     'largura' => 100,
                     'required' => 0
                 ),
-                'dia_6' => array(
+                'dia_5' => array(
                     'legenda' => 'Sábado',
+                    'tipo' => 'int',
+                    'chave' => 0,
+                    'listagem' => 0,
+                    'inserir' => 1,
+                    'editar' => 1,
+                    'largura' => 100,
+                    'required' => 0
+                ),
+                'dia_6' => array(
+                    'legenda' => 'Domingo',
                     'tipo' => 'int',
                     'chave' => 0,
                     'listagem' => 0,

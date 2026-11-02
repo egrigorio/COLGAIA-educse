@@ -1,18 +1,19 @@
 <?php
-include_once '../../include/config.inc.php';
+include_once __DIR__ . '/../../include/config.inc.php';
 if(isset($_SESSION['id'])){
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');
     exit;
 } else if(!isset($_SESSION['codigo'])){
-    header('Location: ' . $arrConfig['url_paginas'] . 'auth/registar.php');
+    header('Location: ' . $arrConfig['url_paginas'] . 'auth/registo.php');
     exit;
 }
 $_SESSION['cor'] = true;
-include '../../header.php';
+include __DIR__ . '/../../header.php';
 ?>
 
 <body>
     <form class="flex flex-col justify-center items-center h-screen" action="../../modules/trata_verifconta.mod.php" method="post">
+        <?= csrf_field() ?>
         <div class="flex card lg:w-6/12  shadow-xl bg-primary items-center">
         <div class="w-9/12 mt-4 mb-4 gap-4">
             <div class="w-full text-center">

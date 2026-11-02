@@ -1,3 +1,3 @@
 <?php 
-include 'modules/trata_logout.mod.php';
+include __DIR__ . '/modules/trata_logout.mod.php';
 ?>

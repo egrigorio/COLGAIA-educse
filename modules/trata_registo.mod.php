@@ -1,59 +1,23 @@
 <?php
-include_once '../include/config.inc.php';
-global $arrConfig;
 
-$email = $_POST['email'];
-$user = $_POST['user'];
-$pass = $_POST['pass'];
-$confirmar_pass = $_POST['confirmar_pass'];
-$cargo = $_POST['cargo'];
-$pfp = 'e.png';
+require_once dirname(__DIR__) . '/include/config.inc.php';
+require_form_post();
 
-if(trim($email) == '' || trim($user) == '' || trim($pass) == '' || trim($confirmar_pass) == '' || trim($cargo) == '') { /* validar campos */
-    $_SESSION['erro'] = 'Preencha todos os campos';
-    header('Location: ' . $arrConfig['url_site'] . '/pages/auth/registo.php');
-    exit;
+try {
+    $account = (new Educse\Services\AuthService())->prepareRegistration(
+        post_string('email'), post_string('user'), post_string('pass'),
+        post_string('confirmar_pass'), post_string('cargo')
+    );
+    $code = (string) random_int(10000, 99999);
+    // Só guardar o registo pendente se o envio do email terminar sem erro.
+    email_verificacao($account['email'], $account['user'], $code);
+    $_SESSION['tmp_acc'] = $account;
+    $_SESSION['codigo'] = $code;
+    $_SESSION['codigo_expira'] = time() + 900;
+    $_SESSION['codigo_tentativas'] = 0;
+    redirect_to($arrConfig['url_paginas'] . 'auth/verificar_email.php');
+} catch (DomainException $exception) {
+    auth_error($exception->getMessage(), 'registo.php');
+} catch (RuntimeException $exception) {
+    auth_error('Não foi possível enviar o email de verificação. Tente novamente.', 'registo.php');
 }
-
-if($pass != $confirmar_pass) { /* validar pass e confirmar */
-    $_SESSION['erro'] = 'As passwords não coincidem';
-    header('Location: ' . $arrConfig['url_site'] . '/pages/auth/registo.php');
-    exit;
-}
-
-$sql = "SELECT * FROM users WHERE email = '$email' OR username = '$user'";
-$arrResultado = my_query($sql);
-if (count($arrResultado) > 0) { /* validar se já existe o user */
-    $_SESSION['erro'] = 'Utilizador já existe';
-    header('Location: ' . $arrConfig['url_site'] . '/pages/auth/registo.php');
-    exit;
-}
-
-if(!filter_var($email, FILTER_VALIDATE_EMAIL)) { /* validar email */
-    $_SESSION['erro'] = 'Email inválido';
-    header('Location: ' . $arrConfig['url_site'] . '/pages/auth/registo.php');
-    exit;
-}
-
-$pass = password_hash($pass, PASSWORD_DEFAULT); /* encriptar pass */
-
-$_SESSION['tmp_acc'] = array(
-    'user' => $user,
-    'email' => $email,
-    'pass' => $pass,
-    'cargo' => $cargo,
-    'pfp' => $pfp
-);
-
-// -- enviar o email;
-$codigo = rand(10000, 99999);
-$_SESSION['codigo'] = $codigo;
-
-email_verificacao($email, $user, $codigo);
-
-header('Location: ' . $arrConfig['url_paginas'] . 'auth/verificar_email.php');
-
-
-
-
-

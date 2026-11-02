@@ -1,4 +1,4 @@
-<?php include '../../include/config.inc.php';
+<?php include __DIR__ . '/../../include/config.inc.php';
 $turno = $_GET['turno'] ? $_GET['turno'] : -1;
 $turno == 'all' ? $turno = -1 : $turno;
 $rand = rand(0, 999999);

@@ -1,6 +1,6 @@
 <?php
-include '../include/config.inc.php';
-include_once 'layout.dash.php';
+require_once __DIR__ . '/../../include/config.inc.php';
+include_once __DIR__ . '/layout.dash.php';
 $flag_direcao_turma = false;
 $turmas = gerar_items_navbar($_SESSION['id']);
 navbar($turmas); 

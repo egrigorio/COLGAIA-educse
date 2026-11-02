@@ -1,5 +1,5 @@
 <?php 
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 
 $_SESSION['tipoLog'] = 'Inserção de registo na tabela ' . $_GET['modulo'];
 

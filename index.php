@@ -1,6 +1,4 @@
-<?php include 'include/config.inc.php'; header('Location: ' . $arrConfig['url_admin'] );/*  include 'header.php'; */ ?>
+<?php
 
-<body>
-    <div class="bg-error">aqui</div>
-</body>
-</html>
+require_once __DIR__ . '/include/config.inc.php';
+redirect_to($arrConfig['url_admin']);

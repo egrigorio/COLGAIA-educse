@@ -1,63 +1,30 @@
-
-
 <?php
-$arrConfig['conn'] = my_connect($arrConfig);
 
-function my_connect($arrConfig) {
-	$conn = new mysqli($arrConfig['servername'], $arrConfig['username'], $arrConfig['password'], $arrConfig['dbname']); // Create connection
-	if ($conn->connect_error) { // Check connection
-	    die("Connection failed: " . $conn->connect_error);
-	}
-	$conn->set_charset('utf8');
-	return $conn;
-} 
-
-function my_query($sql, $debug=0) {
-	global $arrConfig;
-	if($debug) echo $sql;
-	$result = $arrConfig['conn']->query($sql);
-	
-	/* SELECT
-	mysqli_result Object
-	(
-	    [current_field] => 0
-	    [field_count] => 5
-	    [lengths] => 
-	    [num_rows] => 3
-	    [type] => 0
-	)
-	*/
-
-	/* UPDATE
-	1: correu tudo bem
-	0: erro na QUERY
-	*/
-
-	/* DELETE
-	1: correu tudo bem
-	0: erro na QUERY
-	*/
-
-	/* INSERT
-	id: correu tudo bem
-	0: erro na QUERY
-	*/
-	
-	if(isset($result->num_rows)) { // SELECT
-		$arrRes = array();
-		if ($result->num_rows > 0) {
-		    while($row = $result->fetch_assoc()) {
-		        $arrRes[] = $row;
-		    }
-		}
-		return $arrRes;
-	}
-	else if ($result === TRUE) { // INSERT, DELETE, UPDATE
-		if($last_id = $arrConfig['conn']->insert_id) {
-			return $last_id;
-		}
-		return 1;
-	} 
-	return 0;
+function my_connect(array $config): mysqli
+{
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    $connection = new mysqli(
+        $config['servername'], $config['username'], $config['password'],
+        $config['dbname'], $config['port'] ?? 3306
+    );
+    $connection->set_charset('utf8mb4');
+    return $connection;
 }
-?>
+
+function db_connection(): mysqli
+{
+    global $arrConfig;
+    // As páginas públicas não precisam de estabelecer ligação ao banco.
+    return $arrConfig['conn'] ??= my_connect($arrConfig);
+}
+
+/** Mantém o contrato antigo: linhas para SELECT, id para INSERT e 1 para UPDATE/DELETE. */
+function my_query(string $sql, int $debug = 0, array $params = []): array|int
+{
+    $connection = db_connection();
+    $result = $params === [] ? $connection->query($sql) : $connection->execute_query($sql, $params);
+    if ($result instanceof mysqli_result) {
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    return $connection->insert_id ?: 1;
+}

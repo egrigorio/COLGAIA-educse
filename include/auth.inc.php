@@ -1,7 +1,6 @@
-<?php 
-include_once 'config.inc.php';
+<?php
 
-if(!isset($_SESSION['id'])){
-    header('Location: ' . $arrConfig['url_admin'] . 'index.php');
-    exit;
+require_once __DIR__ . '/config.inc.php';
+if (!isset($_SESSION['id'])) {
+    redirect_to($arrConfig['url_paginas'] . 'auth/login.php');
 }

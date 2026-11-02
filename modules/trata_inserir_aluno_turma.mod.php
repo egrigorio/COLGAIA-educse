@@ -1,4 +1,4 @@
-<?php include '../include/config.inc.php';
+<?php include __DIR__ . '/../include/config.inc.php';
 pr($_POST);
 $arr_ids_turmas = array();
 foreach($_POST as $key => $value) {

@@ -1,33 +1,24 @@
 <?php
-include_once '../include/config.inc.php';
-if(isset($_SESSION['id'])){
-    header('Location: ../index.php');
-    exit;
+
+require_once dirname(__DIR__) . '/include/config.inc.php';
+require_form_post();
+if (isset($_SESSION['id'])) {
+    redirect_to($arrConfig['url_admin']);
 }
-
-pr($_SESSION);
-$codigo = $_POST['codigo'];
-var_dump($_POST);
-echo $codigo;
-echo $_SESSION['codigo'];
-if($codigo != $_SESSION['codigo']) {
-    $_SESSION['erro'] = 'Código inválido';
-    header('Location: ../pages/auth/verificar_email.php');
-    exit;
-
-} 
-
-
-$user = $_SESSION['tmp_acc']['user'];
-$email = $_SESSION['tmp_acc']['email'];
-$pass = $_SESSION['tmp_acc']['pass'];
-$cargo = $_SESSION['tmp_acc']['cargo'];
-$pfp = $_SESSION['tmp_acc']['pfp'];
-
-$sql = "INSERT INTO users (username, email, password, cargo, pfp, ativo) VALUES ('$user', '$email', '$pass', '$cargo', '$pfp', 1)";
-my_query($sql);
-
-unset($_SESSION['tmp_acc']);
-header('Location: ' . $arrConfig['url_paginas'] . 'auth/login.php');
-
-
+if (!isset($_SESSION['tmp_acc'], $_SESSION['codigo'], $_SESSION['codigo_expira']) || time() >= $_SESSION['codigo_expira'] || ($_SESSION['codigo_tentativas'] ?? 0) >= 5) {
+    unset($_SESSION['tmp_acc'], $_SESSION['codigo'], $_SESSION['codigo_expira'], $_SESSION['codigo_tentativas']);
+    auth_error('Código expirado. Volte a efetuar o registo.', 'registo.php');
+}
+$_SESSION['codigo_tentativas']++;
+if (!hash_equals((string) $_SESSION['codigo'], post_string('codigo'))) {
+    auth_error('Código inválido', 'verificar_email.php');
+}
+$users = new Educse\Repositories\UserRepository();
+$account = $_SESSION['tmp_acc'];
+if ($users->exists($account['email'], $account['user'])) {
+    auth_error('Utilizador já existe', 'registo.php');
+}
+$users->create($account);
+unset($_SESSION['tmp_acc'], $_SESSION['codigo'], $_SESSION['codigo_expira'], $_SESSION['codigo_tentativas']);
+$_SESSION['msg_sucesso'] = 'Conta criada com sucesso';
+redirect_to($arrConfig['url_paginas'] . 'auth/login.php');

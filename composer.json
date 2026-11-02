@@ -1,7 +1,11 @@
 {
+    "name": "egrigorio/educse",
+    "description": "Plataforma de gestão de esforço estudantil e atividades escolares.",
+    "type": "project",
     "require": {
+        "php": "^8.2",
+        "ext-mysqli": "*",
         "phpmailer/phpmailer": "^6.9",
-        "firebase/php-jwt": "^6.10",
         "vlucas/phpdotenv": "^5.6",
         "guzzlehttp/guzzle": "^7.8",
         "openai-php/client": "^0.9.2"
@@ -10,5 +14,17 @@
         "allow-plugins": {
             "php-http/discovery": true
         }
+    },
+    "autoload": {
+        "psr-4": {
+            "Educse\\": "app/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S 127.0.0.1:8000 scripts/router.php",
+        "lint": "php scripts/lint.php",
+        "test": "php tests/run.php",
+        "db:install": "php scripts/database.php",
+        "db:seed-demo": "php scripts/seed-demo.php"
     }
 }

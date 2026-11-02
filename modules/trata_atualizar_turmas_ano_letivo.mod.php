@@ -1,4 +1,4 @@
-<?php include '../include/config.inc.php';
+<?php include __DIR__ . '/../include/config.inc.php';
 if(isset($_POST['tem_turmas']) && $_POST['tem_turmas'] == 1) {
     $tem_turma = 1;
 } else {

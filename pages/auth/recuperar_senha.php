@@ -1,5 +1,5 @@
 <?php
-include_once '../../include/config.inc.php';
+include_once __DIR__ . '/../../include/config.inc.php';
 if(isset($_SESSION['id'])){
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');
     exit;
@@ -8,9 +8,10 @@ if(isset($_SESSION['id'])){
 
 <?php 
 $_SESSION['cor'] = true;
-include '../../header.php'; ?>
+include __DIR__ . '/../../header.php'; ?>
 <body>
     <form class="flex flex-col justify-center items-center h-screen" action="../../modules/trata_recuperar_senha.mod.php" method="post">
+        <?= csrf_field() ?>
         <div class="flex card lg:w-6/12 shadow-xl bg-primary items-center">
             <div class="w-9/12 mt-4 mb-4 gap-4">
                 <div class="w-full text-center">
@@ -33,7 +34,7 @@ include '../../header.php'; ?>
                     
                 </div>
                 <input type="hidden" name="tipo" id="tipo" value="2">
-                <input type="hidden" name="token" value="<?php echo $_GET['token']; ?>">             
+                <input type="hidden" name="token" value="<?= htmlspecialchars(is_string($_GET['token'] ?? null) ? $_GET['token'] : '', ENT_QUOTES, 'UTF-8') ?>">
                 <input class="btn btn-ghost w-full" type="submit" value="Verificar">
             </div>
         </div>

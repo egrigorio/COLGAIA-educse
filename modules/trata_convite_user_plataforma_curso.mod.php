@@ -1,5 +1,5 @@
 <?php
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 /* esse é o arquivo que recebe o user que não tem conta criada e clicou no link de convite do curso */
 
 $convite = $_GET['convite'];

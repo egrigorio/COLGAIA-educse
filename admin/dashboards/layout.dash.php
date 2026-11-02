@@ -1,5 +1,5 @@
 <?php
-/* include '../../include/config.inc.php'; */
+/* include __DIR__ . '/../../include/config.inc.php'; */
 include_once $arrConfig['dir_admin'] . 'dashboards/gerar_calendario_atividades.php';
 include_once $arrConfig['dir_admin'] . 'configuracoes.adm.php';
 require_once $arrConfig['dir_site'] . '/vendor/autoload.php';
@@ -2546,9 +2546,7 @@ function ai_assistente_aluno() {
     $rand = rand(1, 100000);
     $id_user = $_SESSION['id'];
     $id_turma = $_GET['id_turma'];
-    $dotenv = Dotenv\Dotenv::createImmutable($arrConfig['dir_site']);
-    $dotenv->load();
-    $codigo_unico = $_ENV['CHAVE_ENVIAR'];
+    $codigo_unico = (string) env_value('CHAVE_ENVIAR', '');
     $html = '
     
     <div class="flex gap-4">
