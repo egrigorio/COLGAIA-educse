@@ -1,5 +1,6 @@
 <?php 
 include __DIR__ . '/../../include/config.inc.php';
+Educse\Http\ReadAccess::require('classroom');
 
 $id_turma = $_GET['id_turma'];
 
@@ -73,12 +74,12 @@ foreach ($res as $aluno) {
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
                                         <div class="mask mask-squircle w-12 h-12">
-                                        <img src="' . $arrConfig['url_pfp'] . $aluno['pfp'] . '" alt="PFP do ' . $aluno['username'] . '" />
+                                        <img src="' . $arrConfig['url_pfp'] . e($aluno['pfp']) . '" alt="PFP do ' . e($aluno['username']) . '" />
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="font-bold">' . $aluno['username'] . '</div>
-                                        <div class="text-sm opacity-50">' . $aluno['email'] . '</div>
+                                        <div class="font-bold">' . e($aluno['username']) . '</div>
+                                        <div class="text-sm opacity-50">' . e($aluno['email']) . '</div>
                                     </div>
                                 </div>
                             </td>

@@ -1,62 +1,26 @@
 <?php
 
-require_once dirname(__DIR__) . '/include/config.inc.php';
+require_once dirname(__DIR__) . '/bootstrap/management.php';
 require_form_post();
-if (!isset($_SESSION['email'], $_SESSION['cargo'], $_SESSION['id_curso'], $_SESSION['convite'])) {
-    auth_error('Convite inválido', 'registo.php');
-}
 try {
+    $db = new Educse\Repositories\SchoolRepository();
+    $invitations = new Educse\Services\InvitationService($db);
+    $token = is_string($_SESSION['convite_token'] ?? null) ? $_SESSION['convite_token'] : '';
+    $invitation = $invitations->find($token);
+    $role = $invitation['cargo'] === 'Diretor de Curso' ? 'professor' : $invitation['cargo'];
     $account = (new Educse\Services\AuthService())->prepareRegistration(
-        $_SESSION['email'], post_string('user'), post_string('pass'),
-        post_string('confirmar_pass'), strtolower($_SESSION['cargo'])
+        $invitation['email'], post_string('user'), post_string('pass'), post_string('confirmar_pass'), $role
     );
-} catch (DomainException $exception) {
+    $id = $db->transaction(function () use ($account, $invitations, $token) {
+        $id = (new Educse\Repositories\UserRepository())->create($account);
+        $invitations->accept($token, $id);
+        return $id;
+    });
+    Educse\Http\InvitationController::clear();
+    Educse\Services\AuthService::startSession(['id' => $id, 'username' => $account['user'], 'cargo' => $role, 'pfp' => $account['pfp'], 'ultimo_login' => null]);
+    (new Educse\Repositories\UserRepository())->recordLogin($id);
+    redirect_to($arrConfig['url_admin']);
+} catch (DomainException|Educse\Exceptions\HttpException $exception) {
+    if ($exception instanceof Educse\Exceptions\HttpException && $exception->status === 404) { Educse\Http\InvitationController::clear(); }
     auth_error($exception->getMessage(), 'registo.php');
 }
-$id_curso = (int) $_SESSION['id_curso'];
-$id = (new Educse\Repositories\UserRepository())->create($account);
-$sql = "SELECT * FROM rel_user_curso WHERE id_user = $id AND id_curso = $id_curso";
-$res = my_query($sql);
-if(count($res) == 0) {    
-    
-    if($_SESSION['dc']) {
-        $sql = "UPDATE curso SET id_diretor_curso = $id WHERE id = $id_curso";
-        my_query($sql);    
-        $sql = "UPDATE curso SET ativo = 1 WHERE id = $id_curso";
-        my_query($sql);
-        $sql = "SELECT * FROM turma WHERE id_curso = $id_curso";
-        $res = my_query($sql);
-        if(count($res) > 0) {
-            foreach($res as $r) {
-                $sql = "INSERT INTO rel_turma_user (id_turma, id_user) VALUES (" . $r['id'] . ", $id)";
-                $id_inserido = my_query($sql);
-                $sql = "INSERT INTO rel_turno_user (id_turno, id_rel_turma_user) VALUES ( -1, $id_inserido)";
-                my_query($sql);
-
-            }
-        }
-        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, estado) VALUES ($id, $id_curso, '1')";
-        my_query($sql);
-    } else {
-        $sql = "INSERT INTO rel_user_curso (id_user, id_curso, estado) VALUES ($id, $id_curso, '1')";
-        my_query($sql);
-    }
-    unset($_SESSION['id_curso']);
-    unset($_SESSION['email']);
-    unset($_SESSION['dc']);
-    unset($_SESSION['id_user']);
-    $_SESSION['convite_aceite'] = 1;
-    $sql = "DELETE FROM conf_convite WHERE id = " . (int) $_SESSION['convite'];
-    $res = my_query($sql);
-    unset($_SESSION['convite']);
-} else {
-    // tratar exceção de o user já estar na turma
-}
-
-
-Educse\Services\AuthService::startSession([
-    'id' => $id, 'username' => $account['user'], 'cargo' => $account['cargo'],
-    'pfp' => $account['pfp'], 'ultimo_login' => date('d/m/Y H:i'),
-]);
-(new Educse\Repositories\UserRepository())->recordLogin($id);
-redirect_to($arrConfig['url_admin'] . 'index.php');

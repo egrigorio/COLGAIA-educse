@@ -1,14 +1,4 @@
 <?php
-include __DIR__ . '/../include/config.inc.php';
 
-pr($_POST);
-$id_curso = $_SESSION['id_curso'];
-
-if(isset($_POST['disciplinas'])) {
-    foreach($_POST['disciplinas'] as $disciplina) {
-        $sql = "INSERT INTO rel_disciplina_curso (id_disciplina, id_curso) VALUES ($disciplina, $id_curso)";
-        my_query($sql);
-    }
-}
-
-header ('Location: ' . $arrConfig['url_admin'] . 'curso.php');
+require_once dirname(__DIR__) . '/bootstrap/management.php';
+Educse\Http\ManagementController::run('adicionar_disciplina_curso');

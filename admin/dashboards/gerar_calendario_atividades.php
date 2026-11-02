@@ -71,27 +71,7 @@ function calcular_esforco_turma($turno) {
         //calcular tempo médio diario da atividade        
         for($i = 0; $i < count($res); $i++) {
             $atividade = $res[$i];
-            $tempo_medio_diario = 0;
-            $comeco = new DateTime($atividade['comeco']);
-            $fim = new DateTime($atividade['fim']);
-            if($comeco == $fim) {
-                $tempo_medio_diario = $atividade['tempo_sugerido'];
-            } else {
-                $fim->modify('+1 day');
-                /* $dias = $comeco->diff($fim)->days; */
-                $dias = 0;
-                // saber quantos dias eu verdadeiramente tenho, percorrer os dias entre o comeco e o fim, e ver se é dia de trabalho
-                $tempo_medio_diario = 0;
-                for($j = $comeco; $j < $fim; $j->modify('+1 day')) {
-                    $dia_semana = $j->format('N');
-                    if($esforco_turma['dia_' . ($dia_semana - 1)] == 1) {
-                        $dias++;
-                    }
-                }
-                
-                $tempo_medio_diario = $atividade['tempo_sugerido'] / $dias;
-            }
-            $res[$i]['tempo_medio_diario'] = $tempo_medio_diario;
+            $res[$i]['tempo_medio_diario'] = Educse\Services\WorkloadService::dailyAverage($atividade, $esforco_turma);
             
         }
         // fim do calculo, agora cada atividade tem o tempo médio diario
@@ -206,11 +186,11 @@ function gerar_calendario($eventos, $view, $rand) {
                     let title = document.createElement("t");
                     title.innerHTML =
                     "<div class=\'flex justify-between\'><span>" +
-                        arg.event.title +
-                        "</span>  - <div>" + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "<a class=\'btn btn-ghost btn-xs\' href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-edit\'></i></a>|<a class=\'btn btn-xs btn-ghost\' href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-eye\'></i></a>|<a onClick=\'Swal.fire({ title: \"Você tem certeza que deseja apagar esta atividade?\", text: \"Essa ação não poderá ser revertida!\", icon: \"warning\", showCancelButton: true, confirmButtonColor: \"#3085d6\", cancelButtonColor: \"#d33\", cancelButtonText: \"Cancelar\", confirmButtonText: \"Sim, tenho a certeza!\" }).then((result) => { if (result.isConfirmed) { window.location.href=\"' . $arrConfig['url_modules'] . 'trata_remover_atividade.mod.php?id_evento=" + arg.event.extendedProps.id_evento + "' . '\"}})\' class=\'btn btn-xs btn-ghost\' ><i class=\'fa fa-trash\'></i></a>" : "<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-eye\'></i></a>") +
+                        educseEscape(arg.event.title) +
+                        "</span>  - <div>" + (' . $id_user . ' == arg.event.extendedProps.id_professor ? "<a class=\'btn btn-ghost btn-xs\' href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=edicao&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-edit\'></i></a>|<a class=\'btn btn-xs btn-ghost\' href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-eye\'></i></a>|<a onClick=\'Swal.fire({ title: \"Você tem certeza que deseja apagar esta atividade?\", text: \"Essa ação não poderá ser revertida!\", icon: \"warning\", showCancelButton: true, confirmButtonColor: \"#3085d6\", cancelButtonColor: \"#d33\", cancelButtonText: \"Cancelar\", confirmButtonText: \"Sim, tenho a certeza!\" }).then((result) => { if (result.isConfirmed) { educsePost(\"' . $arrConfig['url_modules'] . 'trata_remover_atividade.mod.php?id_evento=" + arg.event.extendedProps.id_evento + "' . '\");}})\' class=\'btn btn-xs btn-ghost\' ><i class=\'fa fa-trash\'></i></a>" : "<a href=\'' . $arrConfig['url_admin'] . 'turma.php?id_turma=' . $_GET['id_turma'] . '&tipo=details&tab=agenda&id_evento=" + arg.event.extendedProps.id_evento + "\'><i class=\'fa fa-eye\'></i></a>") +
                         "</div></div><span style=\'font-size: 12px; color: #999\'>Disciplina: " +
-                        arg.event.extendedProps.disciplina +
-                        " | Tipo: " +  arg.event.extendedProps.tipo + " </span>";
+                        educseEscape(arg.event.extendedProps.disciplina) +
+                        " | Tipo: " +  educseEscape(arg.event.extendedProps.tipo) + " </span>";
     
                     arrayOfDomNodes.push(title);
                     return { domNodes: arrayOfDomNodes };
@@ -220,7 +200,7 @@ function gerar_calendario($eventos, $view, $rand) {
                     eventContent: function (arg) {
                       let arrayOfDomNodes = [];
                       let title = document.createElement("t");
-                      title.innerHTML = arg.event.title;
+                      title.innerHTML = educseEscape(arg.event.title);
       
                       arrayOfDomNodes.push(title);
                       return { domNodes: arrayOfDomNodes };

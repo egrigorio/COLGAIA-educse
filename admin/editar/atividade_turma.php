@@ -1,7 +1,7 @@
 <?php
 
 include_once __DIR__ . '/../../include/config.inc.php';
-echo $arrConfig['dir_admin'] . 'dashboards/layout.dash.php';
+Educse\Http\ReadAccess::require('classroom');
 
 $id_evento = $_GET['id_evento'];
 $sql = "SELECT eventos.*, atividades.* FROM eventos 

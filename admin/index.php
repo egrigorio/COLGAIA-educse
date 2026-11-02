@@ -31,7 +31,7 @@ if($_SESSION['cargo'] == 'instituicao') {
                                             <div class="divider divider-horizontal"></div> -->
                                             <a href="<?php echo $arrConfig['url_admin'] . 'instituicao.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Gestão</a>
                                             <div class="divider divider-horizontal"></div>
-                                            <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Logout</a>
+                                            <a data-post href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Logout</a>
                                         </div>
                                     </p>
                                     
@@ -67,6 +67,7 @@ if($_SESSION['cargo'] == 'instituicao') {
             
                 <div class="flex justify-center items-center h-screen">
                     <form method="post" class="bg-primary card w-4/12 border-r-8" action="<?php echo $arrConfig['url_modules'] . 'trata_editar_instituicao.mod.php?tipo=' . (isset($_GET['editar']) ? 'editar' : 'criar') ; ?>">
+        <?= csrf_field() ?>
                         <div class="flex flex-col  gap-6">
                             <h1 class="text-xl text-center mt-10 font-bold">
                             <?php
@@ -125,7 +126,7 @@ if($_SESSION['cargo'] == 'instituicao') {
                                         <div class="divider divider-horizontal"></div>
                                         <!-- <a class="btn btn-secondary">Conta</a>
                                         <div class="divider divider-horizontal"></div> -->
-                                        <a href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Logout</a>
+                                        <a data-post href="<?php echo $arrConfig['url_modules'] . 'trata_logout.mod.php' ?>" class="btn btn-secondary <?php if($_SESSION['theme'] !== 'nocas') echo 'text-white' ?>">Logout</a>
                                     </div>
                                 </p>
                                 

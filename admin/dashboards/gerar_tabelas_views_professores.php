@@ -1,5 +1,6 @@
 <?php
 include __DIR__ . '/../../include/config.inc.php';
+Educse\Http\ReadAccess::require('course');
 $valor = $_GET['valor'];
 
 $id_user_diretor_curso = $_SESSION['id'];
@@ -66,12 +67,12 @@ if ($professor['estado'] == '1') {
                             <div class="flex items-center gap-3">
                                 <div class="avatar">
                                     <div class="mask mask-squircle w-12 h-12">
-                                    <img src="' . $arrConfig['url_pfp'] . $professor['pfp'] . '" alt="PFP do ' . $professor['username'] . '" />
+                                    <img src="' . $arrConfig['url_pfp'] . e($professor['pfp']) . '" alt="PFP do ' . e($professor['username']) . '" />
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="font-bold">' . $professor['username'] . '</div>
-                                    <div class="text-sm opacity-50">' . $professor['email'] . '</div>
+                                    <div class="font-bold">' . e($professor['username']) . '</div>
+                                    <div class="text-sm opacity-50">' . e($professor['email']) . '</div>
                                 </div>
                             </div>
                         </td>
@@ -115,7 +116,7 @@ if ($professor['estado'] == '1') {
                                         confirmButtonText: \'Sim, remover!\'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id_user'] . '\';
+                                            educsePost(\'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id_user'] . '\', {id_curso: ' . (int) $_SESSION['id_curso'] . '});
                                             
                                         }
                                     });
@@ -182,12 +183,12 @@ $html .= '
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
                                         <div class="mask mask-squircle w-12 h-12">
-                                        <img src="' . $arrConfig['url_pfp'] . $professor['pfp'] . '" alt="PFP do ' . $professor['username'] . '" />
+                                        <img src="' . $arrConfig['url_pfp'] . e($professor['pfp']) . '" alt="PFP do ' . e($professor['username']) . '" />
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="font-bold">' . $professor['username'] . '</div>
-                                        <div class="text-sm opacity-50">' . $professor['email'] . '</div>
+                                        <div class="font-bold">' . e($professor['username']) . '</div>
+                                        <div class="text-sm opacity-50">' . e($professor['email']) . '</div>
                                     </div>
                                 </div>
                             </td>                                                                            
@@ -209,7 +210,7 @@ $html .= '
                                         confirmButtonText: \'Sim, remover!\'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id_user'] . '\';
+                                            educsePost(\'' . $arrConfig['url_modules'] . 'trata_excluir_user_curso.mod.php?id_user=' . $professor['id_user'] . '\', {id_curso: ' . (int) $_SESSION['id_curso'] . '});
                                             
                                         }
                                     });
@@ -233,11 +234,11 @@ $html .= '
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
                                         <div class="mask mask-squircle w-12 h-12">
-                                        <img src="' . $arrConfig['url_pfp'] . 'e.png' . '" alt="PFP do ' . $email['email'] . '" />
+                                        <img src="' . $arrConfig['url_pfp'] . 'e.png' . '" alt="PFP do ' . e($email['email']) . '" />
                                         </div>
                                     </div>
                                     <div>                                        
-                                        <div class="text-sm opacity-50">' . $email['email'] . '</div>
+                                        <div class="text-sm opacity-50">' . e($email['email']) . '</div>
                                     </div>
                                 </div>
                             </td>                                                                            
@@ -257,7 +258,7 @@ $html .= '
                                         confirmButtonText: \'Sim, remover!\'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = \'' . $arrConfig['url_modules'] . 'trata_excluir_convite_user_curso.mod.php?id_user=' . $email['id'] . '\';
+                                            educsePost(\'' . $arrConfig['url_modules'] . 'trata_excluir_convite_user_curso.mod.php?id_user=' . $email['id'] . '\', {id_curso: ' . (int) $_SESSION['id_curso'] . '});
                                             
                                         }
                                     });

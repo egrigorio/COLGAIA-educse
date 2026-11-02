@@ -1,13 +1,12 @@
-<?php include __DIR__ . '/../../include/config.inc.php';
-$turno = $_GET['turno'] ? $_GET['turno'] : -1;
-$turno == 'all' ? $turno = -1 : $turno;
-$rand = rand(0, 999999);
-/* pr($_GET); */
-$eventos = '';
-$eventos = calcular_esforco_turma($turno);
-$eventos_json =  json_encode($eventos);
-echo $eventos_json;
+<?php
 
-
-
-
+require_once dirname(__DIR__, 2) . '/include/config.inc.php';
+Educse\Http\ReadAccess::require('classroom');
+$turn = $_GET['turno'] ?? -1;
+$turn = $turn === 'all' ? -1 : (int) $turn;
+if ($turn !== -1 && !in_array($turn, (new Educse\Repositories\SchoolRepository())->turnIds((int) $_GET['id_turma']), true)) {
+    http_response_code(422);
+    exit('Turno inválido');
+}
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode(calcular_esforco_turma($turn));

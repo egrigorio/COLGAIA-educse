@@ -1,4 +1,4 @@
 <?php
-include __DIR__ . '/../../include/config.inc.php';
-$sql = "DELETE FROM eventos_alunos_calendario WHERE id_user = {$_SESSION['id']}";
-$res = my_query($sql);
+
+require_once dirname(__DIR__, 2) . '/bootstrap/management.php';
+Educse\Http\ManagementController::run('apagar_eventos_aluno');

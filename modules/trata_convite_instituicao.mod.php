@@ -1,1 +1,4 @@
-<?php include __DIR__ . '/../include/config.inc.php';
+<?php
+
+http_response_code(404);
+exit('Operação indisponível');

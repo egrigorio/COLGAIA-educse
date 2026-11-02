@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__) . '/include/config.inc.php';
+require_once dirname(__DIR__) . '/bootstrap/management.php';
 require_form_post();
 if (isset($_SESSION['id'])) {
     redirect_to($arrConfig['url_admin']);

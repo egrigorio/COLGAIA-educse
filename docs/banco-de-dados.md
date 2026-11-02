@@ -8,7 +8,7 @@ O instalador só aceita um banco vazio. Não é uma migração de um banco antig
 
 | Grupo | Tabelas |
 | --- | --- |
-| Contas | `users`, `conf_convite`, `logs` |
+| Contas | `users`, `conf_convite` (inclui hash e expiração), `logs` |
 | Organização escolar | `instituicao`, `curso`, `turma`, `disciplinas`, `turno` |
 | Planeamento | `esforco`, `eventos`, `atividades`, `eventos_alunos_calendario` |
 | Relações | `rel_user_curso`, `rel_turma_user`, `rel_turno_user`, `rel_instituicao_curso`, `rel_instituicao_disciplinas`, `rel_disciplina_curso`, `rel_disciplina_curso_ano`, `rel_disciplina_turma`, `rel_disciplina_user`, `rel_atividades_turma` |
@@ -37,4 +37,9 @@ Nomes de views presentes apenas em comentários antigos não foram recriados. A 
 
 ## Validação
 
-O esquema foi instalado num MySQL isolado e preenchido com dados fictícios. Foram testados login e páginas de instituição, curso, turma, listagens de alunos, professores e disciplinas, e leitura do calendário pessoal. Isso confirma a compatibilidade dos caminhos exercitados; não valida todos os controladores de edição, convites e progressão de ano letivo.
+O esquema foi instalado num MySQL isolado e preenchido com dados fictícios. Foram testados login e páginas de instituição, curso, turma, listagens de alunos, professores e disciplinas, e leitura do calendário pessoal. A suíte de serviços também valida edição, autorização, rollback, convites e progressão de ano letivo. As hipóteses sobre o banco original continuam sendo inferências, mesmo quando os testes passam.
+
+
+## Migração dos convites
+
+`composer db:migrate` acrescenta `conf_convite.token_hash` e `conf_convite.expira_em` a instalações anteriores sem sobrescrever dados. A instalação nova já inclui os campos. Convites antigos sem token não são aceites e precisam de ser reenviados. O índice único do hash evita colisões entre os novos tokens.
