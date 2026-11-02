@@ -1,6 +1,6 @@
 <?php
 
-include_once '../../include/config.inc.php';
+include_once __DIR__ . '/../../include/config.inc.php';
 echo $arrConfig['dir_admin'] . 'dashboards/layout.dash.php';
 
 $id_evento = $_GET['id_evento'];

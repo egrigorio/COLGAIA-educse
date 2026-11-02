@@ -1,6 +1,6 @@
 <?php
 
-include '../../include/config.inc.php';
+include __DIR__ . '/../../include/config.inc.php';
 $valor = $_GET['valor'];
 $id_instituicao = $_SESSION['id_instituicao'];
 $sql = "SELECT rel_disciplina_curso.id_disciplina, disciplinas.*

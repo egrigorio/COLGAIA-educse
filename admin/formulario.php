@@ -1,6 +1,6 @@
 <?php
 /* .../formulario.php?tipo=inserir&modulo=curso& */
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 include_once $arrConfig['dir_include'] . 'auth.inc.php';
 if(!isset($_SESSION['cargo']) && $_SESSION['cargo'] != 'aluno') {
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');

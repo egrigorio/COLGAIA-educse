@@ -1,5 +1,5 @@
 <?php
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 
 pr($_POST);
 $id_curso = $_SESSION['id_curso'];

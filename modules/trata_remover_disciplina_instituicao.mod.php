@@ -1,4 +1,4 @@
-<?php include '../include/config.inc.php';
+<?php include __DIR__ . '/../include/config.inc.php';
 pr($_GET);
 $sql = "DELETE FROM rel_instituicao_disciplinas WHERE id_instituicao = {$_SESSION['id_instituicao']} AND id_disc = {$_GET['id_disciplina']}";
 my_query($sql);

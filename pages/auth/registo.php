@@ -1,5 +1,5 @@
 <?php
-include_once '../../include/config.inc.php';
+include_once __DIR__ . '/../../include/config.inc.php';
 if(isset($_SESSION['id'])){
     header('Location: ' . $arrConfig['url_admin'] . 'index.php');
     exit;
@@ -16,10 +16,11 @@ if(isset($_SESSION['id_curso'])) {
 
 <?php 
 $_SESSION['cor'] = true;
-include '../../header.php'; 
+include __DIR__ . '/../../header.php';
 ?>
 <body>
     <form class="flex flex-col justify-center items-center h-screen" action="<?php echo $action ?>" method="post">
+        <?= csrf_field() ?>
         
 
         <div class="w-full lg:w-6/12 shadow-xl px-2 py-12 bg-primary">

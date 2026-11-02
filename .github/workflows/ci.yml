@@ -1,0 +1,73 @@
+name: PHP e assets
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.4']
+    env:
+      APP_ENV: local
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: educse_test
+      DB_USERNAME: root
+    steps:
+      - name: Iniciar MySQL descartável com credencial aleatória
+        shell: bash
+        run: |
+          db_password="$(openssl rand -hex 24)"
+          echo "::add-mask::$db_password"
+          printf 'DB_PASSWORD=%s\n' "$db_password" >> "$GITHUB_ENV"
+          export MYSQL_ROOT_PASSWORD="$db_password"
+          docker run --detach --name educse-mysql \
+            --publish 127.0.0.1:3306:3306 \
+            --env MYSQL_ROOT_PASSWORD \
+            --env MYSQL_DATABASE="$DB_DATABASE" \
+            --health-cmd='MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqladmin ping --host=127.0.0.1 --user=root --silent' \
+            --health-interval=2s --health-timeout=5s --health-retries=60 \
+            mysql:8.4
+          for attempt in {1..90}; do
+            if [ "$(docker inspect --format '{{.State.Health.Status}}' educse-mysql)" = healthy ]; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs educse-mysql
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: composer install --no-interaction --prefer-dist
+      - run: composer validate
+      - run: composer lint
+      - run: composer test
+        env:
+          EDUCSE_TEST_DATABASE: '1'
+      - run: composer audit
+      - run: npm ci
+      - run: npm run build
+      - run: composer db:install
+      - name: Páginas públicas e dados demonstrativos
+        shell: bash
+        run: |
+          demo_output="$(php scripts/seed-demo.php)"
+          demo_password="$(printf '%s\n' "$demo_output" | sed -n 's/^Password temporária comum: //p')"
+          EDUCSE_HTTP_DEMO_PASSWORD="$demo_password" python3 tests/http_smoke.py
+      - name: Remover MySQL descartável
+        if: always()
+        run: docker rm --force educse-mysql

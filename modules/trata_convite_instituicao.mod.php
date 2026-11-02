@@ -1,1 +1,1 @@
-<?php include '../include/config.inc.php';
+<?php include __DIR__ . '/../include/config.inc.php';

@@ -1,5 +1,5 @@
 <?php
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 $id_user = $_GET['id_user'];
 
 $sql = "DELETE FROM rel_user_curso WHERE id_user = $id_user AND id_curso = {$_SESSION['id_curso']}";

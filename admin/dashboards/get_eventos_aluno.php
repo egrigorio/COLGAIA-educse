@@ -1,5 +1,5 @@
 <?php
-include '../../include/config.inc.php';
+include __DIR__ . '/../../include/config.inc.php';
 $sql = "SELECT * FROM eventos_alunos_calendario WHERE id_user = {$_SESSION['id']}";
 $res = my_query($sql);
 $eventos = [];

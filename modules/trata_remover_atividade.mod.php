@@ -1,4 +1,4 @@
-<?php include '../include/config.inc.php'; 
+<?php include __DIR__ . '/../include/config.inc.php';
 $id_evento = $_GET['id_evento'];
 $id_user = $_SESSION['id'];
 

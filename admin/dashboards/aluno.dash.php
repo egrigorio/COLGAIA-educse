@@ -1,5 +1,5 @@
 <?php
-include '../include/config.inc.php';
+require_once __DIR__ . '/../../include/config.inc.php';
 $sql = "SELECT * FROM rel_turma_user WHERE id_user = " . $_SESSION['id']  . " AND ativo = 1";
 $res = my_query($sql);
 $turmas = gerar_items_navbar($_SESSION['id']);

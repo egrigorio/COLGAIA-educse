@@ -1,52 +1,42 @@
 <?php
 
-include '../include/config.inc.php';
+require_once dirname(__DIR__) . '/include/config.inc.php';
+require_form_post();
+$users = new Educse\Repositories\UserRepository();
 
-pr($_POST);
-if($_POST['tipo'] == "1") {
-    // primeira parte do recuperar senha, isto é, aqui vou ter o email da conta que deseja recuperar
-    $email = $_POST['email'];
-    $sql = "SELECT * FROM users WHERE email = '$email'";
-    $res = my_query($sql);
-    if($res == 0) {
-        echo "Email não encontrado";
-        exit;
-    } else {
-        // gerar token 
-        $token = md5(uniqid(rand(), true));
-        $_SESSION['token_password'] = $token;
-        $_SESSION['email_user_recuperar_pass'] = $email;
-        $url = $arrConfig['url_paginas'] . "auth/recuperar_senha.php?token=$token";
-        recuperar_senha($email, $res[0]['username'], $url);
-        $_SESSION['msg_sucesso'] = "Email enviado com sucesso";
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-        exit;
-    }
-    
-    
-
-} else {
-    // segunda parte do recuperar senha, isto é, aqui vou ter o código que foi enviado para o email
-    if(isset($_POST['token']) && $_POST['token'] == $_SESSION['token_password']){
-        
-        $password = $_POST['password'];
-        $confirmar_password = $_POST['password2'];
-        $email = $_SESSION['email_user_recuperar_pass'];
-        if($password != $confirmar_password) {
-            echo "As passwords não coincidem";
-            exit;
+if (post_string('tipo') === '1') {
+    $email = trim(post_string('email'));
+    unset($_SESSION['token_password'], $_SESSION['email_user_recuperar_pass'], $_SESSION['token_password_expira']);
+    $user = filter_var($email, FILTER_VALIDATE_EMAIL) ? $users->findByIdentity($email) : null;
+    if ($user) {
+        $token = bin2hex(random_bytes(32));
+        $baseUrl = (string) env_value('APP_URL', '');
+        if (!preg_match('~^https?://~i', $baseUrl)) {
+            auth_error('Configure APP_URL para enviar links de recuperação.', 'email_recuperar_senha.php');
         }
-        $pass = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "UPDATE users SET password = '$pass' WHERE email = '$email'";
-        my_query($sql);
-        echo "Password alterada com sucesso";
-        $_SESSION['msg_sucesso'] = "Password alterada com sucesso";
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-        exit;
-    } else {
-        $_SESSION['erro'] = "Token inválido";
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        try {
+            recuperar_senha($email, $user['username'], $arrConfig['url_paginas'] . 'auth/recuperar_senha.php?token=' . $token);
+        } catch (RuntimeException $exception) {
+            auth_error('Não foi possível enviar o email. Tente novamente.', 'email_recuperar_senha.php');
+        }
+        $_SESSION['token_password'] = hash('sha256', $token);
+        $_SESSION['email_user_recuperar_pass'] = $email;
+        $_SESSION['token_password_expira'] = time() + 1800;
     }
-
-
+    $_SESSION['msg_sucesso'] = 'Se a conta existir, receberá um email com as instruções.';
+    redirect_to($arrConfig['url_paginas'] . 'auth/email_recuperar_senha.php');
 }
+
+$token = post_string('token');
+if (post_string('tipo') !== '2' || $token === '' || !isset($_SESSION['token_password'], $_SESSION['email_user_recuperar_pass']) || time() >= ($_SESSION['token_password_expira'] ?? 0) || !hash_equals($_SESSION['token_password'], hash('sha256', $token))) {
+    auth_error('Token inválido ou expirado', 'email_recuperar_senha.php');
+}
+$password = post_string('password');
+if ($password === '' || $password !== post_string('password2')) {
+    $_SESSION['erro'] = 'As passwords não coincidem ou estão vazias';
+    redirect_to($arrConfig['url_paginas'] . 'auth/recuperar_senha.php?token=' . rawurlencode($token));
+}
+$users->changePassword($_SESSION['email_user_recuperar_pass'], password_hash($password, PASSWORD_DEFAULT));
+unset($_SESSION['token_password'], $_SESSION['email_user_recuperar_pass'], $_SESSION['token_password_expira']);
+$_SESSION['msg_sucesso'] = 'Password alterada com sucesso';
+redirect_to($arrConfig['url_paginas'] . 'auth/login.php');

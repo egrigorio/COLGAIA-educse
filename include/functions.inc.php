@@ -1,6 +1,5 @@
 <?php
-include 'config.inc.php';
-include 'dados.inc.php';
+require_once __DIR__ . '/dados.inc.php';
 
 function pr($arr) {
     echo '<pre>';
@@ -181,8 +180,8 @@ function definir_redirecionamento($modulo) {
             $sql = "SELECT * FROM curso WHERE id = " . $res[0]['id_curso'];
             $res2 = my_query($sql);
             $id = $res[0]['id'];
-            if(!($res[0]['id_diretor_turma'] == $res2['id_diretor_curso'])) {
-                $sql = "INSERT INTO rel_user_turma (id_turma, id_user) VALUES ($id, " . $res2[0]['id_diretor_curso'] . ")";
+            if(!($res[0]['id_diretor_turma'] == $res2[0]['id_diretor_curso'])) {
+                $sql = "INSERT INTO rel_turma_user (id_turma, id_user) VALUES ($id, " . $res2[0]['id_diretor_curso'] . ")";
                 my_query($sql);                
             }
             $redirect = $base . "/turma.php?id_turma=$id";

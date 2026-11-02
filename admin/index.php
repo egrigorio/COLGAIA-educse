@@ -1,6 +1,6 @@
 <?php
 
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 if(!isset($_SESSION['id'])){
     header('Location: ../pages/auth/login.php');
     exit;
@@ -9,7 +9,7 @@ if(!isset($_SESSION['id'])){
 ?>
 <?php
 $_SESSION['cor'] = true;
-include '../header.php'; 
+include __DIR__ . '/../header.php';
 
 if($_SESSION['cargo'] == 'instituicao') {
     $sql = "SELECT * FROM instituicao WHERE id_dono = {$_SESSION['id']}";

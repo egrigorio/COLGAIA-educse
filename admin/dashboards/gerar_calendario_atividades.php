@@ -1,4 +1,3 @@
-
 <?php
 function calcular_esforco_dia($data, $data_certa, $res, $esforco_turma) {
         
@@ -254,6 +253,3 @@ function gerar_calendario($eventos, $view, $rand) {
     ';
     return $html;
 }
-?>
-
-

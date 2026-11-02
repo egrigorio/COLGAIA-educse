@@ -1,4 +1,4 @@
-<?php include '../include/config.inc.php';
+<?php include __DIR__ . '/../include/config.inc.php';
 
 $sql = "SELECT * FROM turno WHERE numero = '{$_POST['novo_turno']}'";
 $id_user = $_SESSION['id'];

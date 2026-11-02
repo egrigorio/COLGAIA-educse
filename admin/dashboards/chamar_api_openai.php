@@ -1,9 +1,6 @@
 <?php
-include '../../include/config.inc.php';
+include __DIR__ . '/../../include/config.inc.php';
 require_once $arrConfig['dir_site'] . '/vendor/autoload.php';
-
-$dotenv = Dotenv\Dotenv::createImmutable($arrConfig['dir_site']);
-$dotenv->load();
 $data_hoje = date('d/m/Y');
 $id_user = $_POST['user'];
 $id_turma = $_POST['id_turma'];

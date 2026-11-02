@@ -1,5 +1,5 @@
 <?php
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 pr($_POST);
 $id_turma = $_GET['id_turma'];
 $dias = ['dia_0', 'dia_1', 'dia_2', 'dia_3', 'dia_4', 'dia_5', 'dia_6'];

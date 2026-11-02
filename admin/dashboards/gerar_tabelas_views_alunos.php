@@ -1,5 +1,5 @@
 <?php
-include '../../include/config.inc.php';
+include __DIR__ . '/../../include/config.inc.php';
 $valor = $_GET['valor'];
 $id_user_diretor_curso = $_SESSION['id'];
 $sql = "SELECT * FROM view_user_curso 

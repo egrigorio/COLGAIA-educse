@@ -1,5 +1,5 @@
 <?php
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 $id_curso = $_SESSION['id_curso'];
 $id_disc = $_GET['id_disc'];
 echo $id_disc;

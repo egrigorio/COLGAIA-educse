@@ -1,4 +1,4 @@
-<?php include '../../include/config.inc.php';
+<?php include __DIR__ . '/../../include/config.inc.php';
 
 $ano_letivo = $_GET['ano_letivo'];
 $sql = "SELECT * FROM turma WHERE id_curso = " . $_SESSION['id_curso'] . " AND ano_letivo = '$ano_letivo'";

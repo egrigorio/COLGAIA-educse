@@ -1,5 +1,5 @@
 <?php 
-include '../include/config.inc.php';
+include __DIR__ . '/../include/config.inc.php';
 
 $sql = "SELECT * FROM esforco 
         INNER JOIN turma ON turma.id_esforco = esforco.id 

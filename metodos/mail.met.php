@@ -1,4 +1,3 @@
-
 <?php
  
 use PHPMailer\PHPMailer\PHPMailer;
@@ -88,8 +87,11 @@ function email_verificacao($to, $nome, $codigo) {
 };
 
 function enviar_email($to, $nome, $assunto, $alt_body, $html){
-    $user = "noreply.educse@gmail.com";
-    $pass = "vxsugijpioiwdiee";
+    $user = (string) env_value('SMTP_USERNAME', '');
+    $pass = (string) env_value('SMTP_PASSWORD', '');
+    if ($user === '' || $pass === '') {
+        throw new RuntimeException('Configure SMTP_USERNAME e SMTP_PASSWORD no .env.');
+    }
     
     
     $mail = new PHPMailer(true);
@@ -97,14 +99,14 @@ function enviar_email($to, $nome, $assunto, $alt_body, $html){
     try {
         $mail->SMTPDebug = 0;                                       
         $mail->isSMTP();                                            
-        $mail->Host       = "smtp.gmail.com";                    
+        $mail->Host       = (string) env_value('SMTP_HOST', 'smtp.gmail.com');
         $mail->SMTPAuth   = true;                             
         $mail->Username   = $user;   
         $mail->CharSet = 'UTF-8';              
         $mail->Password   = $pass;                        
-        $mail->SMTPSecure = 'ssl';                              
-        $mail->Port       = 465;       
-        $mail->setFrom( $user, 'Educse');           
+        $mail->SMTPSecure = (string) env_value('SMTP_ENCRYPTION', 'ssl');
+        $mail->Port       = (int) env_value('SMTP_PORT', 465);
+        $mail->setFrom((string) env_value('MAIL_FROM_ADDRESS', '') ?: $user, (string) env_value('MAIL_FROM_NAME', 'Educse'));
         $mail->addAddress($to, $nome);                  
         $mail->isHTML(true);                                  
         $mail->Subject = $assunto;
@@ -113,10 +115,8 @@ function enviar_email($to, $nome, $assunto, $alt_body, $html){
         $mail->send();
         
     } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        error_log('Falha ao enviar email: ' . $e->getMessage());
+        throw new RuntimeException('Não foi possível enviar o email.', 0, $e);
     }
 
 };
-
-
-?>

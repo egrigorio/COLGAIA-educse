@@ -1,5 +1,5 @@
 <?php 
-include '../../include/config.inc.php'; 
+include __DIR__ . '/../../include/config.inc.php';
 
 $id_turma = $_GET['id_turma'];
 

@@ -1,6 +1,6 @@
 <?php 
-include '../include/config.inc.php';
-/* include 'dashboards/layout.dash.php'; */
+include __DIR__ . '/../include/config.inc.php';
+/* include __DIR__ . '/dashboards/layout.dash.php'; */
 /* pr($_SESSION);
 die; */
 if(!isset($_SESSION['id'])){
@@ -18,7 +18,7 @@ if(isset($_SESSION['cargo'])) {
 
 }
 ?>
-<?php include '../header.php';?>
+<?php include __DIR__ . '/../header.php';?>
 <body>
 <?php
 if(isset($_GET['id_turma']) && $_GET['id_turma']) {
@@ -64,10 +64,10 @@ if(isset($_SESSION['convite_aceite']) && $_SESSION['convite_aceite']) {
 
 switch(strtolower($cargo)) {
     case 'aluno':
-        include './dashboards/aluno.dash.php';
+        include __DIR__ . '/./dashboards/aluno.dash.php';
         break;
     case 'professor':
-        include './dashboards/professor.dash.php';
+        include __DIR__ . '/./dashboards/professor.dash.php';
         break;
 }
 ?>
